@@ -25,13 +25,12 @@ import {
   CheckCircle,
   Globe,
   Activity,
-  Briefcase,
   Scale,
   Building2,
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
-import generatedImage from "@/assets/img/swirling_holographic_light_streaks_on_dark_background.png";
 import abstractShapes from "@/assets/img/signet-logo.svg";
+import signetLogo from "@/assets/img/shild.png";
 import LiquidEther from "@/components/LiquidEther";
 import BlurText from "@/components/BlurText";
 
@@ -313,8 +312,8 @@ export default function LandingPage() {
       >
         <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-              <span className="font-bold text-white">S</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+              <img src={abstractShapes} alt="SIGNET" className="w-full h-full object-cover" />
             </div>
             <span className="font-bold text-xl tracking-tight">SIGNET</span>
           </div>
