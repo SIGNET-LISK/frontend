@@ -1,13 +1,45 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
+import { GlassCard } from "@/components/ui/glass-card";
+import { useAccount, useDisconnect } from "wagmi";
+import { useAppKit } from "@reown/appkit/react";
+import { Copy, LogOut } from "lucide-react";
+import { useState } from "react";
 import abstractShapes from "@/assets/img/signet-logo.svg";
 
 type LandingNavbarProps = {
   scrolled: boolean;
 };
 
+// Helper function to format address
+const formatAddress = (address: string) => {
+  if (!address) return "";
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
 export function LandingNavbar({ scrolled }: LandingNavbarProps) {
+  const { isConnected, address } = useAccount();
+  const { open } = useAppKit();
+  const { disconnect } = useDisconnect();
+  const [copied, setCopied] = useState(false);
+
+  const handleConnectWallet = () => {
+    if (isConnected) {
+      disconnect();
+    } else {
+      open();
+    }
+  };
+
+  const handleCopyAddress = async () => {
+    if (address) {
+      await navigator.clipboard.writeText(address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <motion.nav
       className={`fixed top-4 left-4 right-4 z-50 rounded-full transition-all duration-300 ${
@@ -43,12 +75,50 @@ export function LandingNavbar({ scrolled }: LandingNavbarProps) {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link href="/dashboard">
-            <span className="text-sm font-medium text-gray-400 hover:text-white cursor-pointer transition-colors">
-              Dashboard
-            </span>
-          </Link>
-          <GlowButton className="hidden sm:flex">Get Started</GlowButton>
+          {isConnected && (
+            <>
+              <Link href="/dashboard">
+                <span className="text-sm font-medium text-gray-400 hover:text-white cursor-pointer transition-colors">
+                  Dashboard
+                </span>
+              </Link>
+              {/* Wallet Address Display */}
+              <GlassCard className="px-4 py-2 border-white/[0.08]">
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-400">Wallet</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-white font-mono">
+                        {formatAddress(address || "")}
+                      </span>
+                      <button
+                        onClick={handleCopyAddress}
+                        className="p-1 hover:bg-white/[0.05] rounded transition-colors group"
+                        title="Copy address"
+                      >
+                        <Copy className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    onClick={disconnect}
+                    className="p-2 hover:bg-red-500/[0.1] rounded-lg transition-colors group border border-transparent hover:border-red-500/[0.2]"
+                    title="Disconnect"
+                  >
+                    <LogOut className="w-4 h-4 text-gray-400 group-hover:text-red-400 transition-colors" />
+                  </button>
+                </div>
+              </GlassCard>
+            </>
+          )}
+          {!isConnected && (
+            <GlowButton 
+              className="hidden sm:flex" 
+              onClick={handleConnectWallet}
+            >
+              Connect Wallet
+            </GlowButton>
+          )}
         </div>
       </div>
     </motion.nav>

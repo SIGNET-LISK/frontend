@@ -10,28 +10,55 @@ import {
   Activity,
   LogOut,
   Menu,
-  X
+  X,
+  ArrowLeft,
+  Copy,
+  Wallet,
+  Building2,
+  FileCheck,
+  Zap,
+  Server,
+  Eye,
+  Settings
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAccount, useDisconnect } from "wagmi";
 import generatedImage from '@/assets/img/dark_futuristic_background_with_swirling_blue_and_orange_lights.png';
+
+// Helper function to format address
+const formatAddress = (address: string) => {
+  if (!address) return "";
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
 
 const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { label: "Register Content", icon: UploadCloud, href: "/dashboard/upload" },
-  { label: "My Contents", icon: FileText, href: "/dashboard/contents" },
-  { label: "API Usage", icon: Key, href: "/dashboard/api" },
+  { label: "My Contents", icon: FileCheck, href: "/dashboard/contents" },
+  { label: "API Usage", icon: Zap, href: "/dashboard/api" },
 ];
 
 const ADMIN_ITEMS = [
-  { label: "Manage Publishers", icon: Users, href: "/dashboard/admin/publishers" },
-  { label: "Content Review", icon: ShieldAlert, href: "/dashboard/admin/review" },
-  { label: "System Monitor", icon: Activity, href: "/dashboard/admin/monitor" },
+  { label: "Manage Publishers", icon: Building2, href: "/dashboard/admin/publishers" },
+  { label: "Content Review", icon: Eye, href: "/dashboard/admin/review" },
+  { label: "System Monitor", icon: Server, href: "/dashboard/admin/monitor" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyAddress = async () => {
+    if (address) {
+      await navigator.clipboard.writeText(address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-black text-white font-sans selection:bg-blue-500/30 relative overflow-hidden">
@@ -169,8 +196,37 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-white/[0.08]">
-              <button className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-400 hover:text-white hover:bg-red-500/[0.08] transition-colors group border border-transparent hover:border-red-500/[0.15]">
+            <div className="mt-auto pt-6 border-t border-white/[0.08] space-y-3">
+              {isConnected && address && (
+                <div className="px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Wallet className="w-4 h-4 text-blue-400" />
+                    <span className="text-xs text-gray-400">Wallet Address</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-mono text-white font-medium">
+                      {formatAddress(address)}
+                    </span>
+                    <button
+                      onClick={handleCopyAddress}
+                      className="p-1 hover:bg-white/[0.05] rounded transition-colors group"
+                      title="Copy address"
+                    >
+                      <Copy className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                    </button>
+                  </div>
+                </div>
+              )}
+              <Link href="/">
+                <div className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-400 hover:text-white hover:bg-blue-500/[0.08] transition-colors group border border-transparent hover:border-blue-500/[0.15] cursor-pointer">
+                  <ArrowLeft className="w-5 h-5 group-hover:text-blue-400 transition-colors" />
+                  <span className="font-medium">Back to Landing</span>
+                </div>
+              </Link>
+              <button 
+                onClick={() => disconnect()}
+                className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-400 hover:text-white hover:bg-red-500/[0.08] transition-colors group border border-transparent hover:border-red-500/[0.15]"
+              >
                 <LogOut className="w-5 h-5 group-hover:text-red-400 transition-colors" />
                 <span className="font-medium">Disconnect Wallet</span>
               </button>

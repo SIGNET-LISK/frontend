@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
-import { FileText, MoreVertical, ExternalLink, Clock } from "lucide-react";
+import { FileText, MoreVertical, ExternalLink, Clock, Image, File, Video, Archive, Hash } from "lucide-react";
 
 const MOCK_CONTENTS = [
   { id: 1, title: "Q3 Financial Report", type: "PDF", size: "2.4 MB", phash: "ph:9f86...0f00a08", tx: "0x8f...2c1d0e", date: "2 mins ago" },
@@ -37,8 +37,14 @@ export default function MyContents() {
                 <tr key={item.id} className="group hover:bg-white/5 transition-colors border-b border-white/5 last:border-0">
                   <td className="p-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded bg-blue-500/20 flex items-center justify-center text-blue-400">
-                        <FileText className="w-5 h-5" />
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-500/30">
+                        {item.type === "PDF" || item.type === "DOCX" ? (
+                          <FileText className="w-5 h-5 text-blue-400" />
+                        ) : item.type === "ZIP" || item.type === "CAD" ? (
+                          <Archive className="w-5 h-5 text-purple-400" />
+                        ) : (
+                          <File className="w-5 h-5 text-green-400" />
+                        )}
                       </div>
                       <div>
                         <p className="font-medium text-white">{item.title}</p>
@@ -47,8 +53,11 @@ export default function MyContents() {
                     </div>
                   </td>
                   <td className="p-6">
-                    <div className="font-mono text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded w-fit">
-                      {item.phash}
+                    <div className="flex items-center gap-2">
+                      <Hash className="w-4 h-4 text-blue-400" />
+                      <div className="font-mono text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded w-fit">
+                        {item.phash}
+                      </div>
                     </div>
                   </td>
                   <td className="p-6">

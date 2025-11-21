@@ -1,4 +1,3 @@
-import { Link } from "wouter";
 import { motion, useTransform, useMotionValue } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -22,11 +21,14 @@ import {
   Building2,
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import { useAccount } from "wagmi";
+import { useAppKit } from "@reown/appkit/react";
 import abstractShapes from "@/assets/img/signet-logo.svg";
 import LiquidEther from "@/components/LiquidEther";
 import BlurText from "@/components/BlurText";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { LandingFooter } from "@/components/landing/LandingFooter";
+import { RotatingCards } from "@/components/landing/RotatingCards";
 
 const handleAnimationComplete = () => {
   console.log("Animation completed!");
@@ -94,7 +96,7 @@ const PRICING_PLANS = [
       "API access",
       "TX proof explorer",
     ],
-    cta: "Get Started",
+    cta: "Connect Wallet",
     popular: true,
   },
   {
@@ -174,15 +176,31 @@ const FloatingParticles = () => {
   );
 };
 
+// Helper function to format address
+const formatAddress = (address: string) => {
+  if (!address) return "";
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
-  const [showDescription, setShowDescription] = useState(false);
-  const [logoPosition, setLogoPosition] = useState<"top" | "bottom">("top");
   const scrollY = useMotionValue(0);
   const isInitialMount = useRef(true);
+  const { isConnected, address } = useAccount();
+  const { open } = useAppKit();
   const heroGap = useTransform(scrollY, [0, 300], [8, 64]); // 8px (very tight) to 64px (gap-16)
   const heroPaddingTop = useTransform(scrollY, [0, 300], [120, 128]); // 120px (below navbar) to 128px (py-32)
   const heroPaddingBottom = useTransform(scrollY, [0, 300], [20, 40]); // 20px (tight) to 40px (closer to next section)
+
+  const handleConnectWallet = () => {
+    if (isConnected) {
+      // If connected, navigate to dashboard
+      window.location.href = "/dashboard";
+    } else {
+      // If not connected, open wallet modal
+      open();
+    }
+  };
 
   useEffect(() => {
     // Initialize scrollY value
@@ -198,16 +216,6 @@ export default function LandingPage() {
       }
 
       setScrolled(currentScrollY > 20);
-
-      // Animate on scroll: logo pulled down, description fades in
-      if (currentScrollY > 0 && !showDescription) {
-        setShowDescription(true);
-        setLogoPosition("bottom");
-      } else if (currentScrollY === 0 && showDescription) {
-        setShowDescription(false);
-        setLogoPosition("top");
-      }
-
       scrollY.set(currentScrollY);
     };
 
@@ -222,7 +230,7 @@ export default function LandingPage() {
       window.removeEventListener("scroll", handleScroll);
       clearTimeout(timer);
     };
-  }, [scrollY, showDescription]);
+  }, [scrollY]);
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-x-hidden font-sans selection:bg-blue-500/30">
@@ -337,290 +345,51 @@ export default function LandingPage() {
               </motion.div>
             </motion.div>
 
-            {/* Container for overlapping logo and description with connected cards */}
-            <div className="relative w-full flex items-center justify-center min-h-[600px] overflow-visible">
-              {/* Description - behind logo (lower z-index), positioned closer to title */}
+            {/* Two Column Layout: Text Left, Image Right */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full min-h-[600px]">
+              {/* Left Column: Text Content */}
               <motion.div
-                className="absolute inset-0 flex flex-col items-center justify-start pt-4 gap-2 w-full z-10"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: showDescription ? 1 : 0,
-                }}
-                transition={{
-                  duration: 0.5,
-                  ease: "easeInOut",
-                }}
+                className="space-y-6"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
               >
-                <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-xl mx-auto leading-relaxed text-center mt-30">
-                  An AI-powered, blockchain-backed platform to authenticate
-                  images, videos, and documents — stopping deepfakes and
-                  misinformation at the source.
+                <p className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed">
+                  An AI-powered, blockchain-backed platform to authenticate images, videos, and
+                  documents — stopping deepfakes and misinformation at the source.
                 </p>
 
-                <motion.div
-                  className="flex items-center justify-center gap-4 mt-4"
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: showDescription ? 1 : 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <Link href="/verify">
-                    <GlowButton className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group">
-                      Verify Content Now
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </GlowButton>
-                  </Link>
-                </motion.div>
+                <div className="flex flex-col gap-4">
+                  {isConnected && address && (
+                    <GlassCard className="px-6 py-3 border-white/[0.08] w-fit">
+                      <div className="flex items-center gap-3">
+                        <div className="flex flex-col">
+                          <span className="text-xs text-gray-400 mb-1">Connected Wallet</span>
+                          <span className="text-sm font-medium text-white font-mono">
+                            {formatAddress(address)}
+                          </span>
+                        </div>
+                      </div>
+                    </GlassCard>
+                  )}
+                  <GlowButton
+                    className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group w-fit"
+                    onClick={handleConnectWallet}
+                  >
+                    {isConnected ? "Go to Dashboard" : "Connect Wallet"}
+                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </GlowButton>
+                </div>
               </motion.div>
 
-              {/* Logo with connected cards - on top (higher z-index) */}
+              {/* Right Column: Image with Rotating Cards */}
               <motion.div
-                className="relative flex items-center justify-center w-full z-20"
-                initial={false}
-                animate={
-                  logoPosition === "top"
-                    ? { y: 0, opacity: 1 }
-                    : { y: 800, opacity: 0 }
-                }
-                transition={
-                  logoPosition === "top"
-                    ? {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 20,
-                        bounce: 0.4,
-                      }
-                    : {
-                        duration: 0.6,
-                        ease: "easeInOut",
-                      }
-                }
+                className="relative"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
               >
-                {/* Container for logo and connected cards */}
-                <div className="relative w-full max-w-5xl py-8 lg:py-12">
-                  {/* SVG Lines for connections - behind cards */}
-                  <svg
-                    className="absolute inset-0 w-full h-full pointer-events-none z-10"
-                    style={{ overflow: "visible" }}
-                    viewBox="0 0 1200 800"
-                    preserveAspectRatio="xMidYMid meet"
-                  >
-                    {/* Line from logo center (middle-top) to top-left card */}
-                    <motion.path
-                      d="M 600 71 L 50 70"
-                      stroke="url(#gradient1)"
-                      strokeWidth="2.5"
-                      strokeDasharray="6,4"
-                      strokeLinecap="round"
-                      fill="none"
-                      filter="url(#glow)"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{
-                        duration: 1.2,
-                        delay: 0.5,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    {/* Line from logo center (middle-top) to top-right card */}
-                    <motion.path
-                      d="M 700 60 L 1000 61"
-                      stroke="url(#gradient2)"
-                      strokeWidth="2.5"
-                      strokeDasharray="6,4"
-                      strokeLinecap="round"
-                      fill="none"
-                      filter="url(#glow)"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{
-                        duration: 1.2,
-                        delay: 0.7,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    {/* Line from logo center (middle-top) to bottom card */}
-                    <motion.path
-                      d="M 605 500 L 600 10"
-                      stroke="url(#gradient3)"
-                      strokeWidth="2.5"
-                      strokeDasharray="6,4"
-                      strokeLinecap="round"
-                      fill="none"
-                      filter="url(#glow)"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{
-                        duration: 1.2,
-                        delay: 0.9,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    {/* Gradient definitions with glow effect */}
-                    <defs>
-                      <linearGradient
-                        id="gradient1"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="0%"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#5227FF"
-                          stopOpacity="0.8"
-                        />
-                        <stop
-                          offset="50%"
-                          stopColor="#7C3AED"
-                          stopOpacity="0.7"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#FF9FFC"
-                          stopOpacity="0.8"
-                        />
-                      </linearGradient>
-                      <linearGradient
-                        id="gradient2"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="0%"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#5227FF"
-                          stopOpacity="0.8"
-                        />
-                        <stop
-                          offset="50%"
-                          stopColor="#8B5CF6"
-                          stopOpacity="0.7"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#B19EEF"
-                          stopOpacity="0.8"
-                        />
-                      </linearGradient>
-                      <linearGradient
-                        id="gradient3"
-                        x1="0%"
-                        y1="0%"
-                        x2="0%"
-                        y2="100%"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#5227FF"
-                          stopOpacity="0.8"
-                        />
-                        <stop
-                          offset="50%"
-                          stopColor="#A855F7"
-                          stopOpacity="0.7"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#FF9FFC"
-                          stopOpacity="0.8"
-                        />
-                      </linearGradient>
-                      {/* Glow filter */}
-                      <filter id="glow">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                        <feMerge>
-                          <feMergeNode in="coloredBlur" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                    </defs>
-                  </svg>
-
-                  {/* Connected Cards - arranged around logo */}
-                  {[
-                    {
-                      title: "Upload & Hash",
-                      desc: "Content is processed using perceptual hashing (pHash).",
-                      icon: Upload,
-                      position: "top-left",
-                    },
-                    {
-                      title: "Fingerprint on Chain",
-                      desc: "The hash is stored immutably on Lisk L2.",
-                      icon: Fingerprint,
-                      position: "top-right",
-                    },
-                    {
-                      title: "Instant Verification",
-                      desc: "Compare any content against on-chain fingerprints.",
-                      icon: ShieldCheck,
-                      position: "bottom-left",
-                    },
-                  ].map((step, i) => (
-                    <motion.div
-                      key={i}
-                      className={`absolute ${
-                        step.position === "top-left"
-                          ? "top-0 left-0 lg:top-[-50px] lg:left-[-50px]"
-                          : step.position === "top-right"
-                          ? "top-0 right-0 lg:top-[-50px] lg:right-[-50px]"
-                          : "bottom-0 left-1/2 -translate-x-1/2 lg:bottom-5"
-                      } z-10 w-[200px] sm:w-[220px] lg:w-[400px] hidden md:block`}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.6, delay: 0.3 + i * 0.2 }}
-                    >
-                      <GlassCard className="group h-full">
-                        <div className="flex items-start gap-4">
-                          {/* Icon on the left */}
-                          <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-blue-500/[0.15] to-purple-500/[0.15] rounded-xl flex items-center justify-center border border-white/[0.08] shadow-[0_0_20px_rgba(100,130,255,0.1)] group-hover:scale-110 group-hover:border-white/[0.15] transition-all duration-500">
-                            <step.icon className="w-6 h-6 text-white group-hover:text-blue-300 transition-colors" />
-                          </div>
-
-                          {/* Content on the right */}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-base lg:text-lg font-semibold mb-1 text-left">
-                              {step.title}
-                            </h3>
-                            <p className="text-gray-400 text-xs lg:text-sm leading-relaxed text-left">
-                              {step.desc}
-                            </p>
-                          </div>
-                        </div>
-                      </GlassCard>
-                    </motion.div>
-                  ))}
-
-                  {/* Logo container - smaller size, no background card, centered */}
-                  <div
-                    className="relative w-full max-w-xs mx-auto flex items-center justify-center z-20"
-                    style={{ transform: "translateY(-130px)" }}
-                  >
-                    <motion.div
-                      className="relative w-full h-[200px] sm:h-[220px] lg:h-[240px] opacity-100 pointer-events-none"
-                      style={{
-                        backgroundImage: `url(${abstractShapes})`,
-                        backgroundSize: "70%",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                      }}
-                      animate={{
-                        y: [0, -10, 0],
-                      }}
-                      transition={{
-                        duration: 6,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    />
-                  </div>
-                </div>
+                <RotatingCards imageUrl={abstractShapes} imageAlt="SIGNET" />
               </motion.div>
             </div>
           </motion.div>
@@ -834,6 +603,7 @@ export default function LandingPage() {
                   <GlowButton
                     variant={plan.popular ? "primary" : "secondary"}
                     className="w-full justify-center"
+                    onClick={handleConnectWallet}
                   >
                     {plan.cta}
                   </GlowButton>
