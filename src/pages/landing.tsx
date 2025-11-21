@@ -1,11 +1,5 @@
 import { Link } from "wouter";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useSpring,
-  useMotionValue,
-} from "framer-motion";
+import { motion, useTransform, useMotionValue } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
 import {
@@ -23,16 +17,16 @@ import {
   Fingerprint,
   Zap,
   CheckCircle,
-  Globe,
   Activity,
   Scale,
   Building2,
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import abstractShapes from "@/assets/img/signet-logo.svg";
-import signetLogo from "@/assets/img/shild.png";
 import LiquidEther from "@/components/LiquidEther";
 import BlurText from "@/components/BlurText";
+import { LandingNavbar } from "@/components/landing/LandingNavbar";
+import { LandingFooter } from "@/components/landing/LandingFooter";
 
 const handleAnimationComplete = () => {
   console.log("Animation completed!");
@@ -181,10 +175,6 @@ const FloatingParticles = () => {
 };
 
 export default function LandingPage() {
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
-  const springY = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   const [scrolled, setScrolled] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
   const [logoPosition, setLogoPosition] = useState<"top" | "bottom">("top");
@@ -300,53 +290,7 @@ export default function LandingPage() {
       </div>
 
       {/* Navbar */}
-      <motion.nav
-        className={`fixed top-4 left-4 right-4 z-50 rounded-full transition-all duration-300 ${
-          scrolled
-            ? "border border-white/[0.08] bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-            : "border border-white/[0.05] bg-black/20 backdrop-blur-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
-        }`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-              <img src={abstractShapes} alt="SIGNET" className="w-full h-full object-cover" />
-            </div>
-            <span className="font-bold text-xl tracking-tight">SIGNET</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
-            <a href="#features" className="hover:text-white transition-colors">
-              Features
-            </a>
-            <a href="#pricing" className="hover:text-white transition-colors">
-              Pricing
-            </a>
-            <Link href="/verify">
-              <span className="hover:text-white transition-colors cursor-pointer">
-                Verify
-              </span>
-            </Link>
-            <Link href="/docs">
-              <span className="hover:text-white transition-colors cursor-pointer">
-                API Docs
-              </span>
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard">
-              <span className="text-sm font-medium text-gray-400 hover:text-white cursor-pointer transition-colors">
-                Dashboard
-              </span>
-            </Link>
-            <GlowButton className="hidden sm:flex">Get Started</GlowButton>
-          </div>
-        </div>
-      </motion.nav>
+      <LandingNavbar scrolled={scrolled} />
 
       {/* Hero Section */}
       <motion.section
@@ -943,115 +887,8 @@ export default function LandingPage() {
           </Accordion>
         </div>
       </section>
-
       {/* Footer */}
-      <footer className="border-t border-white/[0.08] bg-black/40 backdrop-blur-[8px] pt-20 pb-10 relative z-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-                  <span className="font-bold text-white">S</span>
-                </div>
-                <span className="font-bold text-xl">SIGNET</span>
-              </div>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                The standard for digital trust. Verify content authenticity on
-                the blockchain.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-white mb-6">Product</h4>
-              <ul className="space-y-4 text-sm text-gray-500">
-                <li>
-                  <a
-                    href="#features"
-                    className="hover:text-blue-400 transition-colors"
-                  >
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#pricing"
-                    className="hover:text-blue-400 transition-colors"
-                  >
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <Link href="/dashboard">
-                    <span className="hover:text-blue-400 transition-colors cursor-pointer">
-                      Dashboard
-                    </span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-white mb-6">Resources</h4>
-              <ul className="space-y-4 text-sm text-gray-500">
-                <li>
-                  <Link href="/verify">
-                    <span className="hover:text-blue-400 transition-colors cursor-pointer">
-                      Verification Portal
-                    </span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/docs">
-                    <span className="hover:text-blue-400 transition-colors cursor-pointer">
-                      API Docs
-                    </span>
-                  </Link>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-400 transition-colors">
-                    Support
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-white mb-6">Company</h4>
-              <ul className="space-y-4 text-sm text-gray-500">
-                <li>
-                  <a href="#" className="hover:text-blue-400 transition-colors">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-400 transition-colors">
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-400 transition-colors">
-                    Terms
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-600 text-sm">
-              © 2025 SIGNET. All rights reserved.
-            </p>
-            <div className="flex gap-6">
-              {[Globe, Activity, Upload].map((Icon, i) => (
-                <Icon
-                  key={i}
-                  className="w-5 h-5 text-gray-600 hover:text-white cursor-pointer transition-colors hover:scale-110"
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </footer>
+      <LandingFooter />
     </div>
   );
 }
