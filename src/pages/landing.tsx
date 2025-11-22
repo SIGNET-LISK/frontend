@@ -30,6 +30,7 @@ import BlurText from "@/components/BlurText";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { RotatingCards } from "@/components/landing/RotatingCards";
+import { PhoneVerification } from "@/components/illustrations/phone-verification";
 
 const handleAnimationComplete = () => {
   console.log("Animation completed!");
@@ -362,7 +363,7 @@ export default function LandingPage() {
             <div className="relative w-full flex items-center justify-center min-h-[600px] overflow-visible">
               {/* Description - behind logo (lower z-index), positioned closer to title */}
               <motion.div
-                className="absolute inset-0 flex flex-col items-center justify-start pt-4 gap-2 w-full z-10"
+                className="absolute inset-0 flex flex-col items-center justify-start pt-4 gap-6 w-full z-10"
                 initial={{ opacity: 0 }}
                 animate={{
                   opacity: showDescription ? 1 : 0,
@@ -372,41 +373,44 @@ export default function LandingPage() {
                   ease: "easeInOut",
                 }}
               >
-                <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-xl mx-auto leading-relaxed text-center mt-30">
-                  An AI-powered, blockchain-backed platform to authenticate
-                  images, videos, and documents — stopping deepfakes and
-                  misinformation at the source.
-                </p>
-
-                <motion.div
-                  className="flex items-center justify-center gap-4 mt-4"
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: showDescription ? 1 : 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <Link href="/verify">
-                    <GlowButton className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group">
-                      Verify Content Now
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </GlowButton>
-                  </Link>
-                </motion.div>
+                {/* Horizontal container for PhoneVerification and text */}
+                <div className="flex flex-row items-center justify-center gap-6 md:gap-8 lg:gap-12 w-full max-w-6xl px-4">
+                  <div className="w-48 md:w-56 lg:w-64 h-auto flex-shrink-0">
+                    <PhoneVerification />
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-xl leading-relaxed text-left">
+                      An AI-powered, blockchain-backed platform to authenticate
+                      images, videos, and documents — stopping deepfakes and
+                      misinformation at the source.
+                    </p>
+                    <motion.div
+                      className="flex items-center justify-start gap-4"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: showDescription ? 1 : 0,
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <Link href="/verify">
+                        <GlowButton className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group">
+                          Verify Content Now
+                          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </GlowButton>
+                      </Link>
+                    </motion.div>
+                  </div>
+                </div>
               </motion.div>
 
               {/* Logo with connected cards - on top (higher z-index) */}
               <motion.div
                 className="relative flex items-center justify-center w-full z-20"
                 initial={false}
-                animate={
-                  logoPosition === "top"
-                    ? { y: 0, opacity: 1 }
-                    : { y: 800, opacity: 0 }
-                }
+                animate={logoPosition === "top" ? { y: 0 } : { y: 800 }}
                 transition={
                   logoPosition === "top"
                     ? {
