@@ -21,7 +21,19 @@ function Router() {
       <Route path="/dashboard/upload" component={RegisterContent} />
       <Route path="/dashboard/contents" component={MyContents} />
       <Route path="/dashboard/api" component={APIUsage} />
+      
+      {/* API Docs routes */}
       <Route path="/docs" component={APIDocs} />
+      <Route path="/docs/introduction" component={APIDocs} />
+      <Route path="/docs/authentication" component={APIDocs} />
+      <Route path="/docs/verify" component={APIDocs} />
+      <Route path="/docs/register" component={APIDocs} />
+      <Route path="/docs/publisher" component={APIDocs} />
+      <Route path="/docs/rate-limits" component={APIDocs} />
+      <Route path="/docs/sdk/javascript" component={APIDocs} />
+      <Route path="/docs/sdk/python" component={APIDocs} />
+      <Route path="/docs/errors" component={APIDocs} />
+      
       <Route path="/verify" component={VerifyContent} />
       
       {/* Admin routes - reusing dashboard for now as placeholder or can add later */}
