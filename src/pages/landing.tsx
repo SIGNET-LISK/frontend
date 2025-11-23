@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { motion, useTransform, useMotionValue } from "framer-motion";
+import { motion, useTransform, useMotionValue, useMotionTemplate } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
 import {
@@ -25,43 +25,12 @@ import { LandingFooter } from "@/components/landing/LandingFooter";
 import { PricingSection } from "@/components/landing/PricingSection";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { PhoneVerification } from "@/components/illustrations/phone-verification";
+import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
+import { FeaturesSection } from "@/components/landing/FeaturesSection";
 
 const handleAnimationComplete = () => {
   console.log("Animation completed!");
 };
-
-const FEATURES = [
-  {
-    icon: Fingerprint,
-    title: "Perceptual Hashing",
-    desc: "Detect near-duplicate and manipulated media with AI-powered analysis.",
-  },
-  {
-    icon: Lock,
-    title: "Immutable Record",
-    desc: "Every signature is permanently stored on Lisk L2 blockchain.",
-  },
-  {
-    icon: Zap,
-    title: "Verification API",
-    desc: "Enterprise-grade API for bulk or automated checking at scale.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Publisher Identity",
-    desc: "Verified publishers ensure content legitimacy and origin tracking.",
-  },
-  {
-    icon: Activity,
-    title: "Anti-Deepfake Defense",
-    desc: "Identify synthetic or altered media instantly to stop misinformation.",
-  },
-  {
-    icon: Search,
-    title: "Public Portal",
-    desc: "Anyone can verify any content instantly without an account.",
-  },
-];
 
 const BENEFITS = [
   {
@@ -124,11 +93,68 @@ const FloatingParticles = () => {
   );
 };
 
-// Helper function to format address
-const formatAddress = (address: string) => {
-  if (!address) return "";
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
+// 3D Tilt Card Component
+function TiltCard({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseX = useTransform(x, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const mouseY = useTransform(y, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    const width = rect.width;
+    const height = rect.height;
+
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateY: mouseX,
+        rotateX: mouseY,
+        transformStyle: "preserve-3d",
+      }}
+      className={`relative h-full transition-all duration-200 ease-linear ${className}`}
+    >
+      <div
+        style={{
+          transform: "translateZ(75px)",
+          transformStyle: "preserve-3d",
+        }}
+        className="absolute inset-4 grid place-content-center rounded-xl bg-white/[0.02] shadow-lg"
+      >
+        {/* Shadow/Glow effect behind the card */}
+        <div className="absolute inset-0 blur-xl bg-blue-500/10 -z-10" />
+      </div>
+      <GlassCard className="h-full relative preserve-3d group overflow-visible">
+        {children}
+      </GlassCard>
+    </motion.div>
+  );
+}
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -598,104 +624,10 @@ export default function LandingPage() {
       </motion.section>
 
       {/* How It Works */}
-      <section className="mt-[-120px] pb-24 relative z-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              How SIGNET Works
-            </h2>
-            <p className="text-gray-400">
-              Three simple steps to guarantee authenticity.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Upload & Hash",
-                desc: "Content is processed using perceptual hashing (pHash).",
-                icon: Upload,
-              },
-              {
-                title: "Fingerprint on Chain",
-                desc: "The hash is stored immutably on Lisk L2.",
-                icon: Fingerprint,
-              },
-              {
-                title: "Instant Verification",
-                desc: "Compare any content against on-chain fingerprints.",
-                icon: ShieldCheck,
-              },
-            ].map((step, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.2 }}
-              >
-                <GlassCard className="text-center group h-full">
-                  <div className="w-20 h-20 mx-auto bg-gradient-to-br from-blue-500/[0.15] to-purple-500/[0.15] rounded-2xl flex items-center justify-center mb-6 border border-white/[0.08] shadow-[0_0_20px_rgba(100,130,255,0.1)] group-hover:scale-110 group-hover:border-white/[0.15] transition-all duration-500">
-                    <step.icon className="w-10 h-10 text-white group-hover:text-blue-300 transition-colors" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">{step.desc}</p>
-                </GlassCard>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HowItWorksSection />
 
       {/* Features Grid */}
-      <section id="features" className="py-24 relative z-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-16 text-center md:text-left"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              Powerful Features
-            </h2>
-            <p className="text-gray-400 text-lg">
-              Everything you need to secure digital trust.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FEATURES.map((feature, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-              >
-                <GlassCard className="group h-full">
-                  <div className="w-12 h-12 bg-white/[0.03] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 border border-white/[0.08] group-hover:bg-blue-500/[0.08] group-hover:border-blue-500/[0.2]">
-                    <feature.icon className="w-6 h-6 text-blue-300 group-hover:text-blue-400 transition-colors" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3 text-white group-hover:text-blue-300 transition-colors">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    {feature.desc}
-                  </p>
-                </GlassCard>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FeaturesSection />
 
       {/* Benefits Section */}
       <section className="py-24 relative z-10">
@@ -719,19 +651,19 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.2 }}
+                className="h-full"
               >
-                <GlassCard className="relative overflow-hidden group p-8 h-full">
-                  <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500 transform group-hover:scale-125 group-hover:rotate-12">
-                    <benefit.icon className="w-32 h-32" />
-                  </div>
-                  <div className="relative z-10">
-                    <div className="p-3 w-fit rounded-xl bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.08] mb-6 group-hover:border-white/[0.12] transition-all duration-500">
-                      <benefit.icon className="w-8 h-8 text-white" />
+                <TiltCard className="h-full">
+                  <div className="relative overflow-hidden p-8 h-full">
+                    <div className="relative z-10" style={{ transform: "translateZ(50px)" }}>
+                      <div className="p-3 w-fit rounded-xl bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.08] mb-6 group-hover:border-white/[0.12] transition-all duration-500 shadow-lg">
+                        <benefit.icon className="w-8 h-8 text-white" />
+                      </div>
+                      <h3 className="text-2xl font-bold mb-3">{benefit.title}</h3>
+                      <p className="text-gray-400">{benefit.desc}</p>
                     </div>
-                    <h3 className="text-2xl font-bold mb-3">{benefit.title}</h3>
-                    <p className="text-gray-400">{benefit.desc}</p>
                   </div>
-                </GlassCard>
+                </TiltCard>
               </motion.div>
             ))}
           </div>
