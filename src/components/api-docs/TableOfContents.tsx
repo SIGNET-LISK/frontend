@@ -11,23 +11,23 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
   const [location] = useLocation();
 
   return (
-    <aside 
+    <aside
       className={cn(
         "fixed left-0 top-0 h-screen w-[280px] flex flex-col z-40 overflow-hidden",
         // Glassmorphism dengan spesifikasi yang diminta
-        "bg-[rgba(20,20,20,0.4)] backdrop-blur-[28px]",
+        "bg-[rgba(20,20,20,0.4)]",
         "border-r border-white/[0.12]",
         "shadow-[0_0_20px_rgba(150,180,255,0.25)]"
       )}
       style={{
-        backgroundColor: 'rgba(20, 20, 20, 0.4)',
-        backdropFilter: 'blur(28px)',
-        WebkitBackdropFilter: 'blur(28px)',
+        backgroundColor: "rgba(20, 20, 20, 0.4)",
+        backdropFilter: "blur(28px)",
+        WebkitBackdropFilter: "blur(28px)",
       }}
     >
       {/* Spacer untuk navbar */}
       <div className="h-20 flex-shrink-0" />
-      
+
       {/* Navigation items - No scroll, items fit in available space */}
       <div className="flex-1 overflow-hidden pt-6 px-6 pb-6">
         <div className="space-y-1 h-full flex flex-col">
@@ -37,8 +37,9 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
           <div className="flex-1 space-y-1 overflow-hidden">
             {SECTIONS.map((section) => {
               const Icon = section.icon;
-              const isActive = location === section.href || location.startsWith(section.href);
-              
+              const isActive =
+                location === section.href || location.startsWith(section.href);
+
               return (
                 <Link key={section.id} href={section.href}>
                   <motion.button
@@ -53,10 +54,14 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
                     )}
                     onClick={onItemClick}
                   >
-                    <Icon className={cn(
-                      "w-4 h-4 transition-colors flex-shrink-0",
-                      isActive ? "text-blue-400" : "text-gray-300 group-hover:text-blue-400"
-                    )} />
+                    <Icon
+                      className={cn(
+                        "w-4 h-4 transition-colors flex-shrink-0",
+                        isActive
+                          ? "text-blue-400"
+                          : "text-gray-300 group-hover:text-blue-400"
+                      )}
+                    />
                     <span className="truncate">{section.label}</span>
                   </motion.button>
                 </Link>
@@ -68,4 +73,3 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
     </aside>
   );
 }
-
