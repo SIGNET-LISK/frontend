@@ -2,7 +2,7 @@ import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlowButton } from "@/components/ui/glow-button";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
-import { Copy, RefreshCw, AlertTriangle } from "lucide-react";
+import { Copy, RefreshCw, AlertTriangle, Key, TrendingUp, Zap, BarChart3 } from "lucide-react";
 
 const USAGE_DATA = [
   { name: 'Mon', requests: 4000 },
@@ -26,7 +26,10 @@ export default function APIUsage() {
         {/* Main Stats & Graph */}
         <div className="lg:col-span-2 space-y-8">
           <GlassCard>
-            <h3 className="text-lg font-semibold text-white mb-6">Request Volume (7 Days)</h3>
+            <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-blue-400" />
+              Request Volume (7 Days)
+            </h3>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={USAGE_DATA}>
@@ -105,7 +108,10 @@ export default function APIUsage() {
           </GlassCard>
 
           <GlassCard>
-            <h3 className="text-lg font-semibold text-white mb-4">API Key</h3>
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <Key className="w-5 h-5 text-purple-400" />
+              API Key
+            </h3>
             <div className="space-y-4">
               <div>
                 <p className="text-xs text-gray-500 mb-1">Public Key</p>

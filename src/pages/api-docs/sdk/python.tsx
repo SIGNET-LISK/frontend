@@ -7,13 +7,14 @@ export default function PythonSDK() {
     <div className="space-y-8 max-w-4xl">
       <section className="space-y-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 flex items-center gap-3 drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+          <h1 className="text-4xl md:text-5xl font-bold text-white-100 mb-4 flex items-center gap-3 drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
             <Code className="w-10 h-10 text-blue-400" />
             Python SDK
           </h1>
-          <p className="text-xl text-gray-100 leading-relaxed">
-            The official SIGNET Python SDK provides a simple and intuitive interface for 
-            integrating content verification and registration into your Python applications.
+          <p className="text-xl text-white-100 leading-relaxed">
+            The official SIGNET Python SDK provides a simple and intuitive
+            interface for integrating content verification and registration into
+            your Python applications.
           </p>
         </div>
       </section>
@@ -21,26 +22,21 @@ export default function PythonSDK() {
       <div className="w-full h-px bg-white/5" />
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Installation</h2>
-        <CodeBlockGlass 
-          title="pip"
-          code={`pip install signet-sdk`}
-        />
-        <CodeBlockGlass 
-          title="pipenv"
-          code={`pipenv install signet-sdk`}
-        />
-        <CodeBlockGlass 
-          title="poetry"
-          code={`poetry add signet-sdk`}
-        />
+        <h2 className="text-2xl font-bold text-white-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+          Installation
+        </h2>
+        <CodeBlockGlass title="pip" code={`pip install signet-sdk`} />
+        <CodeBlockGlass title="pipenv" code={`pipenv install signet-sdk`} />
+        <CodeBlockGlass title="poetry" code={`poetry add signet-sdk`} />
       </section>
 
       <div className="w-full h-px bg-white/5" />
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Setup</h2>
-        <CodeBlockGlass 
+        <h2 className="text-2xl font-bold text-white-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+          Setup
+        </h2>
+        <CodeBlockGlass
           title="Initialize the Client"
           code={`from signet import SignetClient
 import os
@@ -55,14 +51,19 @@ client = SignetClient(
       <div className="w-full h-px bg-white/5" />
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Verify Content</h2>
-        <p className="text-gray-100">
-          Verify if a media file or URL matches a registered on-chain fingerprint.
+        <h2 className="text-2xl font-bold text-white-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+          Verify Content
+        </h2>
+        <p className="text-white-100">
+          Verify if a media file or URL matches a registered on-chain
+          fingerprint.
         </p>
-        
+
         <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Using File Upload</h3>
-          <CodeBlockGlass 
+          <h3 className="text-lg font-semibold text-white-100 mb-3">
+            Using File Upload
+          </h3>
+          <CodeBlockGlass
             title="Verify File"
             code={`# Verify a local file
 with open('media.jpg', 'rb') as file:
@@ -81,8 +82,10 @@ else:
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Using URL</h3>
-          <CodeBlockGlass 
+          <h3 className="text-lg font-semibold text-white-100 mb-3">
+            Using URL
+          </h3>
+          <CodeBlockGlass
             title="Verify URL"
             code={`result = client.verify.url(
     url='https://example.com/media.jpg',
@@ -102,14 +105,18 @@ else:
       <div className="w-full h-px bg-white/5" />
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Register Content</h2>
-        <p className="text-gray-100">
+        <h2 className="text-2xl font-bold text-white-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+          Register Content
+        </h2>
+        <p className="text-white-100">
           Register new content on-chain. Requires Publisher-level account.
         </p>
-        
+
         <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Register with File</h3>
-          <CodeBlockGlass 
+          <h3 className="text-lg font-semibold text-white-100 mb-3">
+            Register with File
+          </h3>
+          <CodeBlockGlass
             title="Register Content"
             code={`# Register a local file
 with open('media.jpg', 'rb') as file:
@@ -127,8 +134,10 @@ print(f'Block Height: {result.blockchain.block_height}')`}
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Register with Hash</h3>
-          <CodeBlockGlass 
+          <h3 className="text-lg font-semibold text-white-100 mb-3">
+            Register with Hash
+          </h3>
+          <CodeBlockGlass
             title="Register with Pre-calculated Hash"
             code={`result = client.register.hash(
     content_hash='ph:a1b2c3d4e5f6...',
@@ -144,8 +153,10 @@ print(f'Registered with TX: {result.blockchain.tx_hash}')`}
       <div className="w-full h-px bg-white/5" />
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Get Publisher Data</h2>
-        <CodeBlockGlass 
+        <h2 className="text-2xl font-bold text-white-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+          Get Publisher Data
+        </h2>
+        <CodeBlockGlass
           title="Get Publisher"
           code={`publisher = client.publisher.get('0x7f3a...2b1c')
 
@@ -159,8 +170,10 @@ print(f'Content Count: {publisher.statistics.registered_content_count}')`}
       <div className="w-full h-px bg-white/5" />
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Error Handling</h2>
-        <CodeBlockGlass 
+        <h2 className="text-2xl font-bold text-white-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+          Error Handling
+        </h2>
+        <CodeBlockGlass
           title="Error Handling"
           code={`from signet import SignetClient, SignetError
 
@@ -183,11 +196,15 @@ except Exception as e:
       <div className="w-full h-px bg-white/5" />
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Advanced Usage</h2>
-        
+        <h2 className="text-2xl font-bold text-white-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+          Advanced Usage
+        </h2>
+
         <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Custom Configuration</h3>
-          <CodeBlockGlass 
+          <h3 className="text-lg font-semibold text-white-100 mb-3">
+            Custom Configuration
+          </h3>
+          <CodeBlockGlass
             title="Custom Headers and Timeout"
             code={`client = SignetClient(
     api_key=os.getenv('SIGNET_API_KEY'),
@@ -200,8 +217,10 @@ except Exception as e:
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Retry Logic</h3>
-          <CodeBlockGlass 
+          <h3 className="text-lg font-semibold text-white-100 mb-3">
+            Retry Logic
+          </h3>
+          <CodeBlockGlass
             title="Automatic Retry"
             code={`from signet import SignetClient, RetryConfig
 
@@ -219,8 +238,10 @@ client = SignetClient(
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold text-white mb-3">Async Support</h3>
-          <CodeBlockGlass 
+          <h3 className="text-lg font-semibold text-white-100 mb-3">
+            Async Support
+          </h3>
+          <CodeBlockGlass
             title="Async/Await"
             code={`import asyncio
 from signet import AsyncSignetClient
@@ -239,12 +260,15 @@ asyncio.run(main())`}
       <div className="w-full h-px bg-white/5" />
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Type Hints</h2>
+        <h2 className="text-2xl font-bold text-white-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+          Type Hints
+        </h2>
         <GlassCard>
-          <p className="text-gray-100 mb-4">
-            The SDK includes full type hints for better IDE support and type checking.
+          <p className="text-white-100 mb-4">
+            The SDK includes full type hints for better IDE support and type
+            checking.
           </p>
-          <CodeBlockGlass 
+          <CodeBlockGlass
             title="Type Hints Example"
             code={`from signet import SignetClient, VerifyResult, RegisterResult
 from typing import Optional
@@ -265,4 +289,3 @@ if result.match:
     </div>
   );
 }
-

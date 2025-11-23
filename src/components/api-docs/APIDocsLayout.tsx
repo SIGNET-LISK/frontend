@@ -6,7 +6,8 @@ import { Menu, X } from "lucide-react";
 import { GlowButton } from "@/components/ui/glow-button";
 import { TableOfContents } from "./TableOfContents";
 import { MobileTableOfContents } from "./MobileTableOfContents";
-import generatedImage from '@/assets/img/dark_futuristic_background_with_swirling_blue_and_orange_lights.png';
+import generatedImage from "@/assets/img/dark_futuristic_background_with_swirling_blue_and_orange_lights.png";
+import abstractShapes from "@/assets/img/signet-logo.svg";
 
 interface APIDocsLayoutProps {
   children: React.ReactNode;
@@ -24,15 +25,15 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-sans selection:bg-blue-500/30">
       {/* Background Layers */}
-      <motion.div 
+      <motion.div
         initial={{ scale: 1.1, opacity: 0 }}
         animate={{ scale: 1, opacity: 0.4 }}
         transition={{ duration: 1.5 }}
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
           backgroundImage: `url(${generatedImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       />
       <div className="fixed inset-0 z-0 bg-gradient-to-br from-black/80 via-black/50 to-black/80 pointer-events-none" />
@@ -43,28 +44,51 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
         <div className="h-full px-6 flex justify-between items-center">
           <Link href="/">
             <div className="flex items-center gap-2 cursor-pointer">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-                <span className="font-bold text-white">S</span>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                <img
+                  src={abstractShapes}
+                  alt="SIGNET"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <span className="font-bold text-xl tracking-tight">SIGNET <span className="text-gray-500 font-normal ml-2 text-sm">API Docs</span></span>
+
+              <span className="font-bold text-xl tracking-tight">SIGNET</span>
             </div>
           </Link>
-          
+
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
-            <Link href="/"><span className="hover:text-white transition-colors cursor-pointer">Home</span></Link>
-            <Link href="/verify"><span className="hover:text-white transition-colors cursor-pointer">Verify</span></Link>
-            <Link href="/dashboard"><span className="hover:text-white transition-colors cursor-pointer">Dashboard</span></Link>
+            <Link href="/">
+              <span className="hover:text-white transition-colors cursor-pointer">
+                Home
+              </span>
+            </Link>
+            <Link href="/verify">
+              <span className="hover:text-white transition-colors cursor-pointer">
+                Verify
+              </span>
+            </Link>
+            <Link href="/dashboard">
+              <span className="hover:text-white transition-colors cursor-pointer">
+                Dashboard
+              </span>
+            </Link>
           </div>
 
           <div className="flex items-center gap-4">
             <Link href="/dashboard/api">
-              <GlowButton className="hidden sm:flex h-9 px-4 text-sm">Get API Key</GlowButton>
+              <GlowButton className="hidden sm:flex h-9 px-4 text-sm">
+                Get API Key
+              </GlowButton>
             </Link>
-            <button 
+            <button
               className="md:hidden p-2 text-gray-400 hover:text-white transition-colors"
               onClick={() => setIsMobileOpen(!isMobileOpen)}
             >
-              {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
@@ -76,17 +100,15 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
         <TableOfContents />
 
         {/* Content Area - Independent scrollable container */}
-        <div 
+        <div
           className="flex-1 ml-[280px] h-screen overflow-y-auto"
-          style={{ scrollBehavior: 'smooth' }}
+          style={{ scrollBehavior: "smooth" }}
         >
           {/* Spacer for navbar */}
           <div className="h-20 flex-shrink-0" />
-          
+
           {/* Content */}
-          <div className="p-6 lg:p-10 pb-20">
-            {children}
-          </div>
+          <div className="p-6 lg:p-10 pb-20">{children}</div>
         </div>
       </div>
 
@@ -100,21 +122,30 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
                   <span className="font-bold text-white">S</span>
                 </div>
-                <span className="font-bold text-xl tracking-tight">SIGNET <span className="text-gray-500 font-normal ml-2 text-sm">API Docs</span></span>
+                <span className="font-bold text-xl tracking-tight">
+                  SIGNET{" "}
+                  <span className="text-gray-500 font-normal ml-2 text-sm">
+                    API Docs
+                  </span>
+                </span>
               </div>
             </Link>
-            
-            <button 
+
+            <button
               className="p-2 text-gray-400 hover:text-white transition-colors"
               onClick={() => setIsMobileOpen(!isMobileOpen)}
             >
-              {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </button>
           </div>
         </nav>
 
         {/* Mobile Sidebar */}
-        <div 
+        <div
           className={cn(
             "fixed top-20 left-0 h-[calc(100vh-80px)] w-[280px] z-40",
             "transition-transform duration-300 ease-in-out",
@@ -138,13 +169,10 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
         </AnimatePresence>
 
         {/* Mobile Content */}
-        <div className="overflow-y-auto" style={{ scrollBehavior: 'smooth' }}>
-          <div className="p-6 pb-20">
-            {children}
-          </div>
+        <div className="overflow-y-auto" style={{ scrollBehavior: "smooth" }}>
+          <div className="p-6 pb-20">{children}</div>
         </div>
       </div>
     </div>
   );
 }
-

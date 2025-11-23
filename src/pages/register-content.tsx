@@ -3,7 +3,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { GlowButton } from "@/components/ui/glow-button";
 import { useDropzone } from "react-dropzone";
 import { useCallback, useState } from "react";
-import { UploadCloud, File, CheckCircle2, AlertCircle } from "lucide-react";
+import { UploadCloud, File, CheckCircle2, AlertCircle, Image, FileText, Video, Hash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

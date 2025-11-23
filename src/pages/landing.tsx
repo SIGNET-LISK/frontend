@@ -15,11 +15,14 @@ import {
   Building2,
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import { useAccount } from "wagmi";
+import { useAppKit } from "@reown/appkit/react";
 import abstractShapes from "@/assets/img/signet-logo.svg";
 import LiquidEther from "@/components/LiquidEther";
 import BlurText from "@/components/BlurText";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { LandingFooter } from "@/components/landing/LandingFooter";
+
 import { PricingSection } from "@/components/landing/PricingSection";
 import { FAQSection } from "@/components/landing/FAQSection";
 
@@ -78,6 +81,57 @@ const BENEFITS = [
   },
 ];
 
+<<<<<<< HEAD
+=======
+const PRICING_PLANS = [
+  {
+    name: "Pro",
+    price: "$9.99",
+    period: "/mo",
+    features: [
+      "Up to 10,000 verifications/month",
+      "Priority hashing performance",
+      "API access",
+      "TX proof explorer",
+    ],
+    cta: "Connect Wallet",
+    popular: true,
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    period: "",
+    features: [
+      "Unlimited verifications",
+      "Dedicated API throughput",
+      "SLA + enterprise support",
+      "Private on-chain indexing",
+    ],
+    cta: "Contact Sales",
+    popular: false,
+  },
+];
+
+const FAQ_ITEMS = [
+  {
+    q: "What is perceptual hashing?",
+    a: "A hashing technique that detects visually similar content by generating a unique digital fingerprint based on the visual features of an image or video, rather than its file data.",
+  },
+  {
+    q: "Why blockchain?",
+    a: "Once stored on the blockchain, fingerprints cannot be modified, deleted, or tampered with, providing an immutable and verifiable record of authenticity.",
+  },
+  {
+    q: "Who is SIGNET for?",
+    a: "SIGNET is designed for media outlets, enterprises, governments, legal investigators, and content creators who need to verify the authenticity of digital assets.",
+  },
+  {
+    q: "Is verification public?",
+    a: "Yes, the verification portal is open to the public, allowing anyone to check content authenticity against our blockchain records instantly.",
+  },
+];
+
+>>>>>>> 8b4bc0fad7ee327f411d34049466e29ee2ed7c65
 // Floating particles component
 const FloatingParticles = () => {
   const particles = Array.from({ length: 20 }, (_, i) => ({
@@ -121,15 +175,33 @@ const FloatingParticles = () => {
   );
 };
 
+// Helper function to format address
+const formatAddress = (address: string) => {
+  if (!address) return "";
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
-  const [showDescription, setShowDescription] = useState(false);
-  const [logoPosition, setLogoPosition] = useState<"top" | "bottom">("top");
   const scrollY = useMotionValue(0);
   const isInitialMount = useRef(true);
+  const { isConnected, address } = useAccount();
+  const { open } = useAppKit();
   const heroGap = useTransform(scrollY, [0, 300], [8, 64]); // 8px (very tight) to 64px (gap-16)
   const heroPaddingTop = useTransform(scrollY, [0, 300], [120, 128]); // 120px (below navbar) to 128px (py-32)
   const heroPaddingBottom = useTransform(scrollY, [0, 300], [20, 40]); // 20px (tight) to 40px (closer to next section)
+  const [showDescription, setShowDescription] = useState(false);
+  const [logoPosition, setLogoPosition] = useState<"top" | "bottom">("top");
+
+  const handleConnectWallet = () => {
+    if (isConnected) {
+      // If connected, navigate to dashboard
+      window.location.href = "/dashboard";
+    } else {
+      // If not connected, open wallet modal
+      open();
+    }
+  };
 
   useEffect(() => {
     // Initialize scrollY value
@@ -288,7 +360,7 @@ export default function LandingPage() {
             <div className="relative w-full flex items-center justify-center min-h-[600px] overflow-visible">
               {/* Description - behind logo (lower z-index), positioned closer to title */}
               <motion.div
-                className="absolute inset-0 flex flex-col items-center justify-start pt-4 gap-2 w-full z-10"
+                className="absolute inset-0 flex flex-col items-center justify-start pt-4 gap-6 w-full z-10"
                 initial={{ opacity: 0 }}
                 animate={{
                   opacity: showDescription ? 1 : 0,
@@ -298,41 +370,44 @@ export default function LandingPage() {
                   ease: "easeInOut",
                 }}
               >
-                <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-xl mx-auto leading-relaxed text-center mt-30">
-                  An AI-powered, blockchain-backed platform to authenticate
-                  images, videos, and documents — stopping deepfakes and
-                  misinformation at the source.
-                </p>
-
-                <motion.div
-                  className="flex items-center justify-center gap-4 mt-4"
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: showDescription ? 1 : 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <Link href="/verify">
-                    <GlowButton className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group">
-                      Verify Content Now
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </GlowButton>
-                  </Link>
-                </motion.div>
+                {/* Horizontal container for PhoneVerification and text */}
+                <div className="flex flex-row items-center justify-center gap-6 md:gap-8 lg:gap-12 w-full max-w-6xl px-4">
+                  <div className="w-48 md:w-56 lg:w-64 h-auto flex-shrink-0">
+                    <PhoneVerification />
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-xl leading-relaxed text-left">
+                      An AI-powered, blockchain-backed platform to authenticate
+                      images, videos, and documents — stopping deepfakes and
+                      misinformation at the source.
+                    </p>
+                    <motion.div
+                      className="flex items-center justify-start gap-4"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: showDescription ? 1 : 0,
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <Link href="/verify">
+                        <GlowButton className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group">
+                          Verify Content Now
+                          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </GlowButton>
+                      </Link>
+                    </motion.div>
+                  </div>
+                </div>
               </motion.div>
 
               {/* Logo with connected cards - on top (higher z-index) */}
               <motion.div
                 className="relative flex items-center justify-center w-full z-20"
                 initial={false}
-                animate={
-                  logoPosition === "top"
-                    ? { y: 0, opacity: 1 }
-                    : { y: 800, opacity: 0 }
-                }
+                animate={logoPosition === "top" ? { y: 0 } : { y: 800 }}
                 transition={
                   logoPosition === "top"
                     ? {
@@ -715,7 +790,85 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
+<<<<<<< HEAD
       <PricingSection />
+=======
+      <section id="pricing" className="py-24 relative z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Simple Pricing
+            </h2>
+            <p className="text-gray-400">
+              Choose the plan that fits your verification needs.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {PRICING_PLANS.map((plan, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.2 }}
+              >
+                <GlassCard
+                  className={`relative flex flex-col h-full ${
+                    plan.popular
+                      ? "border-blue-500/[0.2] shadow-[0_0_40px_rgba(59,130,246,0.12)] bg-blue-900/[0.05]"
+                      : ""
+                  }`}
+                >
+                  {plan.popular && (
+                    <div className="absolute top-0 right-0 px-4 py-1 bg-blue-600/[0.8] backdrop-blur-[8px] text-xs font-bold uppercase tracking-wider rounded-bl-2xl rounded-tr-[30px] shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-500/[0.3]">
+                      Popular
+                    </div>
+                  )}
+                  <div className="mb-8">
+                    <h3 className="text-lg font-medium text-gray-400 mb-2">
+                      {plan.name} Plan
+                    </h3>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-5xl font-bold text-white text-glow">
+                        {plan.price}
+                      </span>
+                      <span className="text-gray-500">{plan.period}</span>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-4 mb-8 flex-1">
+                    {plan.features.map((feat, j) => (
+                      <li
+                        key={j}
+                        className="flex items-start gap-3 text-sm text-gray-300"
+                      >
+                        <CheckCircle className="w-5 h-5 text-blue-500 shrink-0 drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]" />
+                        {feat}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <GlowButton
+                    variant={plan.popular ? "primary" : "secondary"}
+                    className="w-full justify-center"
+                    onClick={handleConnectWallet}
+                  >
+                    {plan.cta}
+                  </GlowButton>
+                </GlassCard>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+>>>>>>> 8b4bc0fad7ee327f411d34049466e29ee2ed7c65
 
       {/* FAQ Section */}
       <FAQSection />

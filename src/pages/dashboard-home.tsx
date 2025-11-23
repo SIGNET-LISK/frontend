@@ -1,9 +1,28 @@
 import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
-import { Activity, Database, ShieldCheck, ArrowUpRight } from "lucide-react";
+import { Activity, Database, ShieldCheck, ArrowUpRight, Wallet, Copy } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAccount } from "wagmi";
+import { useState } from "react";
+
+// Helper function to format address
+const formatAddress = (address: string) => {
+  if (!address) return "";
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
 
 export default function DashboardHome() {
+  const { address, isConnected } = useAccount();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyAddress = async () => {
+    if (address) {
+      await navigator.clipboard.writeText(address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <Layout>
       <motion.header 
@@ -14,14 +33,34 @@ export default function DashboardHome() {
       >
         <div>
           <h2 className="text-3xl font-bold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent">
-            Publisher Dashboard
+            Dashboard Overview
           </h2>
           <p className="text-gray-400 mt-1">Manage your content and monitor blockchain registrations.</p>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/[0.08] backdrop-blur-[8px] border border-green-500/[0.15] text-green-400 text-sm font-medium">
-          <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          Lisk Sepolia Connected
-        </div>
+        {isConnected && address && (
+          <GlassCard className="px-4 py-3 border-white/[0.08]">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-blue-500/[0.15] border border-blue-500/[0.2]">
+                <Wallet className="w-4 h-4 text-blue-400" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-400">Connected Wallet</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-mono text-white font-medium">
+                    {formatAddress(address)}
+                  </span>
+                  <button
+                    onClick={handleCopyAddress}
+                    className="p-1 hover:bg-white/[0.05] rounded transition-colors group"
+                    title="Copy address"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </GlassCard>
+        )}
       </motion.header>
 
       {/* Stats Grid */}
