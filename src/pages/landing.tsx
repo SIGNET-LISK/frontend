@@ -22,9 +22,9 @@ import LiquidEther from "@/components/LiquidEther";
 import BlurText from "@/components/BlurText";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { LandingFooter } from "@/components/landing/LandingFooter";
-
 import { PricingSection } from "@/components/landing/PricingSection";
 import { FAQSection } from "@/components/landing/FAQSection";
+import { PhoneVerification } from "@/components/illustrations/phone-verification";
 
 const handleAnimationComplete = () => {
   console.log("Animation completed!");
@@ -81,57 +81,6 @@ const BENEFITS = [
   },
 ];
 
-<<<<<<< HEAD
-=======
-const PRICING_PLANS = [
-  {
-    name: "Pro",
-    price: "$9.99",
-    period: "/mo",
-    features: [
-      "Up to 10,000 verifications/month",
-      "Priority hashing performance",
-      "API access",
-      "TX proof explorer",
-    ],
-    cta: "Connect Wallet",
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "",
-    features: [
-      "Unlimited verifications",
-      "Dedicated API throughput",
-      "SLA + enterprise support",
-      "Private on-chain indexing",
-    ],
-    cta: "Contact Sales",
-    popular: false,
-  },
-];
-
-const FAQ_ITEMS = [
-  {
-    q: "What is perceptual hashing?",
-    a: "A hashing technique that detects visually similar content by generating a unique digital fingerprint based on the visual features of an image or video, rather than its file data.",
-  },
-  {
-    q: "Why blockchain?",
-    a: "Once stored on the blockchain, fingerprints cannot be modified, deleted, or tampered with, providing an immutable and verifiable record of authenticity.",
-  },
-  {
-    q: "Who is SIGNET for?",
-    a: "SIGNET is designed for media outlets, enterprises, governments, legal investigators, and content creators who need to verify the authenticity of digital assets.",
-  },
-  {
-    q: "Is verification public?",
-    a: "Yes, the verification portal is open to the public, allowing anyone to check content authenticity against our blockchain records instantly.",
-  },
-];
-
->>>>>>> 8b4bc0fad7ee327f411d34049466e29ee2ed7c65
 // Floating particles component
 const FloatingParticles = () => {
   const particles = Array.from({ length: 20 }, (_, i) => ({
@@ -588,10 +537,10 @@ export default function LandingPage() {
                     <motion.div
                       key={i}
                       className={`absolute ${step.position === "top-left"
-                          ? "top-0 left-0 lg:top-[-50px] lg:left-[-50px]"
-                          : step.position === "top-right"
-                            ? "top-0 right-0 lg:top-[-50px] lg:right-[-50px]"
-                            : "bottom-0 left-1/2 -translate-x-1/2 lg:bottom-5"
+                        ? "top-0 left-0 lg:top-[-50px] lg:left-[-50px]"
+                        : step.position === "top-right"
+                          ? "top-0 right-0 lg:top-[-50px] lg:right-[-50px]"
+                          : "bottom-0 left-1/2 -translate-x-1/2 lg:bottom-5"
                         } z-10 w-[200px] sm:w-[220px] lg:w-[400px] hidden md:block`}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -790,85 +739,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-<<<<<<< HEAD
-      <PricingSection />
-=======
-      <section id="pricing" className="py-24 relative z-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              Simple Pricing
-            </h2>
-            <p className="text-gray-400">
-              Choose the plan that fits your verification needs.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {PRICING_PLANS.map((plan, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.2 }}
-              >
-                <GlassCard
-                  className={`relative flex flex-col h-full ${
-                    plan.popular
-                      ? "border-blue-500/[0.2] shadow-[0_0_40px_rgba(59,130,246,0.12)] bg-blue-900/[0.05]"
-                      : ""
-                  }`}
-                >
-                  {plan.popular && (
-                    <div className="absolute top-0 right-0 px-4 py-1 bg-blue-600/[0.8] backdrop-blur-[8px] text-xs font-bold uppercase tracking-wider rounded-bl-2xl rounded-tr-[30px] shadow-[0_0_15px_rgba(37,99,235,0.4)] border border-blue-500/[0.3]">
-                      Popular
-                    </div>
-                  )}
-                  <div className="mb-8">
-                    <h3 className="text-lg font-medium text-gray-400 mb-2">
-                      {plan.name} Plan
-                    </h3>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-5xl font-bold text-white text-glow">
-                        {plan.price}
-                      </span>
-                      <span className="text-gray-500">{plan.period}</span>
-                    </div>
-                  </div>
-
-                  <ul className="space-y-4 mb-8 flex-1">
-                    {plan.features.map((feat, j) => (
-                      <li
-                        key={j}
-                        className="flex items-start gap-3 text-sm text-gray-300"
-                      >
-                        <CheckCircle className="w-5 h-5 text-blue-500 shrink-0 drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]" />
-                        {feat}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <GlowButton
-                    variant={plan.popular ? "primary" : "secondary"}
-                    className="w-full justify-center"
-                    onClick={handleConnectWallet}
-                  >
-                    {plan.cta}
-                  </GlowButton>
-                </GlassCard>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
->>>>>>> 8b4bc0fad7ee327f411d34049466e29ee2ed7c65
+      <PricingSection onConnect={handleConnectWallet} />
 
       {/* FAQ Section */}
       <FAQSection />
