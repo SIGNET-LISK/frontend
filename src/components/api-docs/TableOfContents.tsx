@@ -16,7 +16,7 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
         "fixed left-0 top-0 h-screen w-[280px] flex flex-col z-40 overflow-hidden",
         // Glassmorphism dengan spesifikasi yang diminta
         "bg-[rgba(20,20,20,0.4)]",
-        "border-r border-white/[0.12]",
+        "border-r border-white/[0.1] dark:border-white/[0.08]",
         "shadow-[0_0_20px_rgba(150,180,255,0.25)]"
       )}
       style={{

@@ -104,10 +104,10 @@ export function FeaturesSection() {
                     transition={{ duration: 0.6 }}
                     className="mb-16 text-center md:text-left"
                 >
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                    <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
                         Powerful Features
                     </h2>
-                    <p className="text-gray-400 text-lg">
+                    <p className="text-muted-foreground text-lg">
                         Everything you need to secure digital trust.
                     </p>
                 </motion.div>
@@ -120,8 +120,9 @@ export function FeaturesSection() {
                             onClick={() => setSelectedId(feature.id)}
                             className={cn(
                                 "relative group cursor-pointer rounded-3xl overflow-hidden",
-                                "border border-white/10 bg-white/[0.02] hover:bg-white/[0.05]",
-                                "transition-colors duration-300"
+                                "border border-white/[0.1] dark:border-white/[0.08] bg-white/[0.05] dark:bg-white/[0.02] backdrop-blur-[12px]",
+                                "hover:bg-white/[0.08] dark:hover:bg-white/[0.05] hover:border-white/[0.15] dark:hover:border-white/[0.12]",
+                                "transition-colors duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
                             )}
                             whileHover={{ y: -5 }}
                         >
@@ -137,29 +138,29 @@ export function FeaturesSection() {
                                 <div
                                     className={cn(
                                         "w-12 h-12 rounded-xl flex items-center justify-center mb-6",
-                                        "bg-white/5 border border-white/10",
+                                        "bg-white/[0.05] dark:bg-white/5 border border-white/[0.1] dark:border-white/[0.08]",
                                         "group-hover:scale-110 transition-transform duration-500",
                                         feature.border
                                     )}
                                 >
-                                    <feature.icon className="w-6 h-6 text-white" />
+                                    <feature.icon className="w-6 h-6 text-foreground" />
                                 </div>
 
                                 <motion.h3
                                     layoutId={`title-${feature.id}`}
-                                    className="text-xl font-semibold mb-3 text-white"
+                                    className="text-xl font-semibold mb-3 text-foreground"
                                 >
                                     {feature.title}
                                 </motion.h3>
 
                                 <motion.p
                                     layoutId={`desc-${feature.id}`}
-                                    className="text-gray-400 text-sm leading-relaxed mb-6"
+                                    className="text-muted-foreground text-sm leading-relaxed mb-6"
                                 >
                                     {feature.shortDesc}
                                 </motion.p>
 
-                                <div className="mt-auto flex items-center text-sm font-medium text-white/50 group-hover:text-white transition-colors">
+                                <div className="mt-auto flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                                     Learn more <ArrowRight className="w-4 h-4 ml-2" />
                                 </div>
                             </div>
@@ -176,7 +177,7 @@ export function FeaturesSection() {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 onClick={() => setSelectedId(null)}
-                                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+                                className="fixed inset-0 bg-background/60 dark:bg-black/60 backdrop-blur-sm z-50"
                             />
 
                             {/* Modal */}
@@ -187,7 +188,7 @@ export function FeaturesSection() {
                                             <motion.div
                                                 key={feature.id}
                                                 layoutId={`card-${feature.id}`}
-                                                className="w-full max-w-5xl bg-[#0A0A0A] border border-white/10 rounded-3xl overflow-hidden shadow-2xl pointer-events-auto relative"
+                                                className="w-full max-w-5xl bg-white/[0.05] dark:bg-[#0A0A0A] backdrop-blur-[12px] border border-white/[0.1] dark:border-white/[0.08] rounded-3xl overflow-hidden shadow-2xl pointer-events-auto relative"
                                             >
                                                 {/* Close Button */}
                                                 <button
@@ -195,9 +196,9 @@ export function FeaturesSection() {
                                                         e.stopPropagation();
                                                         setSelectedId(null);
                                                     }}
-                                                    className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors z-10"
+                                                    className="absolute top-4 right-4 p-2 rounded-full bg-white/5 dark:bg-white/5 hover:bg-white/10 dark:hover:bg-white/10 transition-colors z-10"
                                                 >
-                                                    <X className="w-5 h-5 text-white" />
+                                                    <X className="w-5 h-5 text-foreground" />
                                                 </button>
 
                                                 <div className="grid md:grid-cols-2 h-full">
@@ -209,18 +210,18 @@ export function FeaturesSection() {
                                                             feature.gradient
                                                         )}
                                                     >
-                                                        <feature.icon className="w-32 h-32 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                                                        <feature.icon className="w-32 h-32 text-foreground drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
 
                                                         {/* Decorative circles */}
-                                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-white/20 rounded-full opacity-20 scale-150" />
-                                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-white/20 rounded-full opacity-30 scale-125" />
+                                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-foreground/20 rounded-full opacity-20 scale-150" />
+                                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-foreground/20 rounded-full opacity-30 scale-125" />
                                                     </div>
 
                                                     {/* Right: Content */}
-                                                    <div className="p-8 flex flex-col justify-center bg-[#0A0A0A]">
+                                                    <div className="p-8 flex flex-col justify-center bg-background dark:bg-[#0A0A0A]">
                                                         <motion.h3
                                                             layoutId={`title-${feature.id}`}
-                                                            className="text-3xl font-bold mb-4 text-white"
+                                                            className="text-3xl font-bold mb-4 text-foreground"
                                                         >
                                                             {feature.title}
                                                         </motion.h3>
@@ -229,7 +230,7 @@ export function FeaturesSection() {
                                                             {feature.tags.map((tag, i) => (
                                                                 <span
                                                                     key={i}
-                                                                    className="px-3 py-1 text-xs font-medium rounded-full bg-white/5 border border-white/10 text-gray-300"
+                                                                    className="px-3 py-1 text-xs font-medium rounded-full bg-white/[0.05] dark:bg-white/5 border border-white/[0.1] dark:border-white/[0.08] text-muted-foreground"
                                                                 >
                                                                     {tag}
                                                                 </span>
@@ -238,14 +239,14 @@ export function FeaturesSection() {
 
                                                         <motion.p
                                                             layoutId={`desc-${feature.id}`}
-                                                            className="text-gray-300 leading-relaxed mb-8"
+                                                            className="text-muted-foreground leading-relaxed mb-8"
                                                         >
                                                             {feature.longDesc}
                                                         </motion.p>
 
                                                         <button
                                                             onClick={() => setSelectedId(null)}
-                                                            className="w-full py-3 rounded-xl bg-white text-black font-semibold hover:bg-gray-200 transition-colors"
+                                                            className="w-full py-3 rounded-xl bg-foreground text-background font-semibold hover:opacity-90 transition-opacity"
                                                         >
                                                             Got it
                                                         </button>

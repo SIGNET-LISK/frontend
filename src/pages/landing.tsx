@@ -1,5 +1,10 @@
 import { Link } from "wouter";
-import { motion, useTransform, useMotionValue, useMotionTemplate } from "framer-motion";
+import {
+  motion,
+  useTransform,
+  useMotionValue,
+  useMotionTemplate,
+} from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
 import {
@@ -69,7 +74,7 @@ const FloatingParticles = () => {
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
-          className="absolute rounded-full bg-white/[0.03]"
+          className="absolute rounded-full bg-foreground/5 dark:bg-white/[0.03]"
           style={{
             left: `${particle.x}%`,
             top: `${particle.y}%`,
@@ -79,7 +84,7 @@ const FloatingParticles = () => {
           animate={{
             y: [0, -30, 0],
             x: [0, Math.random() * 20 - 10, 0],
-            opacity: [0.3, 0.6, 0.3],
+            opacity: [0.1, 0.3, 0.1],
           }}
           transition={{
             duration: particle.duration,
@@ -219,9 +224,12 @@ export default function LandingPage() {
   }, [scrollY, showDescription]);
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-x-hidden font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen bg-background text-foreground relative overflow-x-hidden font-sans selection:bg-blue-500/30 dark:selection:bg-blue-500/30">
       {/* LiquidEther Background - Full Page Animation */}
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+      <div
+        className="fixed inset-0 pointer-events-none bg-background"
+        style={{ zIndex: 0 }}
+      >
         <LiquidEther
           colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
           mouseForce={20}
@@ -243,7 +251,7 @@ export default function LandingPage() {
 
       {/* Overlay gradient for text readability */}
       <div
-        className="fixed inset-0 pointer-events-none bg-gradient-to-b from-black/80 via-black/40 to-black/80"
+        className="fixed inset-0 pointer-events-none bg-gradient-to-b from-background/80 via-background/40 to-background/80 dark:from-black/80 dark:via-black/40 dark:to-black/80"
         style={{ zIndex: 1 }}
       />
 
@@ -256,7 +264,7 @@ export default function LandingPage() {
         style={{ zIndex: 2 }}
       >
         <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/10 rounded-full blur-3xl"
           animate={{
             x: [0, 50, 0],
             y: [0, 30, 0],
@@ -269,7 +277,7 @@ export default function LandingPage() {
           }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 dark:bg-purple-500/10 rounded-full blur-3xl"
           animate={{
             x: [0, -50, 0],
             y: [0, -30, 0],
@@ -283,401 +291,417 @@ export default function LandingPage() {
         />
       </div>
 
-      {/* Navbar */}
-      <LandingNavbar scrolled={scrolled} />
+      {/* Content wrapper */}
+      <div>
+        {/* Navbar */}
+        <LandingNavbar scrolled={scrolled} />
 
-      {/* Hero Section */}
-      <motion.section
-        className="relative px-4 md:px-6 lg:px-8 overflow-hidden z-10"
-        style={{
-          paddingTop: heroPaddingTop,
-          paddingBottom: heroPaddingBottom,
-        }}
-      >
-        <div className="max-w-7xl mx-auto w-full">
-          <motion.div
-            className="flex flex-col items-center"
-            style={{
-              gap: heroGap,
-            }}
-          >
-            {/* Title content - centered */}
+        {/* Hero Section */}
+        <motion.section
+          className="relative px-4 md:px-6 lg:px-8 overflow-hidden z-10"
+          style={{
+            paddingTop: heroPaddingTop,
+            paddingBottom: heroPaddingBottom,
+          }}
+        >
+          <div className="max-w-7xl mx-auto w-full">
             <motion.div
-              className="text-center w-full"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="flex flex-col items-center"
+              style={{
+                gap: heroGap,
+              }}
             >
+              {/* Title content - centered */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="flex flex-col items-center w-full"
-              >
-                <BlurText
-                  text="Protect the Truth"
-                  delay={150}
-                  animateBy="words"
-                  direction="top"
-                  onAnimationComplete={handleAnimationComplete}
-                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-tight justify-center"
-                />
-
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-tight mt-4 text-center">
-                  <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-                    Verify Digital Content.
-                  </span>
-                </h1>
-              </motion.div>
-            </motion.div>
-
-            {/* Container for overlapping logo and description with connected cards */}
-            <div className="relative w-full flex items-center justify-center min-h-[600px] overflow-visible">
-              {/* Description - behind logo (lower z-index), positioned closer to title */}
-              <motion.div
-                className="absolute inset-0 flex flex-col items-center justify-start pt-4 gap-6 w-full z-10"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: showDescription ? 1 : 0,
-                }}
-                transition={{
-                  duration: 0.5,
-                  ease: "easeInOut",
-                }}
-              >
-                {/* Horizontal container for PhoneVerification and text */}
-                <div className="flex flex-row items-center justify-center gap-6 md:gap-8 lg:gap-12 w-full max-w-6xl px-4">
-                  <div className="w-48 md:w-56 lg:w-64 h-auto flex-shrink-0">
-                    <PhoneVerification />
-                  </div>
-                  <div className="flex flex-col gap-4">
-                    <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-xl leading-relaxed text-left">
-                      An AI-powered, blockchain-backed platform to authenticate
-                      images, videos, and documents — stopping deepfakes and
-                      misinformation at the source.
-                    </p>
-                    <motion.div
-                      className="flex items-center justify-start gap-4"
-                      initial={{ opacity: 0 }}
-                      animate={{
-                        opacity: showDescription ? 1 : 0,
-                      }}
-                      transition={{
-                        duration: 0.5,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <Link href="/verify">
-                        <GlowButton className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group">
-                          Verify Content Now
-                          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </GlowButton>
-                      </Link>
-                    </motion.div>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Logo with connected cards - on top (higher z-index) */}
-              <motion.div
-                className="relative flex items-center justify-center w-full z-20"
-                initial={false}
-                animate={logoPosition === "top" ? { y: 0 } : { y: 800 }}
-                transition={
-                  logoPosition === "top"
-                    ? {
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 20,
-                      bounce: 0.4,
-                    }
-                    : {
-                      duration: 0.6,
-                      ease: "easeInOut",
-                    }
-                }
-              >
-                {/* Container for logo and connected cards */}
-                <div className="relative w-full max-w-5xl py-8 lg:py-12">
-                  {/* SVG Lines for connections - behind cards */}
-                  <svg
-                    className="absolute inset-0 w-full h-full pointer-events-none z-10"
-                    style={{ overflow: "visible" }}
-                    viewBox="0 0 1200 800"
-                    preserveAspectRatio="xMidYMid meet"
-                  >
-                    {/* Line from logo center (middle-top) to top-left card */}
-                    <motion.path
-                      d="M 600 71 L 50 70"
-                      stroke="url(#gradient1)"
-                      strokeWidth="2.5"
-                      strokeDasharray="6,4"
-                      strokeLinecap="round"
-                      fill="none"
-                      filter="url(#glow)"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{
-                        duration: 1.2,
-                        delay: 0.5,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    {/* Line from logo center (middle-top) to top-right card */}
-                    <motion.path
-                      d="M 700 60 L 1000 61"
-                      stroke="url(#gradient2)"
-                      strokeWidth="2.5"
-                      strokeDasharray="6,4"
-                      strokeLinecap="round"
-                      fill="none"
-                      filter="url(#glow)"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{
-                        duration: 1.2,
-                        delay: 0.7,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    {/* Line from logo center (middle-top) to bottom card */}
-                    <motion.path
-                      d="M 605 500 L 600 10"
-                      stroke="url(#gradient3)"
-                      strokeWidth="2.5"
-                      strokeDasharray="6,4"
-                      strokeLinecap="round"
-                      fill="none"
-                      filter="url(#glow)"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      animate={{ pathLength: 1, opacity: 1 }}
-                      transition={{
-                        duration: 1.2,
-                        delay: 0.9,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    {/* Gradient definitions with glow effect */}
-                    <defs>
-                      <linearGradient
-                        id="gradient1"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="0%"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#5227FF"
-                          stopOpacity="0.8"
-                        />
-                        <stop
-                          offset="50%"
-                          stopColor="#7C3AED"
-                          stopOpacity="0.7"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#FF9FFC"
-                          stopOpacity="0.8"
-                        />
-                      </linearGradient>
-                      <linearGradient
-                        id="gradient2"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="0%"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#5227FF"
-                          stopOpacity="0.8"
-                        />
-                        <stop
-                          offset="50%"
-                          stopColor="#8B5CF6"
-                          stopOpacity="0.7"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#B19EEF"
-                          stopOpacity="0.8"
-                        />
-                      </linearGradient>
-                      <linearGradient
-                        id="gradient3"
-                        x1="0%"
-                        y1="0%"
-                        x2="0%"
-                        y2="100%"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#5227FF"
-                          stopOpacity="0.8"
-                        />
-                        <stop
-                          offset="50%"
-                          stopColor="#A855F7"
-                          stopOpacity="0.7"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#FF9FFC"
-                          stopOpacity="0.8"
-                        />
-                      </linearGradient>
-                      {/* Glow filter */}
-                      <filter id="glow">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-                        <feMerge>
-                          <feMergeNode in="coloredBlur" />
-                          <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                      </filter>
-                    </defs>
-                  </svg>
-
-                  {/* Connected Cards - arranged around logo */}
-                  {[
-                    {
-                      title: "Upload & Hash",
-                      desc: "Content is processed using perceptual hashing (pHash).",
-                      icon: Upload,
-                      position: "top-left",
-                    },
-                    {
-                      title: "Fingerprint on Chain",
-                      desc: "The hash is stored immutably on Lisk L2.",
-                      icon: Fingerprint,
-                      position: "top-right",
-                    },
-                    {
-                      title: "Instant Verification",
-                      desc: "Compare any content against on-chain fingerprints.",
-                      icon: ShieldCheck,
-                      position: "bottom-left",
-                    },
-                  ].map((step, i) => (
-                    <motion.div
-                      key={i}
-                      className={`absolute ${step.position === "top-left"
-                        ? "top-0 left-0 lg:top-[-50px] lg:left-[-50px]"
-                        : step.position === "top-right"
-                          ? "top-0 right-0 lg:top-[-50px] lg:right-[-50px]"
-                          : "bottom-0 left-1/2 -translate-x-1/2 lg:bottom-5"
-                        } z-10 w-[200px] sm:w-[220px] lg:w-[400px] hidden md:block`}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.6, delay: 0.3 + i * 0.2 }}
-                    >
-                      <GlassCard className="group h-full">
-                        <div className="flex items-start gap-4">
-                          {/* Icon on the left */}
-                          <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-blue-500/[0.15] to-purple-500/[0.15] rounded-xl flex items-center justify-center border border-white/[0.08] shadow-[0_0_20px_rgba(100,130,255,0.1)] group-hover:scale-110 group-hover:border-white/[0.15] transition-all duration-500">
-                            <step.icon className="w-6 h-6 text-white group-hover:text-blue-300 transition-colors" />
-                          </div>
-
-                          {/* Content on the right */}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-base lg:text-lg font-semibold mb-1 text-left">
-                              {step.title}
-                            </h3>
-                            <p className="text-gray-400 text-xs lg:text-sm leading-relaxed text-left">
-                              {step.desc}
-                            </p>
-                          </div>
-                        </div>
-                      </GlassCard>
-                    </motion.div>
-                  ))}
-
-                  {/* Logo container - smaller size, no background card, centered */}
-                  <div
-                    className="relative w-full max-w-xs mx-auto flex items-center justify-center z-20"
-                    style={{ transform: "translateY(-130px)" }}
-                  >
-                    <motion.div
-                      className="relative w-full h-[200px] sm:h-[220px] lg:h-[240px] opacity-100 pointer-events-none"
-                      style={{
-                        backgroundImage: `url(${abstractShapes})`,
-                        backgroundSize: "70%",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                      }}
-                      animate={{
-                        y: [0, -10, 0],
-                      }}
-                      transition={{
-                        duration: 6,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* How It Works */}
-      <HowItWorksSection />
-
-      {/* Features Grid */}
-      <FeaturesSection />
-
-      {/* Benefits Section */}
-      <section className="py-24 relative z-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">Why SIGNET?</h2>
-            <p className="text-gray-400">Built for trust in the digital age.</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {BENEFITS.map((benefit, i) => (
-              <motion.div
-                key={i}
+                className="text-center w-full"
                 initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.2 }}
-                className="h-full"
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <TiltCard className="h-full">
-                  <div className="relative overflow-hidden p-8 h-full">
-                    <div className="relative z-10" style={{ transform: "translateZ(50px)" }}>
-                      <div className="p-3 w-fit rounded-xl bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.08] mb-6 group-hover:border-white/[0.12] transition-all duration-500 shadow-lg">
-                        <benefit.icon className="w-8 h-8 text-white" />
-                      </div>
-                      <h3 className="text-2xl font-bold mb-3">{benefit.title}</h3>
-                      <p className="text-gray-400">{benefit.desc}</p>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="flex flex-col items-center w-full"
+                >
+                  <BlurText
+                    text="Protect the Truth"
+                    delay={150}
+                    animateBy="words"
+                    direction="top"
+                    onAnimationComplete={handleAnimationComplete}
+                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight justify-center"
+                  />
+
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight mt-4 text-center">
+                    <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                      Verify Digital Content.
+                    </span>
+                  </h1>
+                </motion.div>
+              </motion.div>
+
+              {/* Container for overlapping logo and description with connected cards */}
+              <div className="relative w-full flex items-center justify-center min-h-[600px] overflow-visible">
+                {/* Description - behind logo (lower z-index), positioned closer to title */}
+                <motion.div
+                  className="absolute inset-0 flex flex-col items-center justify-start pt-4 gap-6 w-full z-10"
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: showDescription ? 1 : 0,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    ease: "easeInOut",
+                  }}
+                >
+                  {/* Horizontal container for PhoneVerification and text */}
+                  <div className="flex flex-row items-center justify-center gap-6 md:gap-8 lg:gap-12 w-full max-w-6xl px-4">
+                    <div className="w-48 md:w-56 lg:w-64 h-auto flex-shrink-0">
+                      <PhoneVerification />
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed text-left">
+                        An AI-powered, blockchain-backed platform to
+                        authenticate images, videos, and documents — stopping
+                        deepfakes and misinformation at the source.
+                      </p>
+                      <motion.div
+                        className="flex items-center justify-start gap-4"
+                        initial={{ opacity: 0 }}
+                        animate={{
+                          opacity: showDescription ? 1 : 0,
+                        }}
+                        transition={{
+                          duration: 0.5,
+                          ease: "easeInOut",
+                        }}
+                      >
+                        <Link href="/verify">
+                          <GlowButton className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group">
+                            Verify Content Now
+                            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          </GlowButton>
+                        </Link>
+                      </motion.div>
                     </div>
                   </div>
-                </TiltCard>
-              </motion.div>
-            ))}
+                </motion.div>
+
+                {/* Logo with connected cards - on top (higher z-index) */}
+                <motion.div
+                  className="relative flex items-center justify-center w-full z-20"
+                  initial={false}
+                  animate={logoPosition === "top" ? { y: 0 } : { y: 800 }}
+                  transition={
+                    logoPosition === "top"
+                      ? {
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 20,
+                          bounce: 0.4,
+                        }
+                      : {
+                          duration: 0.6,
+                          ease: "easeInOut",
+                        }
+                  }
+                >
+                  {/* Container for logo and connected cards */}
+                  <div className="relative w-full max-w-5xl py-8 lg:py-12">
+                    {/* SVG Lines for connections - behind cards */}
+                    <svg
+                      className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden lg:block"
+                      style={{ overflow: "visible" }}
+                      viewBox="0 0 1200 800"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      {/* Line from logo center (middle-top) to top-left card */}
+                      <motion.path
+                        d="M 600 71 L 50 70"
+                        stroke="url(#gradient1)"
+                        strokeWidth="2.5"
+                        strokeDasharray="6,4"
+                        strokeLinecap="round"
+                        fill="none"
+                        filter="url(#glow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{
+                          duration: 1.2,
+                          delay: 0.5,
+                          ease: "easeInOut",
+                        }}
+                      />
+                      {/* Line from logo center (middle-top) to top-right card */}
+                      <motion.path
+                        d="M 700 60 L 1000 61"
+                        stroke="url(#gradient2)"
+                        strokeWidth="2.5"
+                        strokeDasharray="6,4"
+                        strokeLinecap="round"
+                        fill="none"
+                        filter="url(#glow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{
+                          duration: 1.2,
+                          delay: 0.7,
+                          ease: "easeInOut",
+                        }}
+                      />
+                      {/* Line from logo center (middle-top) to bottom card */}
+                      <motion.path
+                        d="M 605 500 L 600 10"
+                        stroke="url(#gradient3)"
+                        strokeWidth="2.5"
+                        strokeDasharray="6,4"
+                        strokeLinecap="round"
+                        fill="none"
+                        filter="url(#glow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{
+                          duration: 1.2,
+                          delay: 0.9,
+                          ease: "easeInOut",
+                        }}
+                      />
+                      {/* Gradient definitions with glow effect */}
+                      <defs>
+                        <linearGradient
+                          id="gradient1"
+                          x1="0%"
+                          y1="0%"
+                          x2="100%"
+                          y2="0%"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#5227FF"
+                            stopOpacity="0.8"
+                          />
+                          <stop
+                            offset="50%"
+                            stopColor="#7C3AED"
+                            stopOpacity="0.7"
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#FF9FFC"
+                            stopOpacity="0.8"
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="gradient2"
+                          x1="0%"
+                          y1="0%"
+                          x2="100%"
+                          y2="0%"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#5227FF"
+                            stopOpacity="0.8"
+                          />
+                          <stop
+                            offset="50%"
+                            stopColor="#8B5CF6"
+                            stopOpacity="0.7"
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#B19EEF"
+                            stopOpacity="0.8"
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="gradient3"
+                          x1="0%"
+                          y1="0%"
+                          x2="0%"
+                          y2="100%"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#5227FF"
+                            stopOpacity="0.8"
+                          />
+                          <stop
+                            offset="50%"
+                            stopColor="#A855F7"
+                            stopOpacity="0.7"
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#FF9FFC"
+                            stopOpacity="0.8"
+                          />
+                        </linearGradient>
+                        {/* Glow filter */}
+                        <filter id="glow">
+                          <feGaussianBlur
+                            stdDeviation="3"
+                            result="coloredBlur"
+                          />
+                          <feMerge>
+                            <feMergeNode in="coloredBlur" />
+                            <feMergeNode in="SourceGraphic" />
+                          </feMerge>
+                        </filter>
+                      </defs>
+                    </svg>
+
+                    {/* Connected Cards - arranged around logo */}
+                    {[
+                      {
+                        title: "Upload & Hash",
+                        desc: "Content is processed using perceptual hashing (pHash).",
+                        icon: Upload,
+                        position: "top-left",
+                      },
+                      {
+                        title: "Fingerprint on Chain",
+                        desc: "The hash is stored immutably on Lisk L2.",
+                        icon: Fingerprint,
+                        position: "top-right",
+                      },
+                      {
+                        title: "Instant Verification",
+                        desc: "Compare any content against on-chain fingerprints.",
+                        icon: ShieldCheck,
+                        position: "bottom-left",
+                      },
+                    ].map((step, i) => (
+                      <motion.div
+                        key={i}
+                        className={`absolute ${
+                          step.position === "top-left"
+                            ? "top-0 left-0 lg:top-[-50px] lg:left-[-50px]"
+                            : step.position === "top-right"
+                            ? "top-0 right-0 lg:top-[-50px] lg:right-[-50px]"
+                            : "bottom-0 left-1/2 -translate-x-1/2 lg:bottom-5"
+                        } z-10 w-[200px] sm:w-[220px] lg:w-[400px] hidden lg:block`}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.3 + i * 0.2 }}
+                      >
+                        <GlassCard className="group h-full">
+                          <div className="flex items-start gap-4">
+                            {/* Icon on the left */}
+                            <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-blue-500/[0.15] to-purple-500/[0.15] rounded-xl flex items-center justify-center border border-white/[0.1] dark:border-white/[0.08] shadow-[0_0_20px_rgba(100,130,255,0.1)] dark:shadow-[0_0_20px_rgba(100,130,255,0.1)] group-hover:scale-110 group-hover:border-white/[0.15] dark:group-hover:border-white/[0.12] transition-all duration-500">
+                              <step.icon className="w-6 h-6 text-foreground group-hover:text-blue-300 transition-colors" />
+                            </div>
+
+                            {/* Content on the right */}
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-base lg:text-lg font-semibold mb-1 text-left text-foreground">
+                                {step.title}
+                              </h3>
+                              <p className="text-muted-foreground text-xs lg:text-sm leading-relaxed text-left">
+                                {step.desc}
+                              </p>
+                            </div>
+                          </div>
+                        </GlassCard>
+                      </motion.div>
+                    ))}
+
+                    {/* Logo container - smaller size, no background card, centered */}
+                    <div
+                      className="relative w-full max-w-xs mx-auto flex items-center justify-center z-20"
+                      style={{ transform: "translateY(-130px)" }}
+                    >
+                      <motion.div
+                        className="relative w-full h-[200px] sm:h-[220px] lg:h-[240px] opacity-100 pointer-events-none"
+                        style={{
+                          backgroundImage: `url(${abstractShapes})`,
+                          backgroundSize: "70%",
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "center",
+                        }}
+                        animate={{
+                          y: [0, -10, 0],
+                        }}
+                        transition={{
+                          duration: 6,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      </section>
+        </motion.section>
 
-      {/* Pricing */}
-      <PricingSection onConnect={handleConnectWallet} />
+        {/* How It Works */}
+        <HowItWorksSection />
 
-      {/* FAQ Section */}
-      <FAQSection />
+        {/* Features Grid */}
+        <FeaturesSection />
 
-      {/* Footer */}
-      <LandingFooter />
+        {/* Benefits Section */}
+        <section className="py-24 relative z-10">
+          <div className="max-w-7xl mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
+                Why SIGNET?
+              </h2>
+              <p className="text-muted-foreground">
+                Built for trust in the digital age.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {BENEFITS.map((benefit, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.2 }}
+                  className="h-full"
+                >
+                  <TiltCard className="h-full">
+                    <div className="relative overflow-hidden p-8 h-full">
+                      <div
+                        className="relative z-10"
+                        style={{ transform: "translateZ(50px)" }}
+                      >
+                        <div className="p-3 w-fit rounded-xl bg-gradient-to-br from-white/[0.05] dark:from-white/[0.05] to-white/[0.02] dark:to-white/[0.02] border border-white/[0.1] dark:border-white/[0.08] mb-6 group-hover:border-white/[0.15] dark:group-hover:border-white/[0.12] transition-all duration-500 shadow-lg backdrop-blur-[8px]">
+                          <benefit.icon className="w-8 h-8 text-foreground" />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-3 text-foreground">
+                          {benefit.title}
+                        </h3>
+                        <p className="text-muted-foreground">{benefit.desc}</p>
+                      </div>
+                    </div>
+                  </TiltCard>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing */}
+        <PricingSection onConnect={handleConnectWallet} />
+
+        {/* FAQ Section */}
+        <FAQSection />
+
+        {/* Footer */}
+        <LandingFooter />
+      </div>
     </div>
   );
 }

@@ -15,16 +15,16 @@ import {
 import { Link } from "wouter";
 
 const CheckItem = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
-    <li className={`flex items-start gap-2 text-sm text-gray-300 ${className}`}>
+    <li className={`flex items-start gap-2 text-sm text-muted-foreground ${className}`}>
         <CheckCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5 drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]" />
         <span className="flex-1">{children}</span>
     </li>
 );
 
 const StatusItem = ({ label, value }: { label: string; value: string }) => (
-    <div className="flex justify-between items-center text-sm py-1 border-b border-white/5 last:border-0">
-        <span className="text-gray-400">{label}</span>
-        <span className="text-white font-medium">{value}</span>
+    <div className="flex justify-between items-center text-sm py-1 border-b border-border last:border-0">
+        <span className="text-muted-foreground">{label}</span>
+        <span className="text-foreground font-medium">{value}</span>
     </div>
 );
 
@@ -119,10 +119,10 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                    <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
                         Choose Your Plan
                     </h2>
-                    <p className="text-gray-400 max-w-2xl mx-auto">
+                    <p className="text-muted-foreground max-w-2xl mx-auto">
                         Start for free with our Launch Edition, or scale up for enterprise-grade verification and security needs.
                     </p>
                 </motion.div>
@@ -139,14 +139,14 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
                         >
                             <GlassCard
                                 className={`relative flex flex-col h-full p-6 ${plan.highlight
-                                    ? "border-blue-500/30 shadow-[0_0_40px_rgba(59,130,246,0.15)] bg-blue-900/10"
-                                    : "hover:border-white/20"
+                                    ? "border-blue-500/20 dark:border-blue-500/30 shadow-[0_0_40px_rgba(59,130,246,0.1)] dark:shadow-[0_0_40px_rgba(59,130,246,0.15)] bg-blue-500/5 dark:bg-blue-900/10"
+                                    : "hover:border-white/[0.15] dark:hover:border-white/20"
                                     }`}
                             >
                                 {plan.badge && (
-                                    <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-bl-xl rounded-tr-[20px] border-l border-b ${plan.color === 'blue' ? 'bg-blue-600/80 border-blue-400/30 text-white' :
-                                        plan.color === 'purple' ? 'bg-purple-600/80 border-purple-400/30 text-white' :
-                                            'bg-rose-600/80 border-rose-400/30 text-white'
+                                    <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-bl-xl rounded-tr-[20px] border-l border-b ${plan.color === 'blue' ? 'bg-blue-600/80 dark:bg-blue-600/80 border-blue-400/30 text-white dark:text-white' :
+                                        plan.color === 'purple' ? 'bg-purple-600/80 dark:bg-purple-600/80 border-purple-400/30 text-white dark:text-white' :
+                                            'bg-rose-600/80 dark:bg-rose-600/80 border-rose-400/30 text-white dark:text-white'
                                         }`}>
                                         {plan.badge}
                                     </div>
@@ -159,26 +159,26 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
                                         }`}>
                                         <plan.icon className="w-6 h-6" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-2">
+                                    <h3 className="text-xl font-bold text-foreground mb-2">
                                         {plan.name}
                                     </h3>
-                                    <p className="text-sm text-gray-400 min-h-[40px]">
+                                    <p className="text-sm text-muted-foreground min-h-[40px]">
                                         {plan.description}
                                     </p>
                                 </div>
 
-                                <div className="mb-6 pb-6 border-b border-white/10">
+                                <div className="mb-6 pb-6 border-b border-white/[0.08] dark:border-white/[0.08]">
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-bold text-white">
+                                        <span className="text-3xl font-bold text-foreground">
                                             {plan.price}
                                         </span>
-                                        {plan.period && <span className="text-gray-500 text-sm">/ {plan.period}</span>}
+                                        {plan.period && <span className="text-muted-foreground text-sm">/ {plan.period}</span>}
                                     </div>
                                 </div>
 
                                 <div className="flex-1 space-y-6">
                                     <div>
-                                        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                                        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                                             Features
                                         </h4>
                                         <ul className="space-y-3">
@@ -190,10 +190,10 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
 
                                     {plan.limits.length > 0 && (
                                         <div>
-                                            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                                            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                                                 Limits
                                             </h4>
-                                            <div className="bg-white/5 rounded-lg p-3 space-y-1">
+                                            <div className="bg-white/[0.05] dark:bg-white/5 rounded-lg p-3 space-y-1 border border-white/[0.05] dark:border-white/[0.05]">
                                                 {plan.limits.map((limit, k) => (
                                                     <StatusItem key={k} label={limit.label} value={limit.value} />
                                                 ))}
@@ -225,7 +225,7 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
                     className="text-center"
                 >
                     <Link href="/pricing">
-                        <a className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors group text-sm">
+                        <a className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group text-sm">
                             See full pricing details
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </a>

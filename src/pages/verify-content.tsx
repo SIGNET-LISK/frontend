@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { VerifyHero } from "@/components/verify/VerifyHero";
 import { VerifyInput } from "@/components/verify/VerifyInput";
@@ -144,9 +145,12 @@ export default function VerifyContent() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-x-hidden font-sans selection:bg-blue-500/30">
-      {/* LiquidEther Background */}
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+    <div className="min-h-screen bg-background text-foreground relative overflow-x-hidden font-sans selection:bg-blue-500/30 dark:selection:bg-blue-500/30">
+      {/* LiquidEther Background - Full Page Animation */}
+      <div
+        className="fixed inset-0 pointer-events-none bg-background"
+        style={{ zIndex: 0 }}
+      >
         <LiquidEther
           colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
           mouseForce={20}
@@ -166,48 +170,15 @@ export default function VerifyContent() {
         />
       </div>
 
-      {/* Overlay gradient */}
+      {/* Overlay gradient for text readability */}
       <div
-        className="fixed inset-0 pointer-events-none bg-gradient-to-b from-black/80 via-black/40 to-black/80"
+        className="fixed inset-0 pointer-events-none bg-gradient-to-b from-background/80 via-background/40 to-background/80 dark:from-black/80 dark:via-black/40 dark:to-black/80"
         style={{ zIndex: 1 }}
       />
 
-      {/* Animated gradient orbs */}
-      <div
-        className="fixed inset-0 pointer-events-none overflow-hidden"
-        style={{ zIndex: 2 }}
-      >
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </div>
-
       {/* Navbar */}
       <motion.nav
-        className="fixed top-4 left-4 right-4 z-50 rounded-full border border-white/[0.08] bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+        className="fixed top-4 left-4 right-4 z-50 rounded-full border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
@@ -219,12 +190,15 @@ export default function VerifyContent() {
             </div>
             <span className="font-bold text-xl tracking-tight">SIGNET</span>
           </Link>
-          <Link href="/">
-            <GlowButton variant="secondary" className="gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back to Home
-            </GlowButton>
-          </Link>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Link href="/">
+              <GlowButton variant="secondary" className="gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Home
+              </GlowButton>
+            </Link>
+          </div>
         </div>
       </motion.nav>
 

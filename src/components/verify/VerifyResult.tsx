@@ -157,7 +157,7 @@ export function VerifyResult({ result }: VerifyResultProps) {
             <div className="flex-1 space-y-4">
               <div>
                 <div className="flex items-center gap-3 mb-2 flex-wrap">
-                  <h3 className="text-2xl md:text-3xl font-bold text-white">
+                  <h3 className="text-2xl md:text-3xl font-bold text-foreground">
                     {config.title}
                   </h3>
                   {result.similarity > 0 && (
@@ -168,31 +168,31 @@ export function VerifyResult({ result }: VerifyResultProps) {
                     </span>
                   )}
                 </div>
-                <p className="text-gray-400 text-lg">{config.description}</p>
+                <p className="text-muted-foreground text-lg">{config.description}</p>
               </div>
 
               {/* Similarity Score */}
               {(result.similarity > 0 || result.hammingDistance !== undefined) && (
-                <div className="flex flex-wrap gap-4 pt-4 border-t border-white/10">
+                <div className="flex flex-wrap gap-4 pt-4 border-t border-white/[0.1] dark:border-white/[0.08]">
                   {result.similarity > 0 && (
                     <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                      <div className="p-2 rounded-lg bg-blue-500/10 dark:bg-blue-500/10 border border-blue-500/20 dark:border-blue-500/20">
                         <CheckCircle2 className="w-5 h-5 text-blue-400" />
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Similarity</p>
-                        <p className="text-lg font-bold text-white">{result.similarity}%</p>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider">Similarity</p>
+                        <p className="text-lg font-bold text-foreground">{result.similarity}%</p>
                       </div>
                     </div>
                   )}
                   {result.hammingDistance !== undefined && (
                     <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                      <div className="p-2 rounded-lg bg-purple-500/10 dark:bg-purple-500/10 border border-purple-500/20 dark:border-purple-500/20">
                         <Hash className="w-5 h-5 text-purple-400" />
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">Hamming Distance</p>
-                        <p className="text-lg font-bold text-white">{result.hammingDistance}</p>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider">Hamming Distance</p>
+                        <p className="text-lg font-bold text-foreground">{result.hammingDistance}</p>
                       </div>
                     </div>
                   )}
@@ -203,32 +203,32 @@ export function VerifyResult({ result }: VerifyResultProps) {
 
           {/* Publisher Identity */}
           {result.publisher && (
-            <div className="bg-black/40 rounded-xl p-6 border border-white/10 space-y-4">
-              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-white/[0.1] dark:border-white/[0.08] space-y-4">
+              <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <Building2 className="w-4 h-4" />
                 Publisher Identity
               </h4>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-500/30">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-500/30 dark:border-blue-500/30">
                   <Building2 className="w-6 h-6 text-blue-400" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-white">{result.publisher.name}</p>
+                    <p className="font-semibold text-foreground">{result.publisher.name}</p>
                     {result.publisher.verified && (
                       <CheckCircle2 className="w-4 h-4 text-blue-400" />
                     )}
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Wallet className="w-4 h-4" />
                     <span className="font-mono">{formatAddress(result.publisher.wallet)}</span>
                     <button
                       onClick={() => handleCopy(result.publisher!.wallet, "publisher-wallet")}
-                      className="p-1 hover:bg-white/10 rounded transition-colors"
+                      className="p-1 hover:bg-white/[0.1] dark:hover:bg-white/[0.1] rounded transition-colors"
                     >
                       <Copy
                         className={`w-3.5 h-3.5 ${
-                          copied === "publisher-wallet" ? "text-green-400" : "text-gray-500"
+                          copied === "publisher-wallet" ? "text-green-400" : "text-muted-foreground"
                         }`}
                       />
                     </button>
@@ -240,30 +240,30 @@ export function VerifyResult({ result }: VerifyResultProps) {
 
           {/* Content Metadata */}
           {result.metadata && (
-            <div className="bg-black/40 rounded-xl p-6 border border-white/10 space-y-4">
-              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-white/[0.1] dark:border-white/[0.08] space-y-4">
+              <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <FileText className="w-4 h-4" />
                 Content Metadata
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Title</p>
-                  <p className="text-white font-medium">{result.metadata.title}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Title</p>
+                  <p className="text-foreground font-medium">{result.metadata.title}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Content Type</p>
-                  <p className="text-white font-medium">{result.metadata.contentType}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Content Type</p>
+                  <p className="text-foreground font-medium">{result.metadata.contentType}</p>
                 </div>
                 <div className="md:col-span-2">
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Description</p>
-                  <p className="text-gray-300">{result.metadata.description}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Description</p>
+                  <p className="text-muted-foreground">{result.metadata.description}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
                     Date Registered
                   </p>
-                  <p className="text-white font-mono text-sm">{result.metadata.dateRegistered}</p>
+                  <p className="text-foreground font-mono text-sm">{result.metadata.dateRegistered}</p>
                 </div>
               </div>
             </div>
@@ -271,15 +271,15 @@ export function VerifyResult({ result }: VerifyResultProps) {
 
           {/* Blockchain Proof */}
           {result.blockchainProof && (
-            <div className="bg-black/40 rounded-xl p-6 border border-white/10 space-y-4">
-              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-white/[0.1] dark:border-white/[0.08] space-y-4">
+              <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <Hash className="w-4 h-4" />
                 Blockchain Proof
               </h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-black/60 border border-white/5">
+                <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-white/[0.03] dark:bg-black/60 border border-white/[0.05] dark:border-white/[0.05]">
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-500 mb-1">Transaction Hash</p>
+                    <p className="text-xs text-muted-foreground mb-1">Transaction Hash</p>
                     <p className="font-mono text-sm text-green-400/80 truncate">
                       {result.blockchainProof.txHash}
                     </p>
@@ -287,11 +287,11 @@ export function VerifyResult({ result }: VerifyResultProps) {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleCopy(result.blockchainProof!.txHash, "tx-hash")}
-                      className="p-2 hover:bg-white/10 rounded transition-colors"
+                      className="p-2 hover:bg-white/[0.1] dark:hover:bg-white/[0.1] rounded transition-colors"
                     >
                       <Copy
                         className={`w-4 h-4 ${
-                          copied === "tx-hash" ? "text-green-400" : "text-gray-400"
+                          copied === "tx-hash" ? "text-green-400" : "text-muted-foreground"
                         }`}
                       />
                     </button>
@@ -299,7 +299,7 @@ export function VerifyResult({ result }: VerifyResultProps) {
                       href={`https://sepolia-blockscout.lisk.com/tx/${result.blockchainProof.txHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 hover:bg-white/10 rounded transition-colors text-gray-400 hover:text-blue-400"
+                      className="p-2 hover:bg-white/[0.1] dark:hover:bg-white/[0.1] rounded transition-colors text-muted-foreground hover:text-blue-400"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </a>
@@ -307,16 +307,16 @@ export function VerifyResult({ result }: VerifyResultProps) {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Block Height</p>
-                    <p className="font-mono text-sm text-white">{result.blockchainProof.blockHeight}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Block Height</p>
+                    <p className="font-mono text-sm text-foreground">{result.blockchainProof.blockHeight}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Timestamp</p>
-                    <p className="font-mono text-sm text-white">{result.blockchainProof.timestamp}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Timestamp</p>
+                    <p className="font-mono text-sm text-foreground">{result.blockchainProof.timestamp}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Contract ID</p>
-                    <p className="font-mono text-sm text-white truncate">
+                    <p className="text-xs text-muted-foreground mb-1">Contract ID</p>
+                    <p className="font-mono text-sm text-foreground truncate">
                       {result.blockchainProof.contractId}
                     </p>
                   </div>
@@ -327,8 +327,8 @@ export function VerifyResult({ result }: VerifyResultProps) {
 
           {/* Similar Content */}
           {result.similarContent && result.similarContent.length > 0 && (
-            <div className="bg-black/40 rounded-xl p-6 border border-white/10 space-y-4">
-              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-2">
+            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-white/[0.1] dark:border-white/[0.08] space-y-4">
+              <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <Link2 className="w-4 h-4" />
                 Similar Content Found
               </h4>
@@ -336,16 +336,16 @@ export function VerifyResult({ result }: VerifyResultProps) {
                 {result.similarContent.map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-4 rounded-lg bg-black/60 border border-white/5 hover:border-blue-500/30 transition-colors"
+                    className="p-4 rounded-lg bg-white/[0.03] dark:bg-black/60 border border-white/[0.05] dark:border-white/[0.05] hover:border-blue-500/30 dark:hover:border-blue-500/30 transition-colors"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <p className="font-medium text-white mb-1">{item.title}</p>
-                        <p className="text-sm text-gray-400">{item.publisher}</p>
+                        <p className="font-medium text-foreground mb-1">{item.title}</p>
+                        <p className="text-sm text-muted-foreground">{item.publisher}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-bold text-yellow-400">{item.similarity}%</p>
-                        <p className="text-xs text-gray-500 font-mono">{item.txHash.slice(0, 10)}...</p>
+                        <p className="text-xs text-muted-foreground font-mono">{item.txHash.slice(0, 10)}...</p>
                       </div>
                     </div>
                   </div>

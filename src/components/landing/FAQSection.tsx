@@ -46,13 +46,13 @@ export const FAQSection = () => {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <div className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] shadow-lg backdrop-blur-sm">
+                    <div className="inline-flex items-center justify-center p-3 mb-6 rounded-2xl bg-white/[0.05] dark:bg-white/[0.03] border border-white/[0.1] dark:border-white/[0.08] shadow-lg backdrop-blur-[12px]">
                         <HelpCircle className="w-6 h-6 text-blue-400" />
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                    <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
                         Frequently Asked Questions
                     </h2>
-                    <p className="text-gray-400 text-lg">
+                    <p className="text-muted-foreground text-lg">
                         Everything you need to know about SIGNET.
                     </p>
                 </motion.div>
@@ -68,19 +68,19 @@ export const FAQSection = () => {
                         >
                             <GlassCard
                                 className={`group transition-all duration-300 ${openIndex === i
-                                        ? "bg-white/[0.05] border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.1)]"
-                                        : "hover:bg-white/[0.04] hover:border-white/[0.1]"
+                                        ? "bg-white/[0.08] dark:bg-white/[0.05] border-blue-500/20 dark:border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.1)] dark:shadow-[0_0_30px_rgba(59,130,246,0.1)]"
+                                        : "hover:bg-white/[0.08] dark:hover:bg-white/[0.04] hover:border-white/[0.15] dark:hover:border-white/[0.1]"
                                     }`}
                             >
                                 <button
                                     onClick={() => toggleFAQ(i)}
                                     className="w-full text-left flex items-center justify-between p-1"
                                 >
-                                    <span className={`text-lg font-medium transition-colors duration-300 ${openIndex === i ? "text-blue-300" : "text-gray-200 group-hover:text-white"
+                                    <span className={`text-lg font-medium transition-colors duration-300 ${openIndex === i ? "text-blue-300" : "text-foreground group-hover:text-foreground"
                                         }`}>
                                         {item.q}
                                     </span>
-                                    <div className={`ml-4 p-2 rounded-full transition-all duration-300 ${openIndex === i ? "bg-blue-500/20 text-blue-300 rotate-180" : "bg-white/[0.05] text-gray-400 group-hover:bg-white/[0.1] group-hover:text-white"
+                                    <div className={`ml-4 p-2 rounded-full transition-all duration-300 ${openIndex === i ? "bg-blue-500/20 text-blue-300 rotate-180" : "bg-white/[0.05] dark:bg-white/[0.05] border border-white/[0.1] dark:border-white/[0.08] text-muted-foreground group-hover:bg-white/[0.1] dark:group-hover:bg-white/[0.1] group-hover:text-foreground"
                                         }`}>
                                         {openIndex === i ? (
                                             <Minus className="w-5 h-5" />
@@ -99,7 +99,7 @@ export const FAQSection = () => {
                                             transition={{ duration: 0.3, ease: "easeInOut" }}
                                             className="overflow-hidden"
                                         >
-                                            <div className="pt-4 pb-2 text-gray-400 leading-relaxed border-t border-white/[0.05] mt-4">
+                                            <div className="pt-4 pb-2 text-muted-foreground leading-relaxed border-t border-white/[0.08] dark:border-white/[0.08] mt-4">
                                                 {item.a}
                                             </div>
                                         </motion.div>

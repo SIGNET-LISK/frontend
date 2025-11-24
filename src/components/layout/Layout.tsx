@@ -24,8 +24,9 @@ import {
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAccount, useDisconnect } from "wagmi";
-import generatedImage from "@/assets/img/dark_futuristic_background_with_swirling_blue_and_orange_lights.png";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import abstractShapes from "@/assets/img/signet-logo.svg";
+import LiquidEther from "@/components/LiquidEther";
 
 // Helper function to format address
 const formatAddress = (address: string) => {
@@ -66,59 +67,43 @@ export function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-black text-white font-sans selection:bg-blue-500/30 relative overflow-hidden">
-      {/* Interactive Background Layer */}
-      <motion.div
-        initial={{ scale: 1.1, opacity: 0 }}
-        animate={{ scale: 1, opacity: 0.4 }}
-        transition={{ duration: 1.5 }}
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: `url(${generatedImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-
-      {/* Overlay Gradients for depth */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-br from-black/80 via-black/40 to-black/80 pointer-events-none" />
-      <div className="fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,0,0,0)_0%,rgba(0,0,0,1)_100%)] pointer-events-none" />
-
-      {/* Animated gradient orbs */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+    <div className="min-h-screen flex flex-col md:flex-row bg-background text-foreground font-sans selection:bg-blue-500/30 dark:selection:bg-blue-500/30 relative overflow-hidden">
+      {/* LiquidEther Background - Full Page Animation */}
+      <div
+        className="fixed inset-0 pointer-events-none bg-background"
+        style={{ zIndex: 0 }}
+      >
+        <LiquidEther
+          colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
+          mouseForce={20}
+          cursorSize={100}
+          isViscous={false}
+          viscous={30}
+          iterationsViscous={32}
+          iterationsPoisson={32}
+          resolution={0.5}
+          isBounce={false}
+          autoDemo={true}
+          autoSpeed={0.5}
+          autoIntensity={2.2}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+          autoRampDuration={0.6}
         />
       </div>
 
+      {/* Overlay gradient for text readability */}
+      <div
+        className="fixed inset-0 pointer-events-none bg-gradient-to-b from-background/80 via-background/40 to-background/80 dark:from-black/80 dark:via-black/40 dark:to-black/80"
+        style={{ zIndex: 1 }}
+      />
+
       {/* Mobile Nav Toggle */}
-      <div className="md:hidden fixed top-4 right-4 z-50">
+      <div className="md:hidden fixed top-4 right-4 z-50 flex items-center gap-2">
+        <ThemeToggle />
         <button
           onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="p-2 rounded-full bg-white/[0.08] backdrop-blur-[8px] border border-white/[0.08] hover:bg-white/[0.12] transition-colors"
+          className="p-2 rounded-full bg-white/[0.08] dark:bg-white/[0.08] backdrop-blur-[8px] border border-white/[0.1] dark:border-white/[0.08] hover:bg-white/[0.12] dark:hover:bg-white/[0.12] transition-colors"
         >
           {isMobileOpen ? <X /> : <Menu />}
         </button>
@@ -134,8 +119,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
             transition={{ type: "spring", damping: 20 }}
             className={cn(
               "fixed md:sticky top-0 h-screen w-[280px] flex flex-col p-6 z-40",
-              "bg-black/30 md:bg-black/20 border-r border-white/[0.08] backdrop-blur-[8px]",
-              isMobileOpen ? "bg-black/90 backdrop-blur-[12px]" : ""
+              "bg-background/30 dark:bg-black/30 md:bg-background/20 dark:md:bg-black/20 border-r border-white/[0.1] dark:border-white/[0.08] backdrop-blur-[12px]",
+              isMobileOpen ? "bg-background/90 dark:bg-black/90 backdrop-blur-[12px]" : ""
             )}
           >
             <div className="mb-10 flex items-center gap-3 px-2">
@@ -152,7 +137,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
             <nav className="flex-1 space-y-8">
               <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 px-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
                   Publisher
                 </p>
                 <ul className="space-y-2">
@@ -163,8 +148,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           className={cn(
                             "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer group relative overflow-hidden",
                             location === item.href
-                              ? "text-white border border-white/[0.15] bg-white/[0.05] shadow-[0_0_20px_rgba(100,130,255,0.12)]"
-                              : "text-gray-400 hover:text-white hover:bg-white/[0.03]"
+                              ? "text-foreground border border-white/[0.15] dark:border-white/[0.12] bg-accent shadow-[0_0_20px_rgba(100,130,255,0.12)] dark:shadow-[0_0_20px_rgba(100,130,255,0.12)]"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                           )}
                         >
                           {location === item.href && (
@@ -175,7 +160,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                               "w-5 h-5 transition-colors relative z-10",
                               location === item.href
                                 ? "text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]"
-                                : "text-gray-500 group-hover:text-white"
+                                : "text-muted-foreground group-hover:text-foreground"
                             )}
                           />
                           <span className="font-medium relative z-10">
@@ -189,7 +174,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </div>
 
               <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 px-2">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
                   Admin
                 </p>
                 <ul className="space-y-2">
@@ -200,8 +185,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           className={cn(
                             "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer group relative overflow-hidden",
                             location === item.href
-                              ? "text-white border border-white/[0.15] bg-white/[0.05] shadow-[0_0_20px_rgba(255,100,100,0.12)]"
-                              : "text-gray-400 hover:text-white hover:bg-white/[0.03]"
+                              ? "text-foreground border border-white/[0.15] dark:border-white/[0.12] bg-accent shadow-[0_0_20px_rgba(255,100,100,0.12)] dark:shadow-[0_0_20px_rgba(255,100,100,0.12)]"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                           )}
                         >
                           {location === item.href && (
@@ -212,7 +197,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                               "w-5 h-5 transition-colors relative z-10",
                               location === item.href
                                 ? "text-red-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.8)]"
-                                : "text-gray-500 group-hover:text-white"
+                                : "text-muted-foreground group-hover:text-foreground"
                             )}
                           />
                           <span className="font-medium relative z-10">
@@ -226,38 +211,41 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </nav>
 
-            <div className="mt-auto pt-6 border-t border-white/[0.08] space-y-3">
+            <div className="mt-auto pt-6 border-t border-white/[0.08] dark:border-white/[0.08] space-y-3">
+              <div className="px-4">
+                <ThemeToggle className="w-full justify-start" />
+              </div>
               {isConnected && address && (
-                <div className="px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+                <div className="px-4 py-3 rounded-xl bg-accent/50 border border-white/[0.1] dark:border-white/[0.08]">
                   <div className="flex items-center gap-2 mb-2">
                     <Wallet className="w-4 h-4 text-blue-400" />
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-muted-foreground">
                       Wallet Address
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-mono text-white font-medium">
+                    <span className="text-sm font-mono text-foreground font-medium">
                       {formatAddress(address)}
                     </span>
                     <button
                       onClick={handleCopyAddress}
-                      className="p-1 hover:bg-white/[0.05] rounded transition-colors group"
+                      className="p-1 hover:bg-accent rounded transition-colors group"
                       title="Copy address"
                     >
-                      <Copy className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                      <Copy className="w-3.5 h-3.5 text-muted-foreground group-hover:text-blue-400 transition-colors" />
                     </button>
                   </div>
                 </div>
               )}
               <Link href="/">
-                <div className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-400 hover:text-white hover:bg-blue-500/[0.08] transition-colors group border border-transparent hover:border-blue-500/[0.15] cursor-pointer">
+                <div className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-muted-foreground hover:text-foreground hover:bg-blue-500/[0.08] dark:hover:bg-blue-500/[0.08] transition-colors group border border-transparent hover:border-blue-500/[0.15] cursor-pointer">
                   <ArrowLeft className="w-5 h-5 group-hover:text-blue-400 transition-colors" />
                   <span className="font-medium">Back to Landing</span>
                 </div>
               </Link>
               <button
                 onClick={() => disconnect()}
-                className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-400 hover:text-white hover:bg-red-500/[0.08] transition-colors group border border-transparent hover:border-red-500/[0.15]"
+                className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-muted-foreground hover:text-foreground hover:bg-red-500/[0.08] dark:hover:bg-red-500/[0.08] transition-colors group border border-transparent hover:border-red-500/[0.15]"
               >
                 <LogOut className="w-5 h-5 group-hover:text-red-400 transition-colors" />
                 <span className="font-medium">Disconnect Wallet</span>

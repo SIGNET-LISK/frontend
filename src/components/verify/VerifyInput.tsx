@@ -65,7 +65,7 @@ export function VerifyInput({ file, url, isVerifying, onFileChange, onUrlChange 
           "relative group border-2 border-dashed rounded-3xl p-12 text-center cursor-pointer transition-all duration-500 overflow-hidden",
           isDragActive
             ? "border-blue-500 bg-blue-500/10 shadow-[0_0_40px_rgba(59,130,246,0.3)] scale-[1.02]"
-            : "border-white/10 hover:border-blue-400/50 hover:bg-blue-900/5 bg-black/20",
+            : "border-white/[0.1] dark:border-white/[0.08] hover:border-blue-400/50 dark:hover:border-blue-400/50 hover:bg-blue-900/5 dark:hover:bg-blue-900/5 bg-white/[0.05] dark:bg-black/20",
           isVerifying && "opacity-50 cursor-not-allowed"
         )}
       >
@@ -108,30 +108,30 @@ export function VerifyInput({ file, url, isVerifying, onFileChange, onUrlChange 
             {file ? (
               <div className="space-y-2">
                 <div className="flex items-center justify-center gap-3">
-                  <p className="text-xl font-medium text-white">{file.name}</p>
+                  <p className="text-xl font-medium text-foreground">{file.name}</p>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onFileChange(null);
                     }}
-                    className="p-1.5 hover:bg-white/10 rounded-full text-gray-400 hover:text-red-400 transition-colors"
+                    className="p-1.5 hover:bg-white/[0.1] dark:hover:bg-white/[0.1] rounded-full text-muted-foreground hover:text-red-400 transition-colors"
                   >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {formatFileSize(file.size)} • {file.type || "Unknown type"}
                 </p>
               </div>
             ) : (
               <>
-                <p className="text-xl font-medium text-white">
+                <p className="text-xl font-medium text-foreground">
                   {isDragActive ? "Drop it here!" : "Drag & drop file here"}
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Supports JPG, PNG, MP4, PDF, DOCX, MP3, WAV (Max 50MB)
                 </p>
-                <p className="text-xs text-gray-600 mt-1">or click to browse</p>
+                <p className="text-xs text-muted-foreground mt-1">or click to browse</p>
               </>
             )}
           </div>
@@ -143,16 +143,16 @@ export function VerifyInput({ file, url, isVerifying, onFileChange, onUrlChange 
 
       {/* Divider */}
       <div className="relative flex items-center py-2">
-        <div className="flex-grow border-t border-white/10"></div>
-        <span className="flex-shrink-0 mx-4 text-gray-500 text-sm uppercase tracking-wider font-medium">
+        <div className="flex-grow border-t border-white/[0.1] dark:border-white/[0.08]"></div>
+        <span className="flex-shrink-0 mx-4 text-muted-foreground text-sm uppercase tracking-wider font-medium">
           or paste URL
         </span>
-        <div className="flex-grow border-t border-white/10"></div>
+        <div className="flex-grow border-t border-white/[0.1] dark:border-white/[0.08]"></div>
       </div>
 
       {/* URL Input */}
       <div className="relative">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
           <LinkIcon className="w-5 h-5" />
         </div>
         <Input
@@ -163,12 +163,12 @@ export function VerifyInput({ file, url, isVerifying, onFileChange, onUrlChange 
             if (e.target.value) onFileChange(null);
           }}
           disabled={isVerifying}
-          className="pl-12 h-14 rounded-xl bg-black/40 border-white/10 text-white placeholder:text-gray-600 focus-visible:ring-blue-500/50 text-lg"
+          className="pl-12 h-14 rounded-xl bg-white/[0.05] dark:bg-black/40 border-white/[0.1] dark:border-white/[0.08] text-foreground placeholder:text-muted-foreground focus-visible:ring-blue-500/50 text-lg"
         />
         {url && (
           <button
             onClick={() => onUrlChange("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 hover:bg-white/10 rounded-full text-gray-400 hover:text-red-400 transition-colors"
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 hover:bg-white/[0.1] dark:hover:bg-white/[0.1] rounded-full text-muted-foreground hover:text-red-400 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>

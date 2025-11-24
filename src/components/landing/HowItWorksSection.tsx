@@ -47,7 +47,7 @@ export const HowItWorksSection = () => {
     };
 
     return (
-        <section id="how-it-works" className="py-24 relative z-10 overflow-hidden">
+        <section id="how-it-works" className="pt-12 pb-24 md:pt-16 md:pb-24 relative z-10 overflow-hidden">
             <div className="max-w-7xl mx-auto px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -56,10 +56,10 @@ export const HowItWorksSection = () => {
                     transition={{ duration: 0.6 }}
                     className="mb-16"
                 >
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                    <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
                         How SIGNET Works
                     </h2>
-                    <p className="text-gray-400 text-lg max-w-2xl">
+                    <p className="text-muted-foreground text-lg max-w-2xl">
                         Three simple steps to guarantee authenticity and protect your digital assets.
                     </p>
                 </motion.div>
@@ -83,15 +83,15 @@ export const HowItWorksSection = () => {
                                             : step.color === "purple"
                                                 ? "bg-purple-500"
                                                 : "bg-rose-500"
-                                        : "bg-white/10"
+                                        : "bg-foreground/10"
                                         }`}
                                 />
 
-                                <h3 className={`text-2xl font-bold mb-2 transition-colors duration-300 ${activeStep === index ? "text-white" : "text-gray-300"
+                                <h3 className={`text-2xl font-bold mb-2 transition-colors duration-300 ${activeStep === index ? "text-foreground" : "text-muted-foreground"
                                     }`}>
                                     {step.title}
                                 </h3>
-                                <p className="text-gray-400 leading-relaxed">
+                                <p className="text-muted-foreground leading-relaxed">
                                     {step.desc}
                                 </p>
 
@@ -128,10 +128,10 @@ export const HowItWorksSection = () => {
                                 style={{ perspective: 1000 }}
                             >
                                 <GlassCard className={`w-full max-w-md aspect-square flex flex-col items-center justify-center p-8 md:p-12 relative overflow-hidden ${STEPS[activeStep].color === "blue"
-                                    ? "border-blue-500/30 bg-blue-900/10"
+                                    ? "border-blue-500/20 dark:border-blue-500/30 bg-blue-500/5 dark:bg-blue-900/10"
                                     : STEPS[activeStep].color === "purple"
-                                        ? "border-purple-500/30 bg-purple-900/10"
-                                        : "border-rose-500/30 bg-rose-900/10"
+                                        ? "border-purple-500/20 dark:border-purple-500/30 bg-purple-500/5 dark:bg-purple-900/10"
+                                        : "border-rose-500/20 dark:border-rose-500/30 bg-rose-500/5 dark:bg-rose-900/10"
                                     }`}>
 
                                     {/* Background Glow */}
@@ -161,7 +161,7 @@ export const HowItWorksSection = () => {
                                     </motion.div>
 
                                     {/* Step Number */}
-                                    <div className="absolute top-6 right-6 text-8xl font-bold text-white/5 select-none">
+                                    <div className="absolute top-6 right-6 text-8xl font-bold text-foreground/5 select-none">
                                         0{STEPS[activeStep].id}
                                     </div>
 
@@ -169,7 +169,7 @@ export const HowItWorksSection = () => {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.3 }}
-                                        className="relative z-10 text-2xl md:text-3xl font-bold text-center mb-4"
+                                        className="relative z-10 text-2xl md:text-3xl font-bold text-center mb-4 text-foreground"
                                     >
                                         {STEPS[activeStep].title}
                                     </motion.h3>

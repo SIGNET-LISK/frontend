@@ -1,15 +1,18 @@
 import { Link } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAccount, useDisconnect } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
-import { Copy, LogOut } from "lucide-react";
+import { Copy, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 import abstractShapes from "@/assets/img/signet-logo.svg";
 
 type LandingNavbarProps = {
   scrolled: boolean;
+  onMobileMenuChange?: (isOpen: boolean) => void;
 };
 
 // Helper function to format address
@@ -18,11 +21,17 @@ const formatAddress = (address: string) => {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
-export function LandingNavbar({ scrolled }: LandingNavbarProps) {
+export function LandingNavbar({ scrolled, onMobileMenuChange }: LandingNavbarProps) {
   const { isConnected, address } = useAccount();
   const { open } = useAppKit();
   const { disconnect } = useDisconnect();
   const [copied, setCopied] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleMobileMenuToggle = (open: boolean) => {
+    setIsMobileMenuOpen(open);
+    onMobileMenuChange?.(open);
+  };
 
   const handleConnectWallet = () => {
     if (isConnected) {
@@ -41,16 +50,17 @@ export function LandingNavbar({ scrolled }: LandingNavbarProps) {
   };
 
   return (
-    <motion.nav
-      className={`fixed top-4 left-4 right-4 z-50 rounded-full transition-all duration-300 ${
-        scrolled
-          ? "border border-white/[0.08] bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-          : "border border-white/[0.05] bg-black/20 backdrop-blur-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
-      }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
+    <>
+      <motion.nav
+        className={`fixed top-4 left-4 right-4 z-50 rounded-full transition-all duration-300 ${
+          scrolled
+            ? "border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+            : "border border-white/[0.1] dark:border-white/[0.08] bg-background/20 dark:bg-black/20 backdrop-blur-[12px] shadow-[0_4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
+        }`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
       <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
@@ -59,53 +69,55 @@ export function LandingNavbar({ scrolled }: LandingNavbarProps) {
           <span className="font-bold text-xl tracking-tight">SIGNET</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
-          <a href="#features" className="hover:text-white transition-colors">
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+          <a href="#features" className="hover:text-foreground transition-colors">
             Features
           </a>
-          <a href="#pricing" className="hover:text-white transition-colors">
+          <a href="#pricing" className="hover:text-foreground transition-colors">
             Pricing
           </a>
           <Link href="/verify">
-            <span className="hover:text-white transition-colors cursor-pointer">Verify</span>
+            <span className="hover:text-foreground transition-colors cursor-pointer">Verify</span>
           </Link>
           <Link href="/docs">
-            <span className="hover:text-white transition-colors cursor-pointer">API Docs</span>
+            <span className="hover:text-foreground transition-colors cursor-pointer">API Docs</span>
           </Link>
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Desktop: Theme Toggle, Wallet, Connect Button */}
+          <ThemeToggle className="hidden md:flex" />
           {isConnected && (
             <>
-              <Link href="/dashboard">
-                <span className="text-sm font-medium text-gray-400 hover:text-white cursor-pointer transition-colors">
+              <Link href="/dashboard" className="hidden md:block">
+                <span className="text-sm font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
                   Dashboard
                 </span>
               </Link>
               {/* Wallet Address Display */}
-              <GlassCard className="px-4 py-2 border-white/[0.08]">
+              <GlassCard className="hidden md:flex px-4 py-2 border-white/[0.1] dark:border-white/[0.08]">
                 <div className="flex items-center gap-3">
                   <div className="flex flex-col">
-                    <span className="text-xs text-gray-400">Wallet</span>
+                    <span className="text-xs text-muted-foreground">Wallet</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-white font-mono">
+                      <span className="text-sm font-medium text-foreground font-mono">
                         {formatAddress(address || "")}
                       </span>
                       <button
                         onClick={handleCopyAddress}
-                        className="p-1 hover:bg-white/[0.05] rounded transition-colors group"
+                        className="p-1 hover:bg-accent rounded transition-colors group"
                         title="Copy address"
                       >
-                        <Copy className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                        <Copy className="w-3.5 h-3.5 text-muted-foreground group-hover:text-blue-400 transition-colors" />
                       </button>
                     </div>
                   </div>
                   <button
                     onClick={disconnect}
-                    className="p-2 hover:bg-red-500/[0.1] rounded-lg transition-colors group border border-transparent hover:border-red-500/[0.2]"
+                    className="p-2 hover:bg-red-500/[0.1] dark:hover:bg-red-500/[0.1] rounded-lg transition-colors group border border-transparent hover:border-red-500/[0.2]"
                     title="Disconnect"
                   >
-                    <LogOut className="w-4 h-4 text-gray-400 group-hover:text-red-400 transition-colors" />
+                    <LogOut className="w-4 h-4 text-muted-foreground group-hover:text-red-400 transition-colors" />
                   </button>
                 </div>
               </GlassCard>
@@ -113,15 +125,168 @@ export function LandingNavbar({ scrolled }: LandingNavbarProps) {
           )}
           {!isConnected && (
             <GlowButton 
-              className="hidden sm:flex" 
+              className="hidden md:flex" 
               onClick={handleConnectWallet}
             >
               Connect Wallet
             </GlowButton>
           )}
+          
+          {/* Mobile: Burger Button */}
+          <button
+            onClick={() => handleMobileMenuToggle(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-full bg-white/[0.05] dark:bg-white/[0.05] backdrop-blur-[8px] border border-white/[0.1] dark:border-white/[0.08] hover:bg-white/[0.08] dark:hover:bg-white/[0.08] transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <X className="w-5 h-5 text-foreground" />
+            ) : (
+              <Menu className="w-5 h-5 text-foreground" />
+            )}
+          </button>
         </div>
       </div>
     </motion.nav>
+
+      {/* Mobile Sidebar - Rendered outside nav to avoid blur */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            {/* Overlay - behind sidebar */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-background/50 dark:bg-black/60 z-[60] md:hidden"
+              onClick={() => handleMobileMenuToggle(false)}
+            />
+
+            {/* Sidebar with glass effect */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className={cn(
+                "fixed top-0 right-0 h-full w-[320px] max-w-[85vw] z-[70] md:hidden",
+                "bg-white/[0.05] dark:bg-black/90 backdrop-blur-[12px]",
+                "border-l border-white/[0.1] dark:border-white/[0.08]",
+                "shadow-[0_8px_32px_rgba(0,0,0,0.3)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+              )}
+              style={{ pointerEvents: "auto" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex flex-col h-full p-6">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                      <img src={abstractShapes} alt="SIGNET" className="w-full h-full object-cover" />
+                    </div>
+                    <span className="font-bold text-xl tracking-tight text-foreground">SIGNET</span>
+                  </div>
+                  <button
+                    onClick={() => handleMobileMenuToggle(false)}
+                    className="p-2 rounded-full bg-white/[0.05] dark:bg-white/[0.05] border border-white/[0.1] dark:border-white/[0.08] hover:bg-white/[0.08] dark:hover:bg-white/[0.08] transition-colors"
+                    aria-label="Close menu"
+                  >
+                    <X className="w-5 h-5 text-foreground" />
+                  </button>
+                </div>
+
+                {/* Navigation Links */}
+                <nav className="flex-1 space-y-2 mb-6">
+                  <a
+                    href="#features"
+                    onClick={() => handleMobileMenuToggle(false)}
+                    className="block px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.05] dark:hover:bg-white/[0.05] transition-colors font-medium"
+                  >
+                    Features
+                  </a>
+                  <a
+                    href="#pricing"
+                    onClick={() => handleMobileMenuToggle(false)}
+                    className="block px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.05] dark:hover:bg-white/[0.05] transition-colors font-medium"
+                  >
+                    Pricing
+                  </a>
+                  <Link href="/verify" onClick={() => handleMobileMenuToggle(false)}>
+                    <span className="block px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.05] dark:hover:bg-white/[0.05] transition-colors font-medium cursor-pointer">
+                      Verify
+                    </span>
+                  </Link>
+                  <Link href="/docs" onClick={() => handleMobileMenuToggle(false)}>
+                    <span className="block px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.05] dark:hover:bg-white/[0.05] transition-colors font-medium cursor-pointer">
+                      API Docs
+                    </span>
+                  </Link>
+                  {isConnected && (
+                    <Link href="/dashboard" onClick={() => handleMobileMenuToggle(false)}>
+                      <span className="block px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.05] dark:hover:bg-white/[0.05] transition-colors font-medium cursor-pointer">
+                        Dashboard
+                      </span>
+                    </Link>
+                  )}
+                </nav>
+
+                {/* Wallet Info (if connected) */}
+                {isConnected && address && (
+                  <div className="mb-6">
+                    <GlassCard className="p-4 border-white/[0.1] dark:border-white/[0.08]">
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">Wallet Address</span>
+                          <button
+                            onClick={handleCopyAddress}
+                            className="p-1.5 hover:bg-accent rounded transition-colors group"
+                            title="Copy address"
+                          >
+                            <Copy className="w-4 h-4 text-muted-foreground group-hover:text-blue-400 transition-colors" />
+                          </button>
+                        </div>
+                        <span className="text-sm font-medium text-foreground font-mono break-all">
+                          {formatAddress(address)}
+                        </span>
+                        <button
+                          onClick={() => {
+                            disconnect();
+                            handleMobileMenuToggle(false);
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-muted-foreground hover:text-red-400 hover:bg-red-500/[0.1] dark:hover:bg-red-500/[0.1] transition-colors group"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Disconnect Wallet</span>
+                        </button>
+                      </div>
+                    </GlassCard>
+                  </div>
+                )}
+
+                {/* Actions */}
+                <div className="space-y-3 border-t border-white/[0.08] dark:border-white/[0.08] pt-6">
+                  {!isConnected && (
+                    <GlowButton
+                      className="w-full justify-center"
+                      onClick={() => {
+                        handleConnectWallet();
+                        handleMobileMenuToggle(false);
+                      }}
+                    >
+                      Connect Wallet
+                    </GlowButton>
+                  )}
+                  <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/[0.05] dark:bg-white/[0.05] border border-white/[0.1] dark:border-white/[0.08]">
+                    <span className="text-sm font-medium text-foreground">Theme</span>
+                    <ThemeToggle />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 

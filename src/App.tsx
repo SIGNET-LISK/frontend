@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "./lib/wagmi";
+import { ThemeProvider } from "next-themes";
 import LandingPage from "@/pages/landing";
 import DashboardHome from "@/pages/dashboard-home";
 import RegisterContent from "@/pages/register-content";
@@ -53,14 +54,16 @@ function Router() {
 
 function App() {
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </ThemeProvider>
   );
 }
 

@@ -11,7 +11,7 @@ export function MobileTableOfContents({ onItemClick }: MobileTableOfContentsProp
   const [location] = useLocation();
 
   return (
-    <div className="h-full bg-[rgba(20,20,20,0.4)] backdrop-blur-[28px] border-r border-white/[0.12] shadow-[0_0_20px_rgba(150,180,255,0.25)] overflow-y-auto custom-scrollbar p-6">
+    <div className="h-full bg-[rgba(20,20,20,0.4)] backdrop-blur-[28px] border-r border-white/[0.1] dark:border-white/[0.08] shadow-[0_0_20px_rgba(150,180,255,0.25)] overflow-y-auto custom-scrollbar p-6">
       <div className="space-y-1">
         <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-6 px-3">
           Table of Contents
