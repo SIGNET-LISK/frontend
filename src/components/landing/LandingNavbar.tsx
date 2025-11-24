@@ -5,10 +5,11 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAccount, useDisconnect } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
-import { Copy, LogOut, Menu, X } from "lucide-react";
+import { Copy, LogOut, Menu, X, Settings } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import abstractShapes from "@/assets/img/signet-logo.svg";
+import { usePublisher } from "@/hooks/usePublisher";
 
 type LandingNavbarProps = {
   scrolled: boolean;
@@ -27,6 +28,7 @@ export function LandingNavbar({ scrolled, onMobileMenuChange }: LandingNavbarPro
   const { disconnect } = useDisconnect();
   const [copied, setCopied] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isOwner } = usePublisher();
 
   const handleMobileMenuToggle = (open: boolean) => {
     setIsMobileMenuOpen(open);
@@ -94,6 +96,14 @@ export function LandingNavbar({ scrolled, onMobileMenuChange }: LandingNavbarPro
                   Dashboard
                 </span>
               </Link>
+              {isOwner && (
+                <Link href="/dashboard/admin/publishers" className="hidden md:block">
+                  <span className="text-sm font-medium text-red-400 hover:text-red-300 cursor-pointer transition-colors flex items-center gap-1">
+                    <Settings className="w-4 h-4" />
+                    Admin
+                  </span>
+                </Link>
+              )}
               {/* Wallet Address Display */}
               <GlassCard className="hidden md:flex px-4 py-2 border-white/[0.1] dark:border-white/[0.08]">
                 <div className="flex items-center gap-3">
@@ -222,11 +232,21 @@ export function LandingNavbar({ scrolled, onMobileMenuChange }: LandingNavbarPro
                     </span>
                   </Link>
                   {isConnected && (
-                    <Link href="/dashboard" onClick={() => handleMobileMenuToggle(false)}>
-                      <span className="block px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.05] dark:hover:bg-white/[0.05] transition-colors font-medium cursor-pointer">
-                        Dashboard
-                      </span>
-                    </Link>
+                    <>
+                      <Link href="/dashboard" onClick={() => handleMobileMenuToggle(false)}>
+                        <span className="block px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.05] dark:hover:bg-white/[0.05] transition-colors font-medium cursor-pointer">
+                          Dashboard
+                        </span>
+                      </Link>
+                      {isOwner && (
+                        <Link href="/dashboard/admin/publishers" onClick={() => handleMobileMenuToggle(false)}>
+                          <span className="block px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/[0.1] dark:hover:bg-red-500/[0.1] transition-colors font-medium cursor-pointer flex items-center gap-2">
+                            <Settings className="w-4 h-4" />
+                            Admin
+                          </span>
+                        </Link>
+                      )}
+                    </>
                   )}
                 </nav>
 

@@ -3,13 +3,15 @@ import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { ArrowLeft, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck, ServerOff } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { VerifyHero } from "@/components/verify/VerifyHero";
 import { VerifyInput } from "@/components/verify/VerifyInput";
 import { VerifyResult } from "@/components/verify/VerifyResult";
 import { VerifyLoading } from "@/components/verify/VerifyLoading";
 import LiquidEther from "@/components/LiquidEther";
 import abstractShapes from "@/assets/img/signet-logo.svg";
+import { verifyContent } from "@/lib/api";
 
 type VerificationResult = {
   status: "verified" | "near-match" | "unverified" | "manipulation";
@@ -46,96 +48,74 @@ export default function VerifyContent() {
   const [isVerifying, setIsVerifying] = useState(false);
   const [result, setResult] = useState<VerificationResult | null>(null);
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (!file && !url) return;
 
     setIsVerifying(true);
     setResult(null);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsVerifying(false);
-      // Simulate different results for demo
-      const rand = Math.random();
-      if (rand > 0.6) {
-        // Verified
-        setResult({
-          status: "verified",
-          similarity: 98,
-          hammingDistance: 2,
-          publisher: {
-            name: "Kompas Media Group",
-            wallet: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
-            verified: true,
-          },
-          metadata: {
-            title: "Breaking News: Technology Update",
-            description: "Official press release regarding latest technology developments",
-            dateRegistered: "2024-11-20 14:32:15 UTC",
-            contentType: "Image/JPEG",
-          },
-          blockchainProof: {
-            txHash: "0x7f3a2b1c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b",
-            blockHeight: "1,234,567",
-            timestamp: "2024-11-20 14:32:15 UTC",
-            contractId: "0xSignetContract...",
-          },
-        });
-      } else if (rand > 0.4) {
-        // Near match
-        setResult({
-          status: "near-match",
-          similarity: 87,
-          hammingDistance: 8,
-          publisher: {
-            name: "BBC News",
-            wallet: "0x8ba1f109551bD432803012645Hac136c22C9e",
-            verified: true,
-          },
-          metadata: {
-            title: "News Article Image",
-            description: "Cover image for news article",
-            dateRegistered: "2024-11-19 10:15:30 UTC",
-            contentType: "Image/PNG",
-          },
-          blockchainProof: {
-            txHash: "0x3a9f1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a",
-            blockHeight: "1,234,520",
-            timestamp: "2024-11-19 10:15:30 UTC",
-            contractId: "0xSignetContract...",
-          },
-          similarContent: [
-            {
-              title: "Related News Image",
-              similarity: 85,
-              publisher: "BBC News",
-              txHash: "0x2b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b",
-            },
-          ],
-        });
-      } else if (rand > 0.2) {
-        // Manipulation
-        setResult({
-          status: "manipulation",
-          similarity: 45,
-          hammingDistance: 32,
-          similarContent: [
-            {
-              title: "Original Content",
-              similarity: 92,
-              publisher: "Reuters",
-              txHash: "0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b",
-            },
-          ],
-        });
-      } else {
-        // Unverified
+    try {
+      // For now, only support file upload (URL support can be added later)
+      if (!file) {
         setResult({
           status: "unverified",
           similarity: 0,
         });
+        setIsVerifying(false);
+        return;
       }
-    }, 2500);
+
+      const response = await verifyContent(file);
+      
+      // Map backend response to frontend format
+      // Backend returns: { verified: boolean, distance: number, threshold: number, content: {...} }
+      if (response?.verified) {
+        // Calculate similarity percentage (lower distance = higher similarity)
+        const similarity = Math.max(0, Math.min(100, 100 - (response.distance / response.threshold) * 100));
+        
+        // Determine status based on distance
+        let status: "verified" | "near-match" = "verified";
+        if (response.distance > 5 && response.distance <= response.threshold) {
+          status = "near-match";
+        }
+        
+        setResult({
+          status: status,
+          similarity: similarity,
+          hammingDistance: response.distance,
+          publisher: response.content ? {
+            name: "Publisher",
+            wallet: response.content.publisher,
+            verified: true,
+          } : undefined,
+          metadata: response.content ? {
+            title: response.content.title,
+            description: response.content.description,
+            dateRegistered: new Date(response.content.timestamp * 1000).toISOString(),
+            contentType: file.type || "Unknown",
+          } : undefined,
+        });
+      } else {
+        setResult({
+          status: "unverified",
+          similarity: 0,
+          hammingDistance: response.distance,
+        });
+      }
+    } catch (error: any) {
+      // Handle error - show user-friendly message
+      const errorMessage = error.message || "Verification failed";
+      
+      // Set result with error flag
+      setResult({
+        status: "unverified",
+        similarity: 0,
+        hammingDistance: undefined, // Flag untuk indicate error
+        error: errorMessage,
+      });
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleReset = () => {
@@ -246,9 +226,26 @@ export default function VerifyContent() {
             {isVerifying && <VerifyLoading />}
           </AnimatePresence>
 
+          {/* Backend Error Alert */}
+          {result && (result as any).error && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
+                <ServerOff className="h-4 w-4" />
+                <AlertTitle className="text-red-400">Backend Server Error</AlertTitle>
+                <AlertDescription className="text-red-300 text-sm mt-1">
+                  {(result as any).error || "Unable to connect to the backend server. Please make sure the backend is running at http://localhost:3000"}
+                </AlertDescription>
+              </Alert>
+            </motion.div>
+          )}
+
           {/* Results */}
           <AnimatePresence mode="wait">
-            {result && !isVerifying && (
+            {result && !isVerifying && !(result as any).error && (
               <motion.div
                 key="result"
                 initial={{ opacity: 0, height: 0 }}

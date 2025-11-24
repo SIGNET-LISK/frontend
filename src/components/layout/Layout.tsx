@@ -27,6 +27,7 @@ import { useAccount, useDisconnect } from "wagmi";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import abstractShapes from "@/assets/img/signet-logo.svg";
 import LiquidEther from "@/components/LiquidEther";
+import { usePublisher } from "@/hooks/usePublisher";
 
 // Helper function to format address
 const formatAddress = (address: string) => {
@@ -57,6 +58,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const [copied, setCopied] = useState(false);
+  const { isPublisher, isOwner } = usePublisher();
 
   const handleCopyAddress = async () => {
     if (address) {
@@ -136,12 +138,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </div>
 
             <nav className="flex-1 space-y-8">
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
-                  Publisher
-                </p>
-                <ul className="space-y-2">
-                  {NAV_ITEMS.map((item) => (
+              {isPublisher && (
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
+                    Publisher
+                  </p>
+                  <ul className="space-y-2">
+                    {NAV_ITEMS.map((item) => (
                     <li key={item.href}>
                       <Link href={item.href}>
                         <div
@@ -169,16 +172,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
                         </div>
                       </Link>
                     </li>
-                  ))}
-                </ul>
-              </div>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
-                  Admin
-                </p>
-                <ul className="space-y-2">
-                  {ADMIN_ITEMS.map((item) => (
+              {isOwner && (
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
+                    Admin
+                  </p>
+                  <ul className="space-y-2">
+                    {ADMIN_ITEMS.map((item) => (
                     <li key={item.href}>
                       <Link href={item.href}>
                         <div
@@ -206,9 +211,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                         </div>
                       </Link>
                     </li>
-                  ))}
-                </ul>
-              </div>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </nav>
 
             <div className="mt-auto pt-6 border-t border-white/[0.08] dark:border-white/[0.08] space-y-3">

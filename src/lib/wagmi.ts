@@ -60,3 +60,6 @@ export const appKit = createAppKit({
   }
 })
 
+// Contract address
+export const CONTRACT_ADDRESS = "0xb0f519E7A987b2b91717F572F31869674546A621" as `0x${string}`;
+

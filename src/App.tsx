@@ -17,16 +17,42 @@ import ManagePublishers from "@/pages/manage-publishers";
 import ContentReview from "@/pages/content-review";
 import SystemMonitor from "@/pages/system-monitor";
 import NotFound from "@/pages/not-found";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
       
-      <Route path="/dashboard" component={DashboardHome} />
-      <Route path="/dashboard/upload" component={RegisterContent} />
-      <Route path="/dashboard/contents" component={MyContents} />
-      <Route path="/dashboard/api" component={APIUsage} />
+      {/* Protected Publisher Routes */}
+      <Route path="/dashboard">
+        {() => (
+          <ProtectedRoute requirePublisher>
+            <DashboardHome />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/upload">
+        {() => (
+          <ProtectedRoute requirePublisher>
+            <RegisterContent />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/contents">
+        {() => (
+          <ProtectedRoute requirePublisher>
+            <MyContents />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/api">
+        {() => (
+          <ProtectedRoute requirePublisher>
+            <APIUsage />
+          </ProtectedRoute>
+        )}
+      </Route>
       
       {/* API Docs routes */}
       <Route path="/docs" component={APIDocs} />
@@ -42,10 +68,28 @@ function Router() {
       
       <Route path="/verify" component={VerifyContent} />
       
-      {/* Admin routes */}
-      <Route path="/dashboard/admin/publishers" component={ManagePublishers} />
-      <Route path="/dashboard/admin/review" component={ContentReview} />
-      <Route path="/dashboard/admin/monitor" component={SystemMonitor} />
+      {/* Protected Admin Routes */}
+      <Route path="/dashboard/admin/publishers">
+        {() => (
+          <ProtectedRoute requireOwner>
+            <ManagePublishers />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/admin/review">
+        {() => (
+          <ProtectedRoute requireOwner>
+            <ContentReview />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/dashboard/admin/monitor">
+        {() => (
+          <ProtectedRoute requireOwner>
+            <SystemMonitor />
+          </ProtectedRoute>
+        )}
+      </Route>
 
       <Route component={NotFound} />
     </Switch>

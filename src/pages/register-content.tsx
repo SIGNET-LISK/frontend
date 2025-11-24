@@ -2,36 +2,159 @@ import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlowButton } from "@/components/ui/glow-button";
 import { useDropzone } from "react-dropzone";
-import { useCallback, useState } from "react";
-import { UploadCloud, File, CheckCircle2, AlertCircle, Image, FileText, Video, Hash } from "lucide-react";
+import { useCallback, useState, useEffect } from "react";
+import { UploadCloud, File, CheckCircle2, AlertCircle, Image, FileText, Video, Hash, ServerOff } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { uploadFile } from "@/lib/api";
+import { CONTRACT_ADDRESS } from "@/lib/wagmi";
+import { usePublisher } from "@/hooks/usePublisher";
+import { useLocation } from "wouter";
+
+const CONTRACT_ABI = [
+  {
+    inputs: [
+      { internalType: "string", name: "_pHash", type: "string" },
+      { internalType: "string", name: "_title", type: "string" },
+      { internalType: "string", name: "_desc", type: "string" },
+    ],
+    name: "registerContent",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+] as const;
 
 export default function RegisterContent() {
   const [file, setFile] = useState<File | null>(null);
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [pHash, setPHash] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [step, setStep] = useState<1 | 2>(1); // 1: upload, 2: register
+  const [, setLocation] = useLocation();
+  
+  const { isConnected } = useAccount();
+  const { isPublisher, isLoading: isLoadingPublisher } = usePublisher();
+  
+  // Write contract hook
+  const {
+    writeContract,
+    data: hash,
+    isPending: isPendingTx,
+    error: writeError,
+  } = useWriteContract();
+
+  // Wait for transaction
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
+
+  // Redirect if not publisher
+  useEffect(() => {
+    if (!isLoadingPublisher && (!isConnected || !isPublisher)) {
+      setLocation("/");
+    }
+  }, [isConnected, isPublisher, isLoadingPublisher, setLocation]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       setFile(acceptedFiles[0]);
+      setStep(1);
+      setPHash("");
+      setError(null);
     }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, maxFiles: 1 });
 
-  const handleRegister = () => {
-    setIsRegistering(true);
-    // Simulate blockchain interaction
-    setTimeout(() => {
-      setIsRegistering(false);
-      setIsSuccess(true);
-    }, 2000);
+  const handleUpload = async () => {
+    if (!file || !title || !description) {
+      setError("Please fill all fields");
+      return;
+    }
+
+    if (!isConnected) {
+      setError("Please connect your wallet first");
+      return;
+    }
+
+    setError(null);
+    try {
+      const data = await uploadFile(file, title, description);
+      setPHash(data.p_hash);
+      setStep(2);
+    } catch (err: any) {
+      const errorMessage = err.message || err.response?.data?.detail || "Upload failed";
+      setError(errorMessage);
+    }
   };
 
-  if (isSuccess) {
+  const handleRegister = () => {
+    if (!pHash || !isConnected) {
+      setError("Please connect your wallet first");
+      return;
+    }
+
+    if (!title || !description) {
+      setError("Title and description are required");
+      return;
+    }
+
+    setError(null);
+    writeContract({
+      address: CONTRACT_ADDRESS,
+      abi: CONTRACT_ABI,
+      functionName: "registerContent",
+      args: [pHash, title, description],
+    });
+  };
+
+  // Reset on success
+  useEffect(() => {
+    if (isConfirmed) {
+      setFile(null);
+      setTitle("");
+      setDescription("");
+      setPHash("");
+      setStep(1);
+    }
+  }, [isConfirmed]);
+
+  if (isLoadingPublisher) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="text-center">
+            <p className="text-gray-400">Loading...</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!isConnected || !isPublisher) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="text-center space-y-4">
+            <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
+            <h2 className="text-2xl font-bold text-white">Access Denied</h2>
+            <p className="text-gray-400">
+              You need to connect your wallet and be registered as a publisher to access this page.
+            </p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (isConfirmed) {
     return (
       <Layout>
         <div className="flex flex-col items-center justify-center h-[60vh]">
@@ -48,9 +171,9 @@ export default function RegisterContent() {
               Your content has been successfully hashed and registered on the Lisk blockchain.
             </p>
             <div className="bg-black/30 p-4 rounded-xl border border-white/10 font-mono text-xs text-gray-400 break-all">
-              TX: 0x8f3a2b1c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e
+              TX: {hash}
             </div>
-            <GlowButton onClick={() => { setIsSuccess(false); setFile(null); }}>
+            <GlowButton onClick={() => { setFile(null); setTitle(""); setDescription(""); setPHash(""); setStep(1); }}>
               Register Another
             </GlowButton>
           </motion.div>
@@ -99,12 +222,31 @@ export default function RegisterContent() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-gray-400">Content Title</Label>
-                <Input placeholder="e.g. Q3 Financial Report" className="bg-white/5 border-white/10 text-white placeholder:text-gray-600" />
+                <Input 
+                  placeholder="e.g. Q3 Financial Report" 
+                  className="bg-white/5 border-white/10 text-white placeholder:text-gray-600"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label className="text-gray-400">Description</Label>
-                <Textarea placeholder="Brief description of the content..." className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 min-h-[100px]" />
+                <Textarea 
+                  placeholder="Brief description of the content..." 
+                  className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 min-h-[100px]"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
               </div>
+              {step === 1 && (
+                <GlowButton 
+                  className="w-full py-3" 
+                  onClick={handleUpload}
+                  disabled={!file || !title || !description}
+                >
+                  Generate Hash
+                </GlowButton>
+              )}
             </div>
           </GlassCard>
         </div>
@@ -140,27 +282,49 @@ export default function RegisterContent() {
                     </button>
                   </div>
 
-                  <div className="mt-6 pt-6 border-t border-white/10 space-y-4">
-                     <div>
-                        <Label className="text-xs uppercase tracking-wider text-gray-500 mb-2 block">Generated Perceptual Hash (pHash)</Label>
-                        <div className="font-mono text-sm text-blue-300 bg-blue-500/10 border border-blue-500/20 p-3 rounded-lg break-all">
-                          ph:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+                  {step === 2 && pHash && (
+                    <>
+                      <div className="mt-6 pt-6 border-t border-white/10 space-y-4">
+                        <div>
+                          <Label className="text-xs uppercase tracking-wider text-gray-500 mb-2 block">Generated Perceptual Hash (pHash)</Label>
+                          <div className="font-mono text-sm text-blue-300 bg-blue-500/10 border border-blue-500/20 p-3 rounded-lg break-all">
+                            {pHash}
+                          </div>
                         </div>
-                     </div>
-                     <div className="flex items-start gap-3 text-sm text-gray-400 bg-white/5 p-3 rounded-lg">
-                        <AlertCircle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
-                        <p>This hash acts as a unique digital fingerprint. Changing even one pixel of the source file will result in a completely different hash.</p>
-                     </div>
-                  </div>
+                        <div className="flex items-start gap-3 text-sm text-gray-400 bg-white/5 p-3 rounded-lg">
+                          <AlertCircle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
+                          <p>This hash acts as a unique digital fingerprint. Changing even one pixel of the source file will result in a completely different hash.</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </GlassCard>
 
-                <GlowButton 
-                  className="w-full py-4 text-lg shadow-[0_0_40px_rgba(100,130,255,0.3)]" 
-                  onClick={handleRegister}
-                  loading={isRegistering}
-                >
-                  {isRegistering ? "Registering to Blockchain..." : "Register to Lisk Blockchain"}
-                </GlowButton>
+                {error && (
+                  <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
+                    <ServerOff className="h-4 w-4" />
+                    <AlertTitle className="text-red-400">Error</AlertTitle>
+                    <AlertDescription className="text-red-300 text-sm mt-1">
+                      {error}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {writeError && (
+                  <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-red-400 text-sm">
+                    {(writeError as any)?.shortMessage || writeError?.message || "Transaction failed"}
+                  </div>
+                )}
+
+                {step === 2 && pHash && (
+                  <GlowButton 
+                    className="w-full py-4 text-lg shadow-[0_0_40px_rgba(100,130,255,0.3)]" 
+                    onClick={handleRegister}
+                    loading={isPendingTx || isConfirming}
+                  >
+                    {isConfirming ? "Confirming Transaction..." : isPendingTx ? "Waiting for Wallet..." : "Register to Lisk Blockchain"}
+                  </GlowButton>
+                )}
               </motion.div>
             ) : (
               <GlassCard className="h-[300px] flex flex-col items-center justify-center text-center text-gray-500 border-dashed">

@@ -1,10 +1,33 @@
 import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlowButton } from "@/components/ui/glow-button";
-import { Building2, Plus, Search, CheckCircle2, XCircle, MoreVertical, Wallet, Calendar } from "lucide-react";
+import { Building2, Plus, Search, CheckCircle2, XCircle, MoreVertical, Wallet, Calendar, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from "wagmi";
+import { CONTRACT_ADDRESS } from "@/lib/wagmi";
+import { usePublisher } from "@/hooks/usePublisher";
+import { useLocation } from "wouter";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+
+const CONTRACT_ABI = [
+  {
+    inputs: [{ internalType: "address", name: "_clientWallet", type: "address" }],
+    name: "addPublisher",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "authorizedPublishers",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+] as const;
 
 const MOCK_PUBLISHERS = [
   { 
@@ -52,6 +75,79 @@ const formatAddress = (address: string) => {
 
 export default function ManagePublishers() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [newPublisherAddress, setNewPublisherAddress] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [, setLocation] = useLocation();
+  const { isConnected } = useAccount();
+  const { isOwner, isLoading: isLoadingOwner } = usePublisher();
+
+  // Write contract hook
+  const {
+    writeContract,
+    data: hash,
+    isPending: isPendingTx,
+    error: writeError,
+  } = useWriteContract();
+
+  // Wait for transaction
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
+
+  // Redirect if not owner
+  useEffect(() => {
+    if (!isLoadingOwner && (!isConnected || !isOwner)) {
+      setLocation("/");
+    }
+  }, [isConnected, isOwner, isLoadingOwner, setLocation]);
+
+  // Reset form on success
+  useEffect(() => {
+    if (isConfirmed) {
+      setNewPublisherAddress("");
+      setIsDialogOpen(false);
+    }
+  }, [isConfirmed]);
+
+  const handleAddPublisher = () => {
+    if (!newPublisherAddress || !newPublisherAddress.startsWith("0x")) {
+      return;
+    }
+
+    writeContract({
+      address: CONTRACT_ADDRESS,
+      abi: CONTRACT_ABI,
+      functionName: "addPublisher",
+      args: [newPublisherAddress as `0x${string}`],
+    });
+  };
+
+  if (isLoadingOwner) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-[60vh]">
+          <p className="text-gray-400">Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!isConnected || !isOwner) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="text-center space-y-4">
+            <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
+            <h2 className="text-2xl font-bold text-white">Access Denied</h2>
+            <p className="text-gray-400">
+              Only the contract owner can access this page.
+            </p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -67,10 +163,48 @@ export default function ManagePublishers() {
           </h2>
           <p className="text-gray-400 mt-1">Whitelist and manage publisher access to the SIGNET platform.</p>
         </div>
-        <GlowButton className="gap-2">
-          <Plus className="w-4 h-4" />
-          Add Publisher
-        </GlowButton>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <GlowButton className="gap-2">
+              <Plus className="w-4 h-4" />
+              Add Publisher
+            </GlowButton>
+          </DialogTrigger>
+          <DialogContent className="bg-background/95 backdrop-blur-xl border-white/10">
+            <DialogHeader>
+              <DialogTitle className="text-white">Add New Publisher</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-gray-400">Wallet Address</Label>
+                <Input
+                  placeholder="0x..."
+                  value={newPublisherAddress}
+                  onChange={(e) => setNewPublisherAddress(e.target.value)}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 font-mono"
+                />
+              </div>
+              {writeError && (
+                <div className="bg-red-500/10 border border-red-500/20 p-3 rounded-lg text-red-400 text-sm">
+                  {(writeError as any)?.shortMessage || writeError?.message || "Transaction failed"}
+                </div>
+              )}
+              <GlowButton
+                className="w-full"
+                onClick={handleAddPublisher}
+                loading={isPendingTx || isConfirming}
+                disabled={!newPublisherAddress || !newPublisherAddress.startsWith("0x")}
+              >
+                {isConfirming ? "Confirming..." : isPendingTx ? "Waiting for Wallet..." : "Add Publisher"}
+              </GlowButton>
+              {isConfirmed && (
+                <div className="bg-green-500/10 border border-green-500/20 p-3 rounded-lg text-green-400 text-sm">
+                  Publisher added successfully! Transaction: {hash}
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </motion.header>
 
       {/* Stats Overview */}
