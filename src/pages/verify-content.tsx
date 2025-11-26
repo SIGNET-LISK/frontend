@@ -55,51 +55,52 @@ export default function VerifyContent() {
     setResult(null);
 
     try {
-      // For now, only support file upload (URL support can be added later)
-      if (!file) {
-        setResult({
-          status: "unverified",
-          similarity: 0,
-        });
-        setIsVerifying(false);
-        return;
-      }
-
-      const response = await verifyContent(file);
+      // Verify dengan file ATAU link (backend-1 menggunakan parameter "link" bukan "url")
+      const response = await verifyContent(file || undefined, url || undefined);
       
-      // Map backend response to frontend format
-      // Backend returns: { verified: boolean, distance: number, threshold: number, content: {...} }
-      if (response?.verified) {
+      // Map backend-1 response format
+      // Backend-1 returns: { status: "VERIFIED" | "UNVERIFIED", pHash_input, pHash_match, hamming_distance, publisher, title, txHash, explorer_link, message }
+      if (response?.status === "VERIFIED") {
         // Calculate similarity percentage (lower distance = higher similarity)
-        const similarity = Math.max(0, Math.min(100, 100 - (response.distance / response.threshold) * 100));
+        // Threshold default 25 (dari backend-1)
+        const threshold = 25;
+        const distance = response.hamming_distance || 0;
+        const similarity = Math.max(0, Math.min(100, 100 - (distance / threshold) * 100));
         
         // Determine status based on distance
         let status: "verified" | "near-match" = "verified";
-        if (response.distance > 5 && response.distance <= response.threshold) {
+        if (distance > 5 && distance <= threshold) {
           status = "near-match";
         }
         
         setResult({
           status: status,
           similarity: similarity,
-          hammingDistance: response.distance,
-          publisher: response.content ? {
+          hammingDistance: distance,
+          publisher: response.publisher ? {
             name: "Publisher",
-            wallet: response.content.publisher,
+            wallet: response.publisher,
             verified: true,
           } : undefined,
-          metadata: response.content ? {
-            title: response.content.title,
-            description: response.content.description,
-            dateRegistered: new Date(response.content.timestamp * 1000).toISOString(),
-            contentType: file.type || "Unknown",
+          metadata: {
+            title: response.title || "Unknown",
+            description: "", // Backend-1 tidak return description di verify endpoint
+            dateRegistered: new Date().toISOString(), // Backend-1 tidak return timestamp di verify endpoint
+            contentType: file ? (file.type || "Unknown") : (url ? "URL" : "Unknown"),
+          },
+          blockchainProof: response.txHash ? {
+            txHash: response.txHash,
+            blockHeight: "",
+            timestamp: "",
+            contractId: "",
+            explorerLink: response.explorer_link,
           } : undefined,
         });
       } else {
         setResult({
           status: "unverified",
           similarity: 0,
-          hammingDistance: response.distance,
+          hammingDistance: response.hamming_distance || 0,
         });
       }
     } catch (error: any) {
@@ -237,7 +238,7 @@ export default function VerifyContent() {
                 <ServerOff className="h-4 w-4" />
                 <AlertTitle className="text-red-400">Backend Server Error</AlertTitle>
                 <AlertDescription className="text-red-300 text-sm mt-1">
-                  {(result as any).error || "Unable to connect to the backend server. Please make sure the backend is running at http://localhost:3000"}
+                  {(result as any).error || "Unable to connect to the backend server. Please make sure the backend is running at http://localhost:8000"}
                 </AlertDescription>
               </Alert>
             </motion.div>

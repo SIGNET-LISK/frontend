@@ -29,31 +29,49 @@ export function usePublisher() {
     args: address ? [address] : undefined,
     query: {
       enabled: isConnected && !!address,
+      refetchInterval: 5000, // Refetch every 5 seconds to ensure fresh data
     },
   });
 
   // Check if address is owner
-  const { data: owner } = useReadContract({
+  const { data: owner, isLoading: isLoadingOwner } = useReadContract({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: "owner",
     query: {
       enabled: isConnected,
+      refetchInterval: 5000, // Refetch every 5 seconds to ensure fresh data
     },
   });
 
+  // Debug logging (remove in production)
+  if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+    console.log("[usePublisher] Debug:", {
+      contractAddress: CONTRACT_ADDRESS, // Show which contract is being checked
+      address,
+      owner,
+      isConnected,
+      isPublisher,
+      isOwner:
+        isConnected &&
+        !!owner &&
+        !!address &&
+        address.toLowerCase() === (owner as string).toLowerCase(),
+    });
+  }
+
   const isOwner =
     isConnected &&
-    owner &&
-    address &&
-    address.toLowerCase() === (owner as string).toLowerCase();
+    !!owner &&
+    !!address &&
+    typeof owner === "string" &&
+    address.toLowerCase() === owner.toLowerCase();
 
   return {
-    isPublisher: isPublisher as boolean | undefined,
-    isOwner: isOwner as boolean,
-    isLoading: isLoadingPublisher,
+    isPublisher: isPublisher === true, // Explicitly convert to boolean
+    isOwner: isOwner,
+    isLoading: isLoadingPublisher || isLoadingOwner,
     isConnected,
     address,
   };
 }
-

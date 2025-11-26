@@ -14,26 +14,45 @@ export function ProtectedRoute({
   requireOwner = false 
 }: ProtectedRouteProps) {
   const [, setLocation] = useLocation();
-  const { isConnected, isPublisher, isOwner, isLoading } = usePublisher();
+  const { isConnected, isPublisher, isOwner, isLoading, address } = usePublisher();
 
   useEffect(() => {
     if (isLoading) return;
+
+    // Debug logging (remove in production)
+    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+      console.log('[ProtectedRoute] Debug:', {
+        address,
+        isConnected,
+        isPublisher,
+        isOwner,
+        requirePublisher,
+        requireOwner,
+        isLoading,
+      });
+    }
 
     if (!isConnected) {
       setLocation("/");
       return;
     }
 
-    if (requireOwner && !isOwner) {
-      setLocation("/");
-      return;
+    if (requireOwner) {
+      if (!isOwner) {
+        console.warn('[ProtectedRoute] Access denied: Not owner', { address, requireOwner });
+        setLocation("/");
+        return;
+      }
     }
 
-    if (requirePublisher && !isPublisher) {
-      setLocation("/");
-      return;
+    if (requirePublisher) {
+      if (!isPublisher) {
+        console.warn('[ProtectedRoute] Access denied: Not publisher', { address, requirePublisher });
+        setLocation("/");
+        return;
+      }
     }
-  }, [isConnected, isPublisher, isOwner, isLoading, requirePublisher, requireOwner, setLocation]);
+  }, [isConnected, isPublisher, isOwner, isLoading, requirePublisher, requireOwner, setLocation, address]);
 
   if (isLoading) {
     return (

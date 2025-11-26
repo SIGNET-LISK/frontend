@@ -21,7 +21,7 @@ import {
   Eye,
   Settings,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAccount, useDisconnect } from "wagmi";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -58,7 +58,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const [copied, setCopied] = useState(false);
-  const { isPublisher, isOwner } = usePublisher();
+  const { isPublisher, isOwner, isLoading: isLoadingPublisher } = usePublisher();
+
+  // Debug logging (remove in production)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+      console.log('[Layout] Debug:', {
+        address,
+        isPublisher,
+        isOwner,
+        isLoadingPublisher,
+      });
+    }
+  }, [address, isPublisher, isOwner, isLoadingPublisher]);
 
   const handleCopyAddress = async () => {
     if (address) {

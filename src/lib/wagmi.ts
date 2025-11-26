@@ -1,49 +1,51 @@
-import { createAppKit } from '@reown/appkit/react'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { defineChain } from 'viem'
+import { createAppKit } from "@reown/appkit/react";
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
+import { defineChain } from "viem";
 
 // Get the project ID from environment variables
-const projectId = import.meta.env.VITE_PROJECT_ID || 'de217164330f177c24db00e46b038f35'
+const projectId =
+  import.meta.env.VITE_PROJECT_ID || "de217164330f177c24db00e46b038f35";
 
 // Define Lisk Sepolia Testnet
 const liskSepolia = defineChain({
   id: 4202,
-  name: 'Lisk Sepolia',
+  name: "Lisk Sepolia",
   nativeCurrency: {
     decimals: 18,
-    name: 'Ether',
-    symbol: 'ETH',
+    name: "Ether",
+    symbol: "ETH",
   },
   rpcUrls: {
     default: {
-      http: ['https://rpc.sepolia-api.lisk.com'],
+      http: ["https://rpc.sepolia-api.lisk.com"],
     },
   },
   blockExplorers: {
     default: {
-      name: 'Lisk Sepolia BlockScout',
-      url: 'https://sepolia-blockscout.lisk.com',
+      name: "Lisk Sepolia BlockScout",
+      url: "https://sepolia-blockscout.lisk.com",
     },
   },
   testnet: true,
-})
+});
 
 // Create a metadata object - this is used for the wallet connection modal
 const metadata = {
-  name: 'SIGNET',
-  description: 'AI-powered, blockchain-backed platform to authenticate digital content',
-  url: 'https://signet.app', // optional
-  icons: ['https://signet.app/logo.png'] // optional
-}
+  name: "SIGNET",
+  description:
+    "AI-powered, blockchain-backed platform to authenticate digital content",
+  url: "https://signet.app", // optional
+  icons: ["https://signet.app/logo.png"], // optional
+};
 
 // Create the Wagmi Adapter - only Lisk Sepolia
 const wagmiAdapter = new WagmiAdapter({
   networks: [liskSepolia],
-  projectId
-})
+  projectId,
+});
 
 // Get the wagmi config from the adapter
-export const wagmiConfig = wagmiAdapter.wagmiConfig
+export const wagmiConfig = wagmiAdapter.wagmiConfig;
 
 // Create the AppKit instance - only Lisk Sepolia
 export const appKit = createAppKit({
@@ -54,12 +56,14 @@ export const appKit = createAppKit({
   features: {
     analytics: true, // Optional - defaults to your Cloud configuration
   },
-  themeMode: 'dark',
+  themeMode: "dark",
   themeVariables: {
-    '--w3m-accent': '#5227FF',
-  }
-})
+    "--w3m-accent": "#5227FF",
+  },
+});
 
-// Contract address
-export const CONTRACT_ADDRESS = "0xb0f519E7A987b2b91717F572F31869674546A621" as `0x${string}`;
-
+// Contract address - read from environment variable or use default
+// Make sure to set VITE_CONTRACT_ADDRESS in your .env file
+// Default matches backend-1/.env CONTRACT_ADDRESS
+export const CONTRACT_ADDRESS = (import.meta.env.VITE_CONTRACT_ADDRESS ||
+  "0x92232f0Ef4bbEc80536f5591120cB3cbe8Cf6858") as `0x${string}`;
