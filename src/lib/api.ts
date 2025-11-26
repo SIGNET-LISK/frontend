@@ -121,4 +121,20 @@ export const getAllContents = async () => {
   }
 };
 
+// Get user's registered contents (filtered by publisher)
+export const getMyContents = async (publisherAddress: string) => {
+  try {
+    const response = await api.get("/api/contents");
+    const contents = response.data;
+    // Filter by publisher address (case-insensitive)
+    return contents.filter(
+      (content: any) =>
+        content.publisher?.toLowerCase() === publisherAddress.toLowerCase()
+    );
+  } catch (error) {
+    const errorMessage = handleApiError(error);
+    throw new Error(errorMessage);
+  }
+};
+
 export default api;

@@ -13,6 +13,7 @@ import MyContents from "@/pages/my-contents";
 import APIUsage from "@/pages/api-usage";
 import APIDocs from "@/pages/api-docs";
 import VerifyContent from "@/pages/verify-content";
+import Activity from "@/pages/activity";
 import ManagePublishers from "@/pages/manage-publishers";
 import ContentReview from "@/pages/content-review";
 import SystemMonitor from "@/pages/system-monitor";
@@ -23,7 +24,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
-      
+
       {/* Protected Publisher Routes */}
       <Route path="/dashboard">
         {() => (
@@ -53,21 +54,19 @@ function Router() {
           </ProtectedRoute>
         )}
       </Route>
-      
+
+      {/* Public Routes */}
+      <Route path="/verify" component={VerifyContent} />
+      <Route path="/activity" component={Activity} />
+
       {/* API Docs routes */}
       <Route path="/docs" component={APIDocs} />
       <Route path="/docs/introduction" component={APIDocs} />
-      <Route path="/docs/authentication" component={APIDocs} />
-      <Route path="/docs/verify" component={APIDocs} />
       <Route path="/docs/register" component={APIDocs} />
-      <Route path="/docs/publisher" component={APIDocs} />
-      <Route path="/docs/rate-limits" component={APIDocs} />
-      <Route path="/docs/sdk/javascript" component={APIDocs} />
-      <Route path="/docs/sdk/python" component={APIDocs} />
-      <Route path="/docs/errors" component={APIDocs} />
-      
-      <Route path="/verify" component={VerifyContent} />
-      
+      <Route path="/docs/verify" component={APIDocs} />
+      <Route path="/docs/contents" component={APIDocs} />
+      <Route path="/docs/notes" component={APIDocs} />
+
       {/* Protected Admin Routes */}
       <Route path="/dashboard/admin/publishers">
         {() => (

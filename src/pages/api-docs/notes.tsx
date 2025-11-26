@@ -1,0 +1,45 @@
+import { GlassCard } from "@/components/ui/glass-card";
+import { AlertCircle, Bot, Settings } from "lucide-react";
+
+export default function Notes() {
+    return (
+        <div className="space-y-8 max-w-4xl">
+            <section className="space-y-6">
+                <h2 className="text-2xl font-bold text-white-100 flex items-center gap-3 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+                    <AlertCircle className="w-6 h-6 text-blue-400" />
+                    Additional Notes
+                </h2>
+
+                <div className="space-y-6">
+                    <GlassCard className="p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                            <Bot className="w-6 h-6 text-blue-400" />
+                            <h3 className="text-xl font-bold text-white-100">Telegram Bot</h3>
+                        </div>
+                        <p className="text-white-100 leading-relaxed mb-4">
+                            In addition to this API, a <strong>Telegram Bot</strong> is also available with more comprehensive features.
+                        </p>
+                        <p className="text-white-100 leading-relaxed">
+                            The bot uses the <code className="bg-black/30 px-2 py-1 rounded text-blue-300 font-mono text-sm">/api/verify</code> endpoint behind the scenes for file processing.
+                        </p>
+                    </GlassCard>
+
+                    <GlassCard className="p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                            <Settings className="w-6 h-6 text-purple-400" />
+                            <h3 className="text-xl font-bold text-white-100">Environment Configuration</h3>
+                        </div>
+                        <p className="text-white-100 leading-relaxed mb-4">
+                            Some API behaviors are influenced by the <code className="bg-black/30 px-2 py-1 rounded text-yellow-300 font-mono text-sm">.env</code> file:
+                        </p>
+                        <ul className="list-disc list-inside text-white-100 space-y-2 ml-2">
+                            <li>
+                                <code className="bg-black/30 px-2 py-1 rounded text-blue-300 font-mono text-sm">HAMMING_THRESHOLD</code>: Threshold for image difference tolerance (Default: 25). The lower the value, the stricter the verification.
+                            </li>
+                        </ul>
+                    </GlassCard>
+                </div>
+            </section>
+        </div>
+    );
+}

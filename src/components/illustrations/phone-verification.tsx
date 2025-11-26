@@ -121,24 +121,24 @@ export const PhoneVerification = () => {
       </motion.g>
       
       {/* Scanning animation lines */}
-      <motion.line
-        x1="80"
-        x2="220"
-        y1="150"
-        y2="150"
-        stroke="#3b82f6"
-        strokeWidth="2"
-        opacity="0.6"
-        animate={{
-          y1: [100, 200, 100],
-          y2: [100, 200, 100],
-        }}
-        transition={{
-          duration: 2,
-          repeat: Infinity,
-          ease: "linear"
-        }}
-      />
+<motion.line
+  x1="80"
+  x2="220"
+  stroke="#3b82f6"
+  strokeWidth="2"
+  opacity="0.6"
+  initial={{ y1: 100, y2: 100 }}
+  animate={{
+    y1: [100, 200, 100],
+    y2: [100, 200, 100],
+  }}
+  transition={{
+    duration: 2,
+    repeat: Infinity,
+    ease: "linear"
+  }}
+/>
+
       
       {/* Details text */}
       <motion.g

@@ -225,11 +225,12 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
                     className="text-center"
                 >
                     <Link href="/pricing">
-                        <a className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group text-sm">
+                        <span className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group text-sm cursor-pointer">
                             See full pricing details
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </a>
+                        </span>
                     </Link>
+
                 </motion.div>
             </div>
         </section>
