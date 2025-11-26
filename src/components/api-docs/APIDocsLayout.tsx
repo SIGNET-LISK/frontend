@@ -150,16 +150,16 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
 
             <div className="flex items-center gap-2">
               <ThemeToggle />
-              <button
+            <button
                 className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
-              >
-                {isMobileOpen ? (
-                  <X className="w-5 h-5" />
-                ) : (
-                  <Menu className="w-5 h-5" />
-                )}
-              </button>
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+            >
+              {isMobileOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
             </div>
           </div>
         </nav>
