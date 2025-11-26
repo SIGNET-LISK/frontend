@@ -1,6 +1,14 @@
 import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
-import { Activity, Database, ShieldCheck, ArrowUpRight, Wallet, Copy, Loader2 } from "lucide-react";
+import {
+  Activity,
+  Database,
+  ShieldCheck,
+  ArrowUpRight,
+  Wallet,
+  Copy,
+  Loader2,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
 import { useState, useEffect } from "react";
@@ -11,6 +19,14 @@ import { useQuery } from "@tanstack/react-query";
 const formatAddress = (address: string) => {
   if (!address) return "";
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
+// Helper function to format TX Hash with 0x prefix
+const formatTxHash = (txHash: string) => {
+  if (!txHash) return "";
+  // Ensure 0x prefix
+  const hash = txHash.startsWith("0x") ? txHash : `0x${txHash}`;
+  return `${hash.slice(0, 8)}...${hash.slice(-6)}`;
 };
 
 // Helper function to format time ago
@@ -29,7 +45,11 @@ export default function DashboardHome() {
   const [copied, setCopied] = useState(false);
 
   // Fetch all contents for stats
-  const { data: contents, isLoading, error } = useQuery({
+  const {
+    data: contents,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["allContents"],
     queryFn: getAllContents,
     refetchInterval: 30000, // Refetch every 30 seconds
@@ -59,7 +79,9 @@ export default function DashboardHome() {
           <h2 className="text-3xl font-bold bg-gradient-to-r from-foreground via-blue-400 to-purple-400 bg-clip-text text-transparent">
             Dashboard Overview
           </h2>
-          <p className="text-muted-foreground mt-1">Manage your content and monitor blockchain registrations.</p>
+          <p className="text-muted-foreground mt-1">
+            Manage your content and monitor blockchain registrations.
+          </p>
         </div>
         {isConnected && address && (
           <GlassCard className="px-4 py-3 border-white/[0.08]">
@@ -68,7 +90,9 @@ export default function DashboardHome() {
                 <Wallet className="w-4 h-4 text-blue-400" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xs text-muted-foreground">Connected Wallet</span>
+                <span className="text-xs text-muted-foreground">
+                  Connected Wallet
+                </span>
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-mono text-foreground font-medium">
                     {formatAddress(address)}
@@ -102,7 +126,9 @@ export default function DashboardHome() {
               <div className="p-3 w-fit rounded-xl bg-blue-500/[0.15] border border-blue-500/[0.2] text-blue-400 mb-4">
                 <Database className="w-6 h-6" />
               </div>
-              <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">Total Registered</p>
+              <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">
+                Total Registered
+              </p>
               <h3 className="text-4xl font-bold text-foreground mt-1">
                 {isLoading ? (
                   <Loader2 className="w-8 h-8 animate-spin" />
@@ -131,7 +157,9 @@ export default function DashboardHome() {
               <div className="p-3 w-fit rounded-xl bg-purple-500/[0.15] border border-purple-500/[0.2] text-purple-400 mb-4">
                 <ShieldCheck className="w-6 h-6" />
               </div>
-              <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">Publishers</p>
+              <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">
+                Publishers
+              </p>
               <h3 className="text-4xl font-bold text-foreground mt-1">
                 {isLoading ? (
                   <Loader2 className="w-8 h-8 animate-spin" />
@@ -160,7 +188,9 @@ export default function DashboardHome() {
               <div className="p-3 w-fit rounded-xl bg-orange-500/[0.15] border border-orange-500/[0.2] text-orange-400 mb-4">
                 <Activity className="w-6 h-6" />
               </div>
-              <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">Recent Activity</p>
+              <p className="text-muted-foreground text-sm font-medium uppercase tracking-wider">
+                Recent Activity
+              </p>
               <h3 className="text-4xl font-bold text-foreground mt-1">
                 {isLoading ? (
                   <Loader2 className="w-8 h-8 animate-spin" />
@@ -185,7 +215,9 @@ export default function DashboardHome() {
       >
         <GlassCard className="mt-8">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-semibold text-foreground">Recent Activity</h3>
+            <h3 className="text-xl font-semibold text-foreground">
+              Recent Activity
+            </h3>
             <a
               href="/dashboard/contents"
               className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
@@ -202,7 +234,9 @@ export default function DashboardHome() {
             ) : error ? (
               <div className="text-center py-12 text-red-400">
                 <p>Failed to load activity</p>
-                <p className="text-sm text-gray-500 mt-1">{(error as Error).message}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  {(error as Error).message}
+                </p>
               </div>
             ) : recentActivity.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
@@ -221,7 +255,10 @@ export default function DashboardHome() {
                 </thead>
                 <tbody className="text-sm">
                   {recentActivity.map((content: any, i: number) => (
-                    <tr key={content.id || i} className="group hover:bg-white/[0.03] dark:hover:bg-white/[0.03] transition-colors border-b border-white/[0.08] dark:border-white/[0.08] last:border-0">
+                    <tr
+                      key={content.id || i}
+                      className="group hover:bg-white/[0.03] dark:hover:bg-white/[0.03] transition-colors border-b border-white/[0.08] dark:border-white/[0.08] last:border-0"
+                    >
                       <td className="py-4 font-medium text-foreground group-hover:text-foreground">
                         {content.title || "Untitled"}
                       </td>
@@ -235,7 +272,7 @@ export default function DashboardHome() {
                           rel="noopener noreferrer"
                           className="font-mono text-blue-400/80 hover:text-blue-400 transition-colors"
                         >
-                          {formatAddress(content.txhash)}
+                          {formatTxHash(content.txhash)}
                         </a>
                       </td>
                       <td className="py-4 text-muted-foreground text-right">

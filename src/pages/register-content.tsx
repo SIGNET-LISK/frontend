@@ -8,11 +8,8 @@ import {
   File,
   CheckCircle2,
   AlertCircle,
-  Image,
-  FileText,
-  Video,
-  Hash,
   ServerOff,
+  XCircle,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,6 +31,10 @@ export default function RegisterContent() {
     txHash: string;
     pHash: string;
   } | null>(null);
+  const [errorData, setErrorData] = useState<{
+    message: string;
+    pHash?: string;
+  } | null>(null);
   const [, setLocation] = useLocation();
 
   const { isConnected, address } = useAccount();
@@ -51,6 +52,7 @@ export default function RegisterContent() {
       setFile(acceptedFiles[0]);
       setError(null);
       setSuccessData(null);
+      setErrorData(null);
     }
   }, []);
 
@@ -71,6 +73,7 @@ export default function RegisterContent() {
     }
 
     setError(null);
+    setErrorData(null);
     setIsLoading(true);
     try {
       // Send publisher address untuk validasi di backend
@@ -91,7 +94,12 @@ export default function RegisterContent() {
     } catch (err: any) {
       const errorMessage =
         err.message || err.response?.data?.detail || "Registration failed";
+      // Set error untuk inline display (jika user tidak ingin full-screen)
       setError(errorMessage);
+      // Set errorData untuk full-screen error display
+      setErrorData({
+        message: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -168,6 +176,47 @@ export default function RegisterContent() {
     );
   }
 
+  if (errorData) {
+    return (
+      <Layout>
+        <div className="flex flex-col items-center justify-center h-[60vh]">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="text-center space-y-6 max-w-md"
+          >
+            <div className="w-24 h-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(239,68,68,0.3)]">
+              <XCircle className="w-12 h-12 text-red-400" />
+            </div>
+            <h2 className="text-3xl font-bold text-white">
+              Registration Failed!
+            </h2>
+            <p className="text-gray-400">{errorData.message}</p>
+            {errorData.pHash && (
+              <div className="bg-black/30 p-4 rounded-xl border border-white/10 space-y-2">
+                <div className="font-mono text-xs text-gray-400 break-all">
+                  <span className="text-gray-500">pHash:</span>{" "}
+                  {errorData.pHash}
+                </div>
+              </div>
+            )}
+            <div className="flex gap-3">
+              <GlowButton
+                onClick={() => {
+                  setErrorData(null);
+                  setError(null);
+                }}
+                className="flex-1"
+              >
+                Try Again
+              </GlowButton>
+            </div>
+          </motion.div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <header className="mb-8">
@@ -188,7 +237,7 @@ export default function RegisterContent() {
               ${
                 isDragActive
                   ? "border-blue-500 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.2)]"
-                  : "border-white/10 hover:border-white/20 hover:bg-white/5 bg-white/[0.02]"
+                  : "border-white/10 hover:border-white/20 hover:bg-white/5 bg-white/2"
               }
             `}
           >

@@ -33,6 +33,7 @@ type VerificationResult = {
     blockHeight: string;
     timestamp: string;
     contractId: string;
+    explorerLink?: string;
   };
   similarContent?: Array<{
     title: string;
@@ -40,6 +41,7 @@ type VerificationResult = {
     publisher: string;
     txHash: string;
   }>;
+  error?: string;
 };
 
 export default function VerifyContent() {
@@ -57,7 +59,7 @@ export default function VerifyContent() {
     try {
       // Verify dengan file ATAU link (backend-1 menggunakan parameter "link" bukan "url")
       const response = await verifyContent(file || undefined, url || undefined);
-      
+
       // Map backend-1 response format
       // Backend-1 returns: { status: "VERIFIED" | "UNVERIFIED", pHash_input, pHash_match, hamming_distance, publisher, title, txHash, explorer_link, message }
       if (response?.status === "VERIFIED") {
@@ -65,48 +67,72 @@ export default function VerifyContent() {
         // Threshold default 25 (dari backend-1)
         const threshold = 25;
         const distance = response.hamming_distance || 0;
-        const similarity = Math.max(0, Math.min(100, 100 - (distance / threshold) * 100));
-        
+        const similarity = Math.max(
+          0,
+          Math.min(100, 100 - (distance / threshold) * 100)
+        );
+
         // Determine status based on distance
         let status: "verified" | "near-match" = "verified";
         if (distance > 5 && distance <= threshold) {
           status = "near-match";
         }
-        
+
         setResult({
           status: status,
           similarity: similarity,
           hammingDistance: distance,
-          publisher: response.publisher ? {
-            name: "Publisher",
-            wallet: response.publisher,
-            verified: true,
-          } : undefined,
+          publisher: response.publisher
+            ? {
+                name: "Publisher",
+                wallet: response.publisher,
+                verified: true,
+              }
+            : undefined,
           metadata: {
             title: response.title || "Unknown",
-            description: "", // Backend-1 tidak return description di verify endpoint
-            dateRegistered: new Date().toISOString(), // Backend-1 tidak return timestamp di verify endpoint
-            contentType: file ? (file.type || "Unknown") : (url ? "URL" : "Unknown"),
+            description: response.description || "", // Backend sekarang return description
+            dateRegistered: response.timestamp
+              ? new Date(response.timestamp * 1000).toISOString() // Convert Unix timestamp to ISO string
+              : new Date().toISOString(),
+            contentType: file
+              ? file.type || "Unknown"
+              : url
+              ? "URL"
+              : "Unknown",
           },
-          blockchainProof: response.txHash ? {
-            txHash: response.txHash,
-            blockHeight: "",
-            timestamp: "",
-            contractId: "",
-            explorerLink: response.explorer_link,
-          } : undefined,
+          blockchainProof: response.txHash
+            ? {
+                txHash: response.txHash.startsWith("0x")
+                  ? response.txHash
+                  : `0x${response.txHash}`,
+                blockHeight: response.blocknumber
+                  ? String(response.blocknumber)
+                  : "",
+                timestamp: response.timestamp
+                  ? new Date(response.timestamp * 1000).toISOString() // Convert Unix timestamp to ISO string
+                  : "",
+                contractId: "",
+                explorerLink: response.explorer_link,
+              }
+            : undefined,
         });
       } else {
         setResult({
           status: "unverified",
           similarity: 0,
-          hammingDistance: response.hamming_distance || 0,
+          // Only set hammingDistance if it exists in response (when there's a match but distance > threshold)
+          // If no match found, hamming_distance won't be in response, so leave it undefined
+          hammingDistance:
+            response.hamming_distance !== undefined
+              ? response.hamming_distance
+              : undefined,
         });
       }
     } catch (error: any) {
       // Handle error - show user-friendly message
       const errorMessage = error.message || "Verification failed";
-      
+
       // Set result with error flag
       setResult({
         status: "unverified",
@@ -165,9 +191,16 @@ export default function VerifyContent() {
         transition={{ duration: 0.6 }}
       >
         <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <Link
+            href="/"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
             <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-              <img src={abstractShapes} alt="SIGNET" className="w-full h-full object-cover" />
+              <img
+                src={abstractShapes}
+                alt="SIGNET"
+                className="w-full h-full object-cover"
+              />
             </div>
             <span className="font-bold text-xl tracking-tight">SIGNET</span>
           </Link>
@@ -234,11 +267,17 @@ export default function VerifyContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <Alert variant="destructive" className="bg-red-500/10 border-red-500/20">
+              <Alert
+                variant="destructive"
+                className="bg-red-500/10 border-red-500/20"
+              >
                 <ServerOff className="h-4 w-4" />
-                <AlertTitle className="text-red-400">Backend Server Error</AlertTitle>
+                <AlertTitle className="text-red-400">
+                  Backend Server Error
+                </AlertTitle>
                 <AlertDescription className="text-red-300 text-sm mt-1">
-                  {(result as any).error || "Unable to connect to the backend server. Please make sure the backend is running at http://localhost:8000"}
+                  {(result as any).error ||
+                    "Unable to connect to the backend server. Please make sure the backend is running at http://localhost:8000"}
                 </AlertDescription>
               </Alert>
             </motion.div>

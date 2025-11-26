@@ -58,12 +58,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const [copied, setCopied] = useState(false);
-  const { isPublisher, isOwner, isLoading: isLoadingPublisher } = usePublisher();
+  const {
+    isPublisher,
+    isOwner,
+    isLoading: isLoadingPublisher,
+  } = usePublisher();
 
   // Debug logging (remove in production)
   useEffect(() => {
-    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-      console.log('[Layout] Debug:', {
+    if (
+      typeof window !== "undefined" &&
+      process.env.NODE_ENV === "development"
+    ) {
+      console.log("[Layout] Debug:", {
         address,
         isPublisher,
         isOwner,
@@ -134,7 +141,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
             className={cn(
               "fixed md:sticky top-0 h-screen w-[280px] flex flex-col p-6 z-40",
               "bg-background/30 dark:bg-black/30 md:bg-background/20 dark:md:bg-black/20 border-r border-white/[0.1] dark:border-white/[0.08] backdrop-blur-[12px]",
-              isMobileOpen ? "bg-background/90 dark:bg-black/90 backdrop-blur-[12px]" : ""
+              isMobileOpen
+                ? "bg-background/90 dark:bg-black/90 backdrop-blur-[12px]"
+                : ""
             )}
           >
             <div className="mb-10 flex items-center gap-3 px-2">
@@ -150,79 +159,79 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </div>
 
             <nav className="flex-1 space-y-8">
-              {isPublisher && (
+              {isPublisher && !location.startsWith("/dashboard/admin") && (
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
                     Publisher
                   </p>
                   <ul className="space-y-2">
                     {NAV_ITEMS.map((item) => (
-                    <li key={item.href}>
-                      <Link href={item.href}>
-                        <div
-                          className={cn(
-                            "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer group relative overflow-hidden",
-                            location === item.href
-                              ? "text-foreground border border-white/[0.15] dark:border-white/[0.12] bg-accent shadow-[0_0_20px_rgba(100,130,255,0.12)] dark:shadow-[0_0_20px_rgba(100,130,255,0.12)]"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                          )}
-                        >
-                          {location === item.href && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/[0.15] to-purple-500/[0.15] opacity-100" />
-                          )}
-                          <item.icon
+                      <li key={item.href}>
+                        <Link href={item.href}>
+                          <div
                             className={cn(
-                              "w-5 h-5 transition-colors relative z-10",
+                              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer group relative overflow-hidden",
                               location === item.href
-                                ? "text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]"
-                                : "text-muted-foreground group-hover:text-foreground"
+                                ? "text-foreground border border-white/[0.15] dark:border-white/[0.12] bg-accent shadow-[0_0_20px_rgba(100,130,255,0.12)] dark:shadow-[0_0_20px_rgba(100,130,255,0.12)]"
+                                : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                             )}
-                          />
-                          <span className="font-medium relative z-10">
-                            {item.label}
-                          </span>
-                        </div>
-                      </Link>
-                    </li>
+                          >
+                            {location === item.href && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/[0.15] to-purple-500/[0.15] opacity-100" />
+                            )}
+                            <item.icon
+                              className={cn(
+                                "w-5 h-5 transition-colors relative z-10",
+                                location === item.href
+                                  ? "text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]"
+                                  : "text-muted-foreground group-hover:text-foreground"
+                              )}
+                            />
+                            <span className="font-medium relative z-10">
+                              {item.label}
+                            </span>
+                          </div>
+                        </Link>
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              {isOwner && (
+              {isOwner && location.startsWith("/dashboard/admin") && (
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
                     Admin
                   </p>
                   <ul className="space-y-2">
                     {ADMIN_ITEMS.map((item) => (
-                    <li key={item.href}>
-                      <Link href={item.href}>
-                        <div
-                          className={cn(
-                            "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer group relative overflow-hidden",
-                            location === item.href
-                              ? "text-foreground border border-white/[0.15] dark:border-white/[0.12] bg-accent shadow-[0_0_20px_rgba(255,100,100,0.12)] dark:shadow-[0_0_20px_rgba(255,100,100,0.12)]"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                          )}
-                        >
-                          {location === item.href && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-red-500/[0.15] to-orange-500/[0.15] opacity-100" />
-                          )}
-                          <item.icon
+                      <li key={item.href}>
+                        <Link href={item.href}>
+                          <div
                             className={cn(
-                              "w-5 h-5 transition-colors relative z-10",
+                              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer group relative overflow-hidden",
                               location === item.href
-                                ? "text-red-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.8)]"
-                                : "text-muted-foreground group-hover:text-foreground"
+                                ? "text-foreground border border-white/[0.15] dark:border-white/[0.12] bg-accent shadow-[0_0_20px_rgba(255,100,100,0.12)] dark:shadow-[0_0_20px_rgba(255,100,100,0.12)]"
+                                : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                             )}
-                          />
-                          <span className="font-medium relative z-10">
-                            {item.label}
-                          </span>
-                        </div>
-                      </Link>
-                    </li>
+                          >
+                            {location === item.href && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-red-500/[0.15] to-orange-500/[0.15] opacity-100" />
+                            )}
+                            <item.icon
+                              className={cn(
+                                "w-5 h-5 transition-colors relative z-10",
+                                location === item.href
+                                  ? "text-red-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.8)]"
+                                  : "text-muted-foreground group-hover:text-foreground"
+                              )}
+                            />
+                            <span className="font-medium relative z-10">
+                              {item.label}
+                            </span>
+                          </div>
+                        </Link>
+                      </li>
                     ))}
                   </ul>
                 </div>

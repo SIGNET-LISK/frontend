@@ -10,7 +10,15 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
-import { FileText, MoreVertical, ExternalLink, Clock, Hash, Loader2, Database } from "lucide-react";
+import {
+  FileText,
+  MoreVertical,
+  ExternalLink,
+  Clock,
+  Hash,
+  Loader2,
+  Database,
+} from "lucide-react";
 import { useAccount } from "wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { getMyContents } from "@/lib/api";
@@ -19,6 +27,14 @@ import { getMyContents } from "@/lib/api";
 const formatAddress = (address: string) => {
   if (!address) return "";
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
+// Helper function to format TX Hash with 0x prefix
+const formatTxHash = (txHash: string) => {
+  if (!txHash) return "";
+  // Ensure 0x prefix
+  const hash = txHash.startsWith("0x") ? txHash : `0x${txHash}`;
+  return `${hash.slice(0, 8)}...${hash.slice(-6)}`;
 };
 
 // Helper to format time ago
@@ -38,7 +54,11 @@ export default function MyContents() {
   const itemsPerPage = 10;
 
   // Fetch user's contents
-  const { data: contents, isLoading, error } = useQuery({
+  const {
+    data: contents,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["myContents", address],
     queryFn: () => getMyContents(address as string),
     enabled: !!address && isConnected,
@@ -88,10 +108,17 @@ export default function MyContents() {
       <header className="mb-8 flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold text-white">My Contents</h2>
-          <p className="text-gray-400 mt-1">Manage your registered digital assets and view their blockchain proofs.</p>
+          <p className="text-gray-400 mt-1">
+            Manage your registered digital assets and view their blockchain
+            proofs.
+          </p>
           {contents && contents.length > 0 && (
             <p className="text-sm text-gray-500 mt-2">
-              Total: <span className="text-blue-400 font-semibold">{contents.length}</span> items
+              Total:{" "}
+              <span className="text-blue-400 font-semibold">
+                {contents.length}
+              </span>{" "}
+              items
             </p>
           )}
         </div>
@@ -106,13 +133,17 @@ export default function MyContents() {
           ) : error ? (
             <div className="text-center py-20 text-red-400">
               <p>Failed to load your contents</p>
-              <p className="text-sm text-gray-500 mt-1">{(error as Error).message}</p>
+              <p className="text-sm text-gray-500 mt-1">
+                {(error as Error).message}
+              </p>
             </div>
           ) : !contents || contents.length === 0 ? (
             <div className="text-center py-20 text-gray-500">
               <Database className="w-16 h-16 mx-auto mb-4 opacity-30" />
               <p className="text-lg font-medium">No content registered yet</p>
-              <p className="text-sm mt-1">Upload your first content to get started</p>
+              <p className="text-sm mt-1">
+                Upload your first content to get started
+              </p>
               <a
                 href="/dashboard/upload"
                 className="inline-block mt-4 px-6 py-2 bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors"
@@ -134,16 +165,23 @@ export default function MyContents() {
                 </thead>
                 <tbody className="text-sm">
                   {currentContents.map((item: any) => (
-                    <tr key={item.id} className="group hover:bg-white/5 transition-colors border-b border-white/5 last:border-0">
+                    <tr
+                      key={item.id}
+                      className="group hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                    >
                       <td className="p-6">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-500/30">
                             <FileText className="w-5 h-5 text-blue-400" />
                           </div>
                           <div>
-                            <p className="font-medium text-white">{item.title || "Untitled"}</p>
+                            <p className="font-medium text-white">
+                              {item.title || "Untitled"}
+                            </p>
                             <p className="text-xs text-gray-500">
-                              {item.description ? item.description.substring(0, 50) + "..." : "No description"}
+                              {item.description
+                                ? item.description.substring(0, 50) + "..."
+                                : "No description"}
                             </p>
                           </div>
                         </div>
@@ -152,7 +190,9 @@ export default function MyContents() {
                         <div className="flex items-center gap-2">
                           <Hash className="w-4 h-4 text-blue-400" />
                           <div className="font-mono text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded w-fit">
-                            {item.phash ? `${item.phash.substring(0, 12)}...` : "N/A"}
+                            {item.phash
+                              ? `${item.phash.substring(0, 12)}...`
+                              : "N/A"}
                           </div>
                         </div>
                       </td>
@@ -163,7 +203,7 @@ export default function MyContents() {
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors cursor-pointer group/tx font-mono"
                         >
-                          <span>{formatAddress(item.txhash)}</span>
+                          <span>{formatTxHash(item.txhash)}</span>
                           <ExternalLink className="w-3 h-3 opacity-0 group-hover/tx:opacity-100 transition-opacity" />
                         </a>
                       </td>
@@ -190,7 +230,9 @@ export default function MyContents() {
                     <PaginationContent>
                       <PaginationItem>
                         <PaginationPrevious
-                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          onClick={() =>
+                            setCurrentPage((p) => Math.max(1, p - 1))
+                          }
                           className={
                             currentPage === 1
                               ? "pointer-events-none opacity-50"

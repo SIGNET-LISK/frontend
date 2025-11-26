@@ -7,7 +7,6 @@ import {
   ExternalLink,
   Building2,
   Wallet,
-  Calendar,
   Hash,
   FileText,
   Copy,
@@ -36,6 +35,7 @@ type VerificationResult = {
     blockHeight: string;
     timestamp: string;
     contractId: string;
+    explorerLink?: string;
   };
   similarContent?: Array<{
     title: string;
@@ -69,7 +69,8 @@ export function VerifyResult({ result }: VerifyResultProps) {
         return {
           icon: ShieldCheck,
           title: "Verified — Exact Match",
-          description: "This content matches a registered fingerprint on the Lisk blockchain.",
+          description:
+            "This content matches a registered fingerprint on the Lisk blockchain.",
           glow: "shadow-[0_0_50px_rgba(34,197,94,0.3)]",
           border: "border-green-500/30",
           gradient: "from-green-400 to-emerald-600",
@@ -84,7 +85,8 @@ export function VerifyResult({ result }: VerifyResultProps) {
         return {
           icon: AlertTriangle,
           title: "Verified — Near Match (High Similarity)",
-          description: "This content is highly similar to a registered fingerprint. Minor differences detected.",
+          description:
+            "This content is highly similar to a registered fingerprint. Minor differences detected.",
           glow: "shadow-[0_0_50px_rgba(234,179,8,0.3)]",
           border: "border-yellow-500/30",
           gradient: "from-yellow-400 to-orange-600",
@@ -99,7 +101,8 @@ export function VerifyResult({ result }: VerifyResultProps) {
         return {
           icon: AlertTriangle,
           title: "Potential Manipulation Detected",
-          description: "Similar structure detected but significant differences found. Content may have been altered.",
+          description:
+            "Similar structure detected but significant differences found. Content may have been altered.",
           glow: "shadow-[0_0_50px_rgba(249,115,22,0.3)]",
           border: "border-orange-500/30",
           gradient: "from-orange-400 to-red-600",
@@ -114,7 +117,8 @@ export function VerifyResult({ result }: VerifyResultProps) {
         return {
           icon: XCircle,
           title: "Unverified — No Record Found",
-          description: "This content does not match any registered fingerprint in our database.",
+          description:
+            "This content does not match any registered fingerprint on the blockchain.",
           glow: "shadow-[0_0_50px_rgba(239,68,68,0.3)]",
           border: "border-red-500/30",
           gradient: "from-red-500 to-orange-600",
@@ -141,7 +145,9 @@ export function VerifyResult({ result }: VerifyResultProps) {
         className={`${config.border} ${config.glow} overflow-hidden relative`}
       >
         {/* Top status bar */}
-        <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${config.gradient}`} />
+        <div
+          className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${config.gradient}`}
+        />
 
         <div className="p-8 space-y-8">
           {/* Status Header */}
@@ -168,11 +174,14 @@ export function VerifyResult({ result }: VerifyResultProps) {
                     </span>
                   )}
                 </div>
-                <p className="text-muted-foreground text-lg">{config.description}</p>
+                <p className="text-muted-foreground text-lg">
+                  {config.description}
+                </p>
               </div>
 
               {/* Similarity Score */}
-              {(result.similarity > 0 || result.hammingDistance !== undefined) && (
+              {(result.similarity > 0 ||
+                result.hammingDistance !== undefined) && (
                 <div className="flex flex-wrap gap-4 pt-4 border-t border-white/[0.1] dark:border-white/[0.08]">
                   {result.similarity > 0 && (
                     <div className="flex items-center gap-2">
@@ -180,8 +189,12 @@ export function VerifyResult({ result }: VerifyResultProps) {
                         <CheckCircle2 className="w-5 h-5 text-blue-400" />
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider">Similarity</p>
-                        <p className="text-lg font-bold text-foreground">{result.similarity}%</p>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                          Similarity
+                        </p>
+                        <p className="text-lg font-bold text-foreground">
+                          {result.similarity}%
+                        </p>
                       </div>
                     </div>
                   )}
@@ -191,8 +204,12 @@ export function VerifyResult({ result }: VerifyResultProps) {
                         <Hash className="w-5 h-5 text-purple-400" />
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider">Hamming Distance</p>
-                        <p className="text-lg font-bold text-foreground">{result.hammingDistance}</p>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                          Hamming Distance
+                        </p>
+                        <p className="text-lg font-bold text-foreground">
+                          {result.hammingDistance}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -214,21 +231,29 @@ export function VerifyResult({ result }: VerifyResultProps) {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-foreground">{result.publisher.name}</p>
+                    <p className="font-semibold text-foreground">
+                      {result.publisher.name}
+                    </p>
                     {result.publisher.verified && (
                       <CheckCircle2 className="w-4 h-4 text-blue-400" />
                     )}
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Wallet className="w-4 h-4" />
-                    <span className="font-mono">{formatAddress(result.publisher.wallet)}</span>
+                    <span className="font-mono">
+                      {formatAddress(result.publisher.wallet)}
+                    </span>
                     <button
-                      onClick={() => handleCopy(result.publisher!.wallet, "publisher-wallet")}
+                      onClick={() =>
+                        handleCopy(result.publisher!.wallet, "publisher-wallet")
+                      }
                       className="p-1 hover:bg-white/[0.1] dark:hover:bg-white/[0.1] rounded transition-colors"
                     >
                       <Copy
                         className={`w-3.5 h-3.5 ${
-                          copied === "publisher-wallet" ? "text-green-400" : "text-muted-foreground"
+                          copied === "publisher-wallet"
+                            ? "text-green-400"
+                            : "text-muted-foreground"
                         }`}
                       />
                     </button>
@@ -247,23 +272,28 @@ export function VerifyResult({ result }: VerifyResultProps) {
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Title</p>
-                  <p className="text-foreground font-medium">{result.metadata.title}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+                    Title
+                  </p>
+                  <p className="text-foreground font-medium">
+                    {result.metadata.title}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Content Type</p>
-                  <p className="text-foreground font-medium">{result.metadata.contentType}</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+                    Content Type
+                  </p>
+                  <p className="text-foreground font-medium">
+                    {result.metadata.contentType}
+                  </p>
                 </div>
                 <div className="md:col-span-2">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Description</p>
-                  <p className="text-muted-foreground">{result.metadata.description}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    Date Registered
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
+                    Description
                   </p>
-                  <p className="text-foreground font-mono text-sm">{result.metadata.dateRegistered}</p>
+                  <p className="text-muted-foreground">
+                    {result.metadata.description}
+                  </p>
                 </div>
               </div>
             </div>
@@ -279,24 +309,33 @@ export function VerifyResult({ result }: VerifyResultProps) {
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-white/[0.03] dark:bg-black/60 border border-white/[0.05] dark:border-white/[0.05]">
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-muted-foreground mb-1">Transaction Hash</p>
+                    <p className="text-xs text-muted-foreground mb-1">
+                      Transaction Hash
+                    </p>
                     <p className="font-mono text-sm text-green-400/80 truncate">
                       {result.blockchainProof.txHash}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => handleCopy(result.blockchainProof!.txHash, "tx-hash")}
+                      onClick={() =>
+                        handleCopy(result.blockchainProof!.txHash, "tx-hash")
+                      }
                       className="p-2 hover:bg-white/[0.1] dark:hover:bg-white/[0.1] rounded transition-colors"
                     >
                       <Copy
                         className={`w-4 h-4 ${
-                          copied === "tx-hash" ? "text-green-400" : "text-muted-foreground"
+                          copied === "tx-hash"
+                            ? "text-green-400"
+                            : "text-muted-foreground"
                         }`}
                       />
                     </button>
                     <a
-                      href={`https://sepolia-blockscout.lisk.com/tx/${result.blockchainProof.txHash}`}
+                      href={
+                        result.blockchainProof.explorerLink ||
+                        `https://sepolia-blockscout.lisk.com/tx/${result.blockchainProof.txHash}`
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 hover:bg-white/[0.1] dark:hover:bg-white/[0.1] rounded transition-colors text-muted-foreground hover:text-blue-400"
@@ -306,20 +345,38 @@ export function VerifyResult({ result }: VerifyResultProps) {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">Block Height</p>
-                    <p className="font-mono text-sm text-foreground">{result.blockchainProof.blockHeight}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">Timestamp</p>
-                    <p className="font-mono text-sm text-foreground">{result.blockchainProof.timestamp}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">Contract ID</p>
-                    <p className="font-mono text-sm text-foreground truncate">
-                      {result.blockchainProof.contractId}
-                    </p>
-                  </div>
+                  {result.blockchainProof.blockHeight && (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">
+                        Block Height
+                      </p>
+                      <p className="font-mono text-sm text-foreground">
+                        {result.blockchainProof.blockHeight}
+                      </p>
+                    </div>
+                  )}
+                  {result.blockchainProof.timestamp && (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">
+                        Timestamp
+                      </p>
+                      <p className="font-mono text-sm text-foreground">
+                        {new Date(
+                          result.blockchainProof.timestamp
+                        ).toLocaleString()}
+                      </p>
+                    </div>
+                  )}
+                  {result.blockchainProof.contractId && (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">
+                        Contract ID
+                      </p>
+                      <p className="font-mono text-sm text-foreground truncate">
+                        {result.blockchainProof.contractId}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -340,12 +397,20 @@ export function VerifyResult({ result }: VerifyResultProps) {
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <p className="font-medium text-foreground mb-1">{item.title}</p>
-                        <p className="text-sm text-muted-foreground">{item.publisher}</p>
+                        <p className="font-medium text-foreground mb-1">
+                          {item.title}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {item.publisher}
+                        </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-yellow-400">{item.similarity}%</p>
-                        <p className="text-xs text-muted-foreground font-mono">{item.txHash.slice(0, 10)}...</p>
+                        <p className="text-sm font-bold text-yellow-400">
+                          {item.similarity}%
+                        </p>
+                        <p className="text-xs text-muted-foreground font-mono">
+                          {item.txHash.slice(0, 10)}...
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -359,8 +424,9 @@ export function VerifyResult({ result }: VerifyResultProps) {
             <p className="text-sm text-blue-200 flex items-start gap-2">
               <ShieldCheck className="w-5 h-5 shrink-0 mt-0.5" />
               <span>
-                <strong>Security Note:</strong> SIGNET does not store your files. Hashing is done
-                locally and only the fingerprint is processed. Your privacy is protected.
+                <strong>Security Note:</strong> SIGNET does not store your
+                files. Hashing is done locally and only the fingerprint is
+                stored on the blockchain. Your privacy is protected.
               </span>
             </p>
           </div>
@@ -369,4 +435,3 @@ export function VerifyResult({ result }: VerifyResultProps) {
     </motion.div>
   );
 }
-
