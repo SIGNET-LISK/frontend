@@ -17,27 +17,21 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useAccount } from "wagmi";
-import { registerContent } from "@/lib/api";
 import { usePublisher } from "@/hooks/usePublisher";
 import { useLocation } from "wouter";
+import { useGaslessRegister } from "@/hooks/useGaslessRegister";
 
 export default function RegisterContent() {
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [successData, setSuccessData] = useState<{
-    txHash: string;
-    pHash: string;
-  } | null>(null);
-  const [errorData, setErrorData] = useState<{
-    message: string;
-    pHash?: string;
-  } | null>(null);
+
+  // Use the gasless hook
+  const { register, loading, error, result, step } = useGaslessRegister();
+
   const [, setLocation] = useLocation();
 
-  const { isConnected, address } = useAccount();
+  const { isConnected } = useAccount();
   const { isPublisher, isLoading: isLoadingPublisher } = usePublisher();
 
   // Redirect if not publisher
@@ -50,9 +44,6 @@ export default function RegisterContent() {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       setFile(acceptedFiles[0]);
-      setError(null);
-      setSuccessData(null);
-      setErrorData(null);
     }
   }, []);
 
@@ -63,45 +54,22 @@ export default function RegisterContent() {
 
   const handleRegister = async () => {
     if (!file || !title || !description) {
-      setError("Please fill all fields");
       return;
     }
 
     if (!isConnected) {
-      setError("Please connect your wallet first");
       return;
     }
 
-    setError(null);
-    setErrorData(null);
-    setIsLoading(true);
     try {
-      // Send publisher address untuk validasi di backend
-      const data = await registerContent(
-        file,
-        title,
-        description,
-        address || undefined
-      );
-      setSuccessData({
-        txHash: data.txHash,
-        pHash: data.pHash,
-      });
-      // Reset form
+      await register(file, title, description);
+      // Reset form on success
       setFile(null);
       setTitle("");
       setDescription("");
-    } catch (err: any) {
-      const errorMessage =
-        err.message || err.response?.data?.detail || "Registration failed";
-      // Set error untuk inline display (jika user tidak ingin full-screen)
-      setError(errorMessage);
-      // Set errorData untuk full-screen error display
-      setErrorData({
-        message: errorMessage,
-      });
-    } finally {
-      setIsLoading(false);
+    } catch (err) {
+      // Error is handled by the hook and displayed below
+      console.error(err);
     }
   };
 
@@ -134,7 +102,7 @@ export default function RegisterContent() {
     );
   }
 
-  if (successData) {
+  if (result) {
     return (
       <Layout>
         <div className="flex flex-col items-center justify-center h-[60vh]">
@@ -156,16 +124,16 @@ export default function RegisterContent() {
             <div className="bg-black/30 p-4 rounded-xl border border-white/10 space-y-2">
               <div className="font-mono text-xs text-gray-400 break-all">
                 <span className="text-gray-500">TX Hash:</span>{" "}
-                {successData.txHash}
+                {result.txHash}
               </div>
               <div className="font-mono text-xs text-gray-400 break-all">
                 <span className="text-gray-500">pHash:</span>{" "}
-                {successData.pHash}
+                {result.pHash}
               </div>
             </div>
             <GlowButton
               onClick={() => {
-                setSuccessData(null);
+                window.location.reload();
               }}
             >
               Register Another
@@ -176,7 +144,7 @@ export default function RegisterContent() {
     );
   }
 
-  if (errorData) {
+  if (error) {
     return (
       <Layout>
         <div className="flex flex-col items-center justify-center h-[60vh]">
@@ -191,20 +159,11 @@ export default function RegisterContent() {
             <h2 className="text-3xl font-bold text-white">
               Registration Failed!
             </h2>
-            <p className="text-gray-400">{errorData.message}</p>
-            {errorData.pHash && (
-              <div className="bg-black/30 p-4 rounded-xl border border-white/10 space-y-2">
-                <div className="font-mono text-xs text-gray-400 break-all">
-                  <span className="text-gray-500">pHash:</span>{" "}
-                  {errorData.pHash}
-                </div>
-              </div>
-            )}
+            <p className="text-gray-400">{error}</p>
             <div className="flex gap-3">
               <GlowButton
                 onClick={() => {
-                  setErrorData(null);
-                  setError(null);
+                  window.location.reload(); // Simple reset
                 }}
                 className="flex-1"
               >
@@ -234,10 +193,9 @@ export default function RegisterContent() {
             {...getRootProps()}
             className={`
               border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300
-              ${
-                isDragActive
-                  ? "border-blue-500 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.2)]"
-                  : "border-white/10 hover:border-white/20 hover:bg-white/5 bg-white/2"
+              ${isDragActive
+                ? "border-blue-500 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.2)]"
+                : "border-white/10 hover:border-white/20 hover:bg-white/5 bg-white/2"
               }
             `}
           >
@@ -284,12 +242,12 @@ export default function RegisterContent() {
               <GlowButton
                 className="w-full py-3"
                 onClick={handleRegister}
-                disabled={!file || !title || !description || isLoading}
-                loading={isLoading}
+                disabled={!file || !title || !description || loading}
+                loading={loading}
               >
-                {isLoading
-                  ? "Registering to Blockchain..."
-                  : "Register Content"}
+                {loading
+                  ? step || "Processing..."
+                  : "Register Content (Gasless)"}
               </GlowButton>
             </div>
           </GlassCard>
@@ -333,19 +291,6 @@ export default function RegisterContent() {
                     </button>
                   </div>
                 </GlassCard>
-
-                {error && (
-                  <Alert
-                    variant="destructive"
-                    className="bg-red-500/10 border-red-500/20"
-                  >
-                    <ServerOff className="h-4 w-4" />
-                    <AlertTitle className="text-red-400">Error</AlertTitle>
-                    <AlertDescription className="text-red-300 text-sm mt-1">
-                      {error}
-                    </AlertDescription>
-                  </Alert>
-                )}
 
                 <div className="flex items-start gap-3 text-sm text-gray-400 bg-white/5 p-3 rounded-lg mt-4">
                   <AlertCircle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />

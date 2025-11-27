@@ -46,7 +46,7 @@ export default function DashboardHome() {
 
   // Fetch all contents for stats
   const {
-    data: contents,
+    data: apiResponse,
     isLoading,
     error,
   } = useQuery({
@@ -64,8 +64,9 @@ export default function DashboardHome() {
   };
 
   // Calculate stats from real data
-  const totalRegistered = contents?.length || 0;
-  const recentActivity = contents?.slice(0, 5) || [];
+  const contents = apiResponse?.contents || [];
+  const totalRegistered = apiResponse?.total || contents.length || 0;
+  const recentActivity = contents.slice(0, 5);
 
   return (
     <Layout>

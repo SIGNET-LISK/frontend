@@ -27,6 +27,8 @@ const liskSepolia = defineChain({
     },
   },
   testnet: true,
+  // Add icon URL to prevent Web3Modal from trying to fetch undefined assets
+  iconUrl: "https://avatars.githubusercontent.com/u/26967284?s=200&v=4", // Lisk official logo
 });
 
 // Create a metadata object - this is used for the wallet connection modal
@@ -63,7 +65,7 @@ export const appKit = createAppKit({
 });
 
 // Contract address - read from environment variable or use default
+// This should point to the NEW SignetRegistry address (gasless transaction enabled)
 // Make sure to set VITE_CONTRACT_ADDRESS in your .env file
-// Default matches backend-1/.env CONTRACT_ADDRESS
 export const CONTRACT_ADDRESS = (import.meta.env.VITE_CONTRACT_ADDRESS ||
-  "0x92232f0Ef4bbEc80536f5591120cB3cbe8Cf6858") as `0x${string}`;
+  "0xe13c070791672Bf02e7Fc0C68FBB8b0EF7a547C0") as `0x${string}`;

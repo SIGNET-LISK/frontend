@@ -71,7 +71,7 @@ export default function Activity() {
 
   // Fetch all contents with auto-refresh every 10 seconds
   const {
-    data: allContents,
+    data: apiResponse,
     isLoading,
     error,
   } = useQuery({
@@ -80,29 +80,31 @@ export default function Activity() {
     refetchInterval: 10000, // Refresh every 10 seconds for real-time updates
   });
 
+  const allContents = apiResponse?.contents || [];
+
   // Sort by timestamp (newest first)
   const sortedContents = allContents
-    ? [...allContents].sort((a, b) => b.timestamp - a.timestamp)
+    ? [...allContents].sort((a: any, b: any) => b.timestamp - a.timestamp)
     : [];
 
   // Filter contents based on search query
   const filteredContents = searchQuery
     ? sortedContents.filter((item: any) => {
-        const query = searchQuery.toLowerCase();
-        const title = (item.title || "").toLowerCase();
-        const description = (item.description || "").toLowerCase();
-        const publisher = (item.publisher || "").toLowerCase();
-        const txhash = (item.txhash || "").toLowerCase();
-        const phash = (item.phash || "").toLowerCase();
+      const query = searchQuery.toLowerCase();
+      const title = (item.title || "").toLowerCase();
+      const description = (item.description || "").toLowerCase();
+      const publisher = (item.publisher || "").toLowerCase();
+      const txhash = (item.txhash || "").toLowerCase();
+      const phash = (item.phash || "").toLowerCase();
 
-        return (
-          title.includes(query) ||
-          description.includes(query) ||
-          publisher.includes(query) ||
-          txhash.includes(query) ||
-          phash.includes(query)
-        );
-      })
+      return (
+        title.includes(query) ||
+        description.includes(query) ||
+        publisher.includes(query) ||
+        txhash.includes(query) ||
+        phash.includes(query)
+      );
+    })
     : sortedContents;
 
   // Reset to page 1 when search query changes
@@ -306,7 +308,7 @@ export default function Activity() {
                                   <p className="text-xs text-gray-500 line-clamp-2">
                                     {item.description
                                       ? item.description.substring(0, 60) +
-                                        "..."
+                                      "..."
                                       : "No description"}
                                   </p>
                                 </div>

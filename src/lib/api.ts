@@ -110,10 +110,32 @@ export const verifyContent = async (file?: File, link?: string) => {
   }
 };
 
+// Get pHash from file (using verify endpoint)
+export const getPHash = async (file: File) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await api.post("/api/verify", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 120000,
+    });
+
+    // The verify endpoint returns pHash_input regardless of verification status
+    return response.data.pHash_input;
+  } catch (error) {
+    const errorMessage = handleApiError(error);
+    throw new Error(errorMessage);
+  }
+};
+
 // Get all contents (untuk gallery/feed)
 export const getAllContents = async () => {
   try {
     const response = await api.get("/api/contents");
+    // Response format: { contents: [...], total: number, limit: number, offset: number }
     return response.data;
   } catch (error) {
     const errorMessage = handleApiError(error);
@@ -125,7 +147,8 @@ export const getAllContents = async () => {
 export const getMyContents = async (publisherAddress: string) => {
   try {
     const response = await api.get("/api/contents");
-    const contents = response.data;
+    // Handle new response format which returns an object with contents array
+    const contents = response.data.contents || [];
     // Filter by publisher address (case-insensitive)
     return contents.filter(
       (content: any) =>
