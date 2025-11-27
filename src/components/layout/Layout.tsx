@@ -198,7 +198,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 </div>
               )}
 
-              {isOwner && location.startsWith("/dashboard/admin") && (
+              {isOwner && (
                 <div>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
                     Admin

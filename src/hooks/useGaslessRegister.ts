@@ -1,131 +1,192 @@
-import { useState } from 'react';
-import { ethers } from 'ethers';
-import { BLOCKCHAIN_CONFIG } from '../config/blockchain';
+import { useState } from "react";
+import { useAccount, useWalletClient } from "wagmi";
+import { ethers } from "ethers";
 import {
-    getNonce,
-    encodeRegisterContent,
-    buildForwardRequest,
-    signForwardRequest
-} from '../utils/blockchain';
-import { getPHash } from '../lib/api';
+  BLOCKCHAIN_CONFIG,
+  EIP712_DOMAIN,
+  EIP712_TYPES,
+} from "../config/blockchain";
+import {
+  getNonce,
+  encodeRegisterContent,
+  buildForwardRequest,
+  signForwardRequest,
+} from "../utils/blockchain";
+import { getPHash } from "../lib/api";
 
 export function useGaslessRegister() {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [result, setResult] = useState<{ txHash: string; pHash: string } | null>(null);
-    const [step, setStep] = useState<string>(''); // To show progress
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<{
+    txHash: string;
+    pHash: string;
+  } | null>(null);
+  const [step, setStep] = useState<string>(""); // To show progress
+  const { address } = useAccount();
+  const { data: walletClient } = useWalletClient();
 
-    const register = async (file: File, title: string, description: string) => {
-        setLoading(true);
-        setError(null);
-        setResult(null);
-        setStep('Initializing...');
+  const register = async (file: File, title: string, description: string) => {
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    setStep("Initializing...");
 
-        try {
-            // 1. Connect to wallet
-            setStep('Connecting to wallet...');
-            if (!window.ethereum) {
-                throw new Error('Please install MetaMask!');
-            }
+    try {
+      // 1. Check if wallet is connected
+      if (!address || !walletClient) {
+        throw new Error("Please connect your wallet first!");
+      }
 
-            const provider = new ethers.BrowserProvider(window.ethereum as any);
-            const signer = await provider.getSigner();
-            const userAddress = await signer.getAddress();
+      // 2. Get signer from connected wallet
+      setStep("Connecting to wallet...");
+      if (!window.ethereum) {
+        throw new Error(
+          "No wallet extension found. Please install MetaMask or another compatible wallet."
+        );
+      }
 
-            console.log('User address:', userAddress);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
+      const signer = await provider.getSigner();
+      const signerAddress = await signer.getAddress();
+      const userAddress = address || signerAddress;
 
-            // 2. Check authorization
-            setStep('Checking authorization...');
-            const publisherCheckResponse = await fetch(
-                `${BLOCKCHAIN_CONFIG.API_URL}/api/publisher/${userAddress}`
-            );
+      // Verify the address matches the connected wallet from wagmi
+      if (address && signerAddress.toLowerCase() !== address.toLowerCase()) {
+        throw new Error(
+          `Wallet mismatch detected. Connected wallet: ${address}, Selected wallet: ${signerAddress}. ` +
+            "Please disconnect and reconnect with the correct wallet, or disable other wallet extensions."
+        );
+      }
 
-            if (!publisherCheckResponse.ok) {
-                throw new Error('Failed to check publisher status');
-            }
+      console.log("User address:", userAddress);
+      console.log("BLOCKCHAIN_CONFIG:", BLOCKCHAIN_CONFIG);
 
-            const publisherStatus = await publisherCheckResponse.json();
+      // Validate required config
+      if (!BLOCKCHAIN_CONFIG.REGISTRY_ADDRESS) {
+        throw new Error(
+          "VITE_REGISTRY_ADDRESS not set in .env file. Please add it and restart dev server."
+        );
+      }
+      if (!BLOCKCHAIN_CONFIG.FORWARDER_ADDRESS) {
+        throw new Error(
+          "VITE_FORWARDER_ADDRESS not set in .env file. Please add it and restart dev server."
+        );
+      }
 
-            if (!publisherStatus.is_authorized) {
-                throw new Error('You are not an authorized publisher. Please contact support.');
-            }
+      // 2. Check authorization
+      setStep("Checking authorization...");
+      const publisherCheckResponse = await fetch(
+        `${BLOCKCHAIN_CONFIG.API_URL}/api/publisher/${userAddress}`
+      );
 
-            // 3. Get pHash from file
-            setStep('Generating content hash...');
-            const pHash = await getPHash(file);
-            console.log('Generated pHash:', pHash);
+      if (!publisherCheckResponse.ok) {
+        throw new Error("Failed to check publisher status");
+      }
 
-            // 4. Get nonce
-            setStep('Getting nonce...');
-            const nonce = await getNonce(userAddress);
-            console.log('Current nonce:', nonce);
+      const publisherStatus = await publisherCheckResponse.json();
 
-            // 5. Encode function call
-            const encodedData = encodeRegisterContent(pHash, title, description);
+      if (!publisherStatus.is_authorized) {
+        throw new Error(
+          "You are not an authorized publisher. Please contact support."
+        );
+      }
 
-            // 6. Build ForwardRequest
-            const forwardRequest = buildForwardRequest(userAddress, encodedData, nonce);
+      // 3. Get pHash from file
+      setStep("Generating content hash...");
+      const pHash = await getPHash(file);
+      console.log("Generated pHash:", pHash);
 
-            // 7. Sign request
-            setStep('Waiting for signature...');
-            console.log('Requesting signature...');
-            const signature = await signForwardRequest(signer, forwardRequest);
-            console.log('Signature:', signature);
+      // 4. Get nonce
+      setStep("Getting nonce...");
+      const nonce = await getNonce(userAddress);
+      console.log("Current nonce:", nonce);
 
-            // 8. Submit to backend
-            setStep('Submitting to blockchain...');
-            const registerResponse = await fetch(
-                `${BLOCKCHAIN_CONFIG.API_URL}/api/register-content`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        publisher_address: userAddress,
-                        p_hash: pHash,
-                        title: title,
-                        description: description,
-                        signature: signature
-                    })
-                }
-            );
+      // 5. Encode function call
+      console.log("Encoding with params:", { pHash, title, description });
+      const encodedData = encodeRegisterContent(pHash, title, description);
+      console.log("Encoded data:", encodedData);
 
-            if (!registerResponse.ok) {
-                const errorData = await registerResponse.json();
-                throw new Error(errorData.detail || 'Failed to register content');
-            }
+      // 6. Build ForwardRequest
+      console.log("Building ForwardRequest with:", {
+        userAddress,
+        encodedData,
+        nonce,
+      });
+      const forwardRequest = buildForwardRequest(
+        userAddress,
+        encodedData,
+        nonce
+      );
+      console.log("ForwardRequest:", forwardRequest);
 
-            const data = await registerResponse.json();
-            console.log('Success!', data);
+      // 7. Sign request
+      setStep("Waiting for signature...");
+      console.log("Requesting signature...");
+      console.log("EIP712_DOMAIN:", EIP712_DOMAIN);
+      console.log("EIP712_TYPES:", EIP712_TYPES);
+      const signature = await signForwardRequest(signer, forwardRequest);
+      console.log("Signature:", signature);
 
-            setResult({
-                txHash: data.tx_hash || data.txHash,
-                pHash: pHash
-            });
+      // 8. Submit to backend
+      setStep("Submitting to blockchain...");
+      // Backend expects FormData (multipart/form-data), not JSON
+      const formData = new FormData();
+      formData.append("publisher_address", userAddress);
+      formData.append("p_hash", pHash);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("signature", signature);
 
-            setStep('Done!');
-            return data;
-
-        } catch (err: any) {
-            console.error('Gasless registration error:', err);
-            let errorMessage = err.message || 'An error occurred';
-
-            if (err.code === 'ACTION_REJECTED') {
-                errorMessage = 'You rejected the transaction signature.';
-            }
-
-            setError(errorMessage);
-            throw err;
-        } finally {
-            setLoading(false);
-            setStep('');
+      const registerResponse = await fetch(
+        `${BLOCKCHAIN_CONFIG.API_URL}/api/register-content`,
+        {
+          method: "POST",
+          body: formData, // Don't set Content-Type header, browser will set it with boundary
         }
-    };
+      );
 
-    return {
-        register,
-        loading,
-        error,
-        result,
-        step
-    };
+      if (!registerResponse.ok) {
+        let errorMessage = "Failed to register content";
+        try {
+          const errorData = await registerResponse.json();
+          errorMessage = errorData.detail || errorMessage;
+        } catch (e) {
+          errorMessage = `HTTP ${registerResponse.status}: ${registerResponse.statusText}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const data = await registerResponse.json();
+      console.log("Success!", data);
+
+      setResult({
+        txHash: data.tx_hash || data.txHash,
+        pHash: pHash,
+      });
+
+      setStep("Done!");
+      return data;
+    } catch (err: any) {
+      console.error("Gasless registration error:", err);
+      let errorMessage = err.message || "An error occurred";
+
+      if (err.code === "ACTION_REJECTED") {
+        errorMessage = "You rejected the transaction signature.";
+      }
+
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+      setStep("");
+    }
+  };
+
+  return {
+    register,
+    loading,
+    error,
+    result,
+    step,
+  };
 }

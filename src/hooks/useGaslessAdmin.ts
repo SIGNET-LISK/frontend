@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAccount, useWalletClient } from 'wagmi';
 import { ethers } from 'ethers';
 import { BLOCKCHAIN_CONFIG } from '../config/blockchain';
 import {
@@ -13,6 +14,8 @@ export function useGaslessAdmin() {
     const [error, setError] = useState<string | null>(null);
     const [result, setResult] = useState<{ txHash: string } | null>(null);
     const [step, setStep] = useState<string>('');
+    const { address } = useAccount();
+    const { data: walletClient } = useWalletClient();
 
     const addPublisher = async (publisherAddress: string) => {
         setLoading(true);
@@ -21,15 +24,32 @@ export function useGaslessAdmin() {
         setStep('Initializing...');
 
         try {
-            // 1. Connect to wallet
-            setStep('Connecting to wallet...');
-            if (!window.ethereum) {
-                throw new Error('Please install MetaMask!');
+            // 1. Check if wallet is connected
+            if (!address || !walletClient) {
+                throw new Error('Please connect your wallet first!');
             }
 
+            // 2. Get signer from connected wallet
+            setStep('Connecting to wallet...');
+            
+            // Use window.ethereum - AppKit/wagmi already handles wallet selection
+            // But verify it's the same wallet that's connected
+            if (!window.ethereum) {
+                throw new Error('No wallet extension found. Please install MetaMask or another compatible wallet.');
+            }
+            
             const provider = new ethers.BrowserProvider(window.ethereum as any);
             const signer = await provider.getSigner();
-            const ownerAddress = await signer.getAddress();
+            const signerAddress = await signer.getAddress();
+            const ownerAddress = address || signerAddress;
+            
+            // Verify the address matches the connected wallet from wagmi
+            if (address && signerAddress.toLowerCase() !== address.toLowerCase()) {
+                throw new Error(
+                    `Wallet mismatch detected. Connected wallet: ${address}, Selected wallet: ${signerAddress}. ` +
+                    'Please disconnect and reconnect with the correct wallet, or disable other wallet extensions.'
+                );
+            }
 
             console.log('Owner address:', ownerAddress);
 

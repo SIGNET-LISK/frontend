@@ -28,7 +28,12 @@ export function LandingNavbar({ scrolled, onMobileMenuChange }: LandingNavbarPro
   const { disconnect } = useDisconnect();
   const [copied, setCopied] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isOwner } = usePublisher();
+  const { isOwner, isLoading } = usePublisher();
+  
+  // Debug logging
+  if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+    console.log("[LandingNavbar] Admin tab check:", { isOwner, isLoading });
+  }
 
   const handleMobileMenuToggle = (open: boolean) => {
     setIsMobileMenuOpen(open);

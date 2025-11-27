@@ -123,8 +123,9 @@ export const getPHash = async (file: File) => {
       timeout: 120000,
     });
 
-    // The verify endpoint returns pHash_input regardless of verification status
-    return response.data.pHash_input;
+    // The verify endpoint returns pHash_input (VERIFIED) or pHash (UNVERIFIED)
+    // Return whichever is available
+    return response.data.pHash_input || response.data.pHash;
   } catch (error) {
     const errorMessage = handleApiError(error);
     throw new Error(errorMessage);

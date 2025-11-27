@@ -61,6 +61,19 @@ export function buildForwardRequest(userAddress: string, encodedData: string, no
  * Sign ForwardRequest with EIP-712
  */
 export async function signForwardRequest(signer: ethers.JsonRpcSigner, forwardRequest: any) {
+    // Debug logging
+    console.log('[signForwardRequest] Domain:', EIP712_DOMAIN);
+    console.log('[signForwardRequest] Types:', EIP712_TYPES);
+    console.log('[signForwardRequest] ForwardRequest:', forwardRequest);
+    
+    // Validate all required fields are present
+    if (!EIP712_DOMAIN.verifyingContract) {
+        throw new Error('EIP712_DOMAIN.verifyingContract is null/undefined. Check VITE_FORWARDER_ADDRESS in .env');
+    }
+    if (!forwardRequest.to) {
+        throw new Error('ForwardRequest.to is null/undefined. Check VITE_REGISTRY_ADDRESS in .env');
+    }
+    
     const signature = await signer.signTypedData(
         EIP712_DOMAIN,
         EIP712_TYPES,

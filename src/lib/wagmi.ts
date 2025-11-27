@@ -66,6 +66,10 @@ export const appKit = createAppKit({
 
 // Contract address - read from environment variable or use default
 // This should point to the NEW SignetRegistry address (gasless transaction enabled)
-// Make sure to set VITE_CONTRACT_ADDRESS in your .env file
-export const CONTRACT_ADDRESS = (import.meta.env.VITE_CONTRACT_ADDRESS ||
-  "0xe13c070791672Bf02e7Fc0C68FBB8b0EF7a547C0") as `0x${string}`;
+// Priority: VITE_REGISTRY_ADDRESS > VITE_CONTRACT_ADDRESS > hardcoded fallback
+// Make sure to set VITE_REGISTRY_ADDRESS in your .env file
+export const CONTRACT_ADDRESS = (
+  import.meta.env.VITE_REGISTRY_ADDRESS || 
+  import.meta.env.VITE_CONTRACT_ADDRESS ||
+  "0xe13c070791672Bf02e7Fc0C68FBB8b0EF7a547C0"
+) as `0x${string}`;
