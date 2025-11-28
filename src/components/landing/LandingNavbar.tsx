@@ -8,7 +8,7 @@ import { useAppKit } from "@reown/appkit/react";
 import { Copy, LogOut, Menu, X, Settings } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import abstractShapes from "@/assets/img/signet-logo.svg";
+import abstractShapes from "@/assets/img/finger.png";
 import { usePublisher } from "@/hooks/usePublisher";
 
 type LandingNavbarProps = {
@@ -29,7 +29,7 @@ export function LandingNavbar({ scrolled, onMobileMenuChange }: LandingNavbarPro
   const [copied, setCopied] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isOwner, isLoading } = usePublisher();
-  
+
   // Debug logging
   if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
     console.log("[LandingNavbar] Admin tab check:", { isOwner, isLoading });
@@ -60,8 +60,8 @@ export function LandingNavbar({ scrolled, onMobileMenuChange }: LandingNavbarPro
     <>
       <motion.nav
         className={`fixed top-4 left-4 right-4 z-50 rounded-full transition-all duration-300 ${scrolled
-            ? "border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-            : "border border-white/[0.1] dark:border-white/[0.08] bg-background/20 dark:bg-black/20 backdrop-blur-[12px] shadow-[0_4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
+          ? "border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+          : "border border-white/[0.1] dark:border-white/[0.08] bg-background/20 dark:bg-black/20 backdrop-blur-[12px] shadow-[0_4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
           }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}

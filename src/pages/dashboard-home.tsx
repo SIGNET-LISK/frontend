@@ -220,7 +220,7 @@ export default function DashboardHome() {
               Recent Activity
             </h3>
             <a
-              href="/dashboard/contents"
+              href="/dashboard/activity"
               className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
             >
               View All

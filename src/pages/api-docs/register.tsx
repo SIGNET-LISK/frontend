@@ -60,6 +60,12 @@ export default function Register() {
                     <td className="p-4 text-red-400">Yes</td>
                     <td className="p-4 text-gray-300">Brief description of the content.</td>
                   </tr>
+                  <tr>
+                    <td className="p-4 font-mono text-purple-300">publisher_address</td>
+                    <td className="p-4 text-gray-300">Text</td>
+                    <td className="p-4 text-yellow-400">Optional</td>
+                    <td className="p-4 text-gray-300">Publisher's wallet address (for validation). If provided, backend validates the address is whitelisted.</td>
+                  </tr>
                 </tbody>
               </table>
             </div>

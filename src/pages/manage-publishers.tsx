@@ -58,12 +58,22 @@ export default function ManagePublishers() {
 
       try {
         setIsLoadingPublishers(true);
+
+        // Get current block number
+        const currentBlock = await publicClient.getBlockNumber();
+
+        // Calculate fromBlock to stay within 100k block limit
+        // Using 90k to be safe and leave some margin
+        const blockRange = 90000n;
+        const fromBlock = currentBlock > blockRange ? currentBlock - blockRange : 0n;
+
         // Fetch PublisherAdded events
         // Assuming event PublisherAdded(address indexed publisher)
         const logs = await publicClient.getLogs({
           address: CONTRACT_ADDRESS,
           event: parseAbiItem('event PublisherAdded(address indexed publisher)'),
-          fromBlock: 'earliest'
+          fromBlock: fromBlock,
+          toBlock: currentBlock
         });
 
         const fetchedPublishers: Publisher[] = await Promise.all(logs.map(async (log, index) => {

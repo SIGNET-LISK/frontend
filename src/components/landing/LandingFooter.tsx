@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Globe, Activity, Upload } from "lucide-react";
-import abstractShapes from "@/assets/img/signet-logo.svg";
+import abstractShapes from "@/assets/img/finger.png";
 
 export function LandingFooter() {
   return (

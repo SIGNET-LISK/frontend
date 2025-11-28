@@ -37,12 +37,12 @@ export default function NotFound() {
         >
           <h2 className="text-2xl md:text-3xl font-semibold mb-4">Oops, page not found</h2>
           <p className="text-gray-400 mb-8 leading-relaxed">
-            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+            The page you are looking for might have been under construction or moved to a different location.
           </p>
           
-          <Link href="/dashboard">
+          <Link href="/">
             <GlowButton className="mx-auto">
-              Back to Dashboard →
+              Back to Home →
             </GlowButton>
           </Link>
         </motion.div>

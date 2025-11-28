@@ -1,68 +1,77 @@
 import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
-import { Eye, Search, Filter, ExternalLink, CheckCircle2, AlertTriangle, Clock, Building2 } from "lucide-react";
+import { Eye, Search, Filter, ExternalLink, CheckCircle2, AlertTriangle, Clock, Building2, Loader2, Database } from "lucide-react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getAllContents } from "@/lib/api";
 
-const MOCK_CONTENTS = [
-  { 
-    id: 1, 
-    title: "Q3 Financial Report", 
-    publisher: "Tech News Media",
-    wallet: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
-    type: "PDF", 
-    phash: "ph:9f86...0f00a08", 
-    tx: "0x8f...2c1d0e", 
-    date: "2 mins ago",
-    status: "verified"
-  },
-  { 
-    id: 2, 
-    title: "Breaking News Article", 
-    publisher: "Global News Network",
-    wallet: "0x3f5CE1FBbF3f28E2B5C8F5B8F5B8F5B8F5B8F5B8",
-    type: "Image", 
-    phash: "ph:7a2b...1e4d2a", 
-    tx: "0x3a...9f1b2c", 
-    date: "1 hour ago",
-    status: "pending"
-  },
-  { 
-    id: 3, 
-    title: "Marketing Campaign Assets", 
-    publisher: "Digital Media Corp",
-    wallet: "0x9f8f5B8F5B8F5B8F5B8F5B8F5B8F5B8F5B8F5B8",
-    type: "ZIP", 
-    phash: "ph:1c2d...8b4a1c", 
-    tx: "0x5e...7d8e9f", 
-    date: "3 hours ago",
-    status: "verified"
-  },
-  { 
-    id: 4, 
-    title: "Legal Document v2", 
-    publisher: "Financial Times",
-    wallet: "0x8ba1f109551bD432803012645Hac136c22C9e",
-    type: "DOCX", 
-    phash: "ph:3e4f...5a6b7c", 
-    tx: "0x9a...1b2c3d", 
-    date: "1 day ago",
-    status: "flagged"
-  },
-];
-
+// Helper to format address
 const formatAddress = (address: string) => {
   if (!address) return "";
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
+// Helper function to format TX Hash with 0x prefix
+const formatTxHash = (txHash: string) => {
+  if (!txHash) return "";
+  // Ensure 0x prefix
+  const hash = txHash.startsWith("0x") ? txHash : `0x${txHash}`;
+  return `${hash.slice(0, 8)}...${hash.slice(-6)}`;
+};
+
+// Helper to format time ago
+const formatTimeAgo = (timestamp: number) => {
+  const now = Math.floor(Date.now() / 1000);
+  const diff = now - timestamp;
+
+  if (diff < 60) return `${diff} secs ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)} mins ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+  return `${Math.floor(diff / 86400)} days ago`;
+};
+
 export default function ContentReview() {
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Fetch all contents
+  const {
+    data: responseData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["allContents"],
+    queryFn: getAllContents,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  // Handle response format: { contents: [...], total: number, limit: number, offset: number }
+  const contents = responseData?.contents || [];
+
+  // Filter contents based on search query
+  const filteredContents = contents.filter((content: any) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      (content.title && content.title.toLowerCase().includes(query)) ||
+      (content.publisher && content.publisher.toLowerCase().includes(query)) ||
+      (content.phash && content.phash.toLowerCase().includes(query)) ||
+      (content.txhash && content.txhash.toLowerCase().includes(query))
+    );
+  });
+
+  // Calculate stats
+  const totalContents = contents.length;
+  // Assuming we can determine status from content data, or default to 'verified' if txhash exists
+  // For now, let's assume if it has a txhash it's verified/registered
+  const verifiedCount = contents.filter((c: any) => c.txhash).length;
+  const pendingCount = 0; // We might need a status field from backend to track pending
+  const flaggedCount = 0; // We might need a status field from backend to track flagged
+
   return (
     <Layout>
-      <motion.header 
+      <motion.header
         className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -92,7 +101,7 @@ export default function ContentReview() {
                 <Eye className="w-6 h-6" />
               </div>
               <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Total Contents</p>
-              <h3 className="text-4xl font-bold text-white mt-1">12,458</h3>
+              <h3 className="text-4xl font-bold text-white mt-1">{totalContents}</h3>
             </div>
           </GlassCard>
         </motion.div>
@@ -111,7 +120,7 @@ export default function ContentReview() {
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Verified</p>
-              <h3 className="text-4xl font-bold text-white mt-1">11,892</h3>
+              <h3 className="text-4xl font-bold text-white mt-1">{verifiedCount}</h3>
             </div>
           </GlassCard>
         </motion.div>
@@ -130,7 +139,7 @@ export default function ContentReview() {
                 <Clock className="w-6 h-6" />
               </div>
               <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Pending</p>
-              <h3 className="text-4xl font-bold text-white mt-1">456</h3>
+              <h3 className="text-4xl font-bold text-white mt-1">{pendingCount}</h3>
             </div>
           </GlassCard>
         </motion.div>
@@ -149,7 +158,7 @@ export default function ContentReview() {
                 <AlertTriangle className="w-6 h-6" />
               </div>
               <p className="text-gray-400 text-sm font-medium uppercase tracking-wider">Flagged</p>
-              <h3 className="text-4xl font-bold text-white mt-1">110</h3>
+              <h3 className="text-4xl font-bold text-white mt-1">{flaggedCount}</h3>
             </div>
           </GlassCard>
         </motion.div>
@@ -177,71 +186,93 @@ export default function ContentReview() {
       {/* Contents Table */}
       <GlassCard className="p-0 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="text-gray-500 border-b border-white/5 text-sm uppercase tracking-wider bg-white/[0.02]">
-                <th className="p-6 font-medium">Content</th>
-                <th className="p-6 font-medium">Publisher</th>
-                <th className="p-6 font-medium">pHash</th>
-                <th className="p-6 font-medium">TX Hash</th>
-                <th className="p-6 font-medium">Status</th>
-                <th className="p-6 font-medium text-right">Date</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm">
-              {MOCK_CONTENTS.map((content) => (
-                <tr key={content.id} className="group hover:bg-white/5 transition-colors border-b border-white/5 last:border-0">
-                  <td className="p-6">
-                    <div>
-                      <p className="font-medium text-white">{content.title}</p>
-                      <p className="text-xs text-gray-500 mt-1">{content.type}</p>
-                    </div>
-                  </td>
-                  <td className="p-6">
-                    <div className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <p className="text-white text-sm">{content.publisher}</p>
-                        <p className="text-xs text-gray-500 font-mono">{formatAddress(content.wallet)}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="p-6">
-                    <div className="font-mono text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded w-fit">
-                      {content.phash}
-                    </div>
-                  </td>
-                  <td className="p-6">
-                    <div className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors cursor-pointer group/tx">
-                      <span className="font-mono">{content.tx}</span>
-                      <ExternalLink className="w-3 h-3 opacity-0 group-hover/tx:opacity-100 transition-opacity" />
-                    </div>
-                  </td>
-                  <td className="p-6">
-                    {content.status === "verified" ? (
-                      <span className="px-3 py-1 rounded-full bg-green-500/[0.08] backdrop-blur-[4px] text-green-400 text-xs border border-green-500/[0.15]">
-                        Verified
-                      </span>
-                    ) : content.status === "pending" ? (
-                      <span className="px-3 py-1 rounded-full bg-yellow-500/[0.08] backdrop-blur-[4px] text-yellow-400 text-xs border border-yellow-500/[0.15]">
-                        Pending
-                      </span>
-                    ) : (
-                      <span className="px-3 py-1 rounded-full bg-red-500/[0.08] backdrop-blur-[4px] text-red-400 text-xs border border-red-500/[0.15]">
-                        Flagged
-                      </span>
-                    )}
-                  </td>
-                  <td className="p-6 text-right">
-                    <div className="flex items-center justify-end gap-2 text-gray-500">
-                      <Clock className="w-3 h-3" />
-                      {content.date}
-                    </div>
-                  </td>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-10 h-10 animate-spin text-blue-400" />
+            </div>
+          ) : error ? (
+            <div className="text-center py-20 text-red-400">
+              <p>Failed to load contents</p>
+              <p className="text-sm text-gray-500 mt-1">{(error as Error).message}</p>
+            </div>
+          ) : !filteredContents || filteredContents.length === 0 ? (
+            <div className="text-center py-20 text-gray-500">
+              <Database className="w-16 h-16 mx-auto mb-4 opacity-30" />
+              <p className="text-lg font-medium">No content found</p>
+            </div>
+          ) : (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="text-gray-500 border-b border-white/5 text-sm uppercase tracking-wider bg-white/[0.02]">
+                  <th className="p-6 font-medium">Content</th>
+                  <th className="p-6 font-medium">Publisher</th>
+                  <th className="p-6 font-medium">pHash</th>
+                  <th className="p-6 font-medium">TX Hash</th>
+                  <th className="p-6 font-medium">Status</th>
+                  <th className="p-6 font-medium text-right">Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="text-sm">
+                {filteredContents.map((content: any) => (
+                  <tr key={content.id} className="group hover:bg-white/5 transition-colors border-b border-white/5 last:border-0">
+                    <td className="p-6">
+                      <div>
+                        <p className="font-medium text-white">{content.title || "Untitled"}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {content.description ? content.description.substring(0, 30) + "..." : "No description"}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="p-6">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-gray-500" />
+                        <div>
+                          <p className="text-white text-sm">Publisher</p>
+                          <p className="text-xs text-gray-500 font-mono">{formatAddress(content.publisher)}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-6">
+                      <div className="flex items-center gap-2">
+                        <div className="font-mono text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded w-fit">
+                          {content.phash ? `${content.phash.substring(0, 12)}...` : "N/A"}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-6">
+                      <a
+                        href={`https://sepolia-blockscout.lisk.com/tx/${content.txhash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors cursor-pointer group/tx"
+                      >
+                        <span className="font-mono">{formatTxHash(content.txhash)}</span>
+                        <ExternalLink className="w-3 h-3 opacity-0 group-hover/tx:opacity-100 transition-opacity" />
+                      </a>
+                    </td>
+                    <td className="p-6">
+                      {/* Assuming verified if txhash exists for now */}
+                      {content.txhash ? (
+                        <span className="px-3 py-1 rounded-full bg-green-500/[0.08] backdrop-blur-[4px] text-green-400 text-xs border border-green-500/[0.15]">
+                          Verified
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 rounded-full bg-yellow-500/[0.08] backdrop-blur-[4px] text-yellow-400 text-xs border border-yellow-500/[0.15]">
+                          Pending
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-6 text-right">
+                      <div className="flex items-center justify-end gap-2 text-gray-500">
+                        <Clock className="w-3 h-3" />
+                        {formatTimeAgo(content.timestamp)}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </GlassCard>
     </Layout>

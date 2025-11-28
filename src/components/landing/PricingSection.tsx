@@ -2,30 +2,19 @@ import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlowButton } from "@/components/ui/glow-button";
 import {
-    Check,
-    ArrowRight,
     CheckCircle,
-    XCircle,
-    Clock,
-    Shield,
     Zap,
     Building2,
-    Users
+    Users,
+    ArrowRight
 } from "lucide-react";
 import { Link } from "wouter";
 
 const CheckItem = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
-    <li className={`flex items-start gap-2 text-sm text-muted-foreground ${className}`}>
+    <li className={`flex items-start gap-3 text-sm text-muted-foreground ${className}`}>
         <CheckCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5 drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]" />
-        <span className="flex-1">{children}</span>
+        <span className="flex-1 leading-tight">{children}</span>
     </li>
-);
-
-const StatusItem = ({ label, value }: { label: string; value: string }) => (
-    <div className="flex justify-between items-center text-sm py-1 border-b border-border last:border-0">
-        <span className="text-muted-foreground">{label}</span>
-        <span className="text-foreground font-medium">{value}</span>
-    </div>
 );
 
 interface PricingSectionProps {
@@ -35,52 +24,42 @@ interface PricingSectionProps {
 export const PricingSection = ({ onConnect }: PricingSectionProps) => {
     const plans = [
         {
-            name: "FREE",
-            badge: "Launch Edition",
+            name: "STARTER",
+            badge: "Live Now",
             status: "Available Now",
-            description: "For early adopters, journalists, photographers, and researchers.",
+            description: "Essential tools for content creators and journalists.",
             price: "Free",
             period: "Forever",
             icon: Users,
             features: [
-                "Manual content registration (dashboard)",
-                "Generate perceptual hash (pHash)",
-                "Lisk blockchain fingerprinting",
-                "View history & proof TX hash",
-                "Unlimited verification portal",
-                "API access (Limited quota)",
-                "Email Support"
+                "Content Registration & Hashing",
+                "Lisk Blockchain Timestamping",
+                "Unlimited Verification Portal",
+                "Basic API Access",
+                "Community Support"
             ],
-            limits: [
-                { label: "Registration Quota", value: "10,000 / mo" },
-                { label: "API Verify Requests", value: "50,000 / mo" },
-                { label: "Publisher Wallet", value: "1" },
-                { label: "Compute Priority", value: "Normal" }
-            ],
-            cta: "Connect Wallet",
+            cta: "Start Verifying",
             action: onConnect,
             highlight: true,
             color: "blue"
         },
         {
-            name: "BUSINESS",
+            name: "PRO",
             badge: "Coming Soon",
             status: "Waitlist",
-            description: "For regional media, creative agencies, and startups.",
-            price: "Scale",
-            period: "Custom",
+            description: "Advanced power for agencies and growing teams.",
+            price: "TBD",
+            period: "Month",
             icon: Zap,
             features: [
-                "500k API requests / month",
-                "100k Content registrations / month",
-                "Up to 10 Publisher Wallets",
-                "Dashboard analytics & insights",
-                "High Priority Compute",
-                "SLA Support & Onboarding"
+                "Higher API Rate Limits",
+                "Bulk Content Processing",
+                "Team Management",
+                "Advanced Analytics",
+                "Priority Support"
             ],
-            limits: [],
             cta: "Join Waitlist",
-            action: () => window.open("mailto:sales@signet.com?subject=Business%20Plan%20Inquiry", "_blank"),
+            action: () => window.open("mailto:sales@signet.com?subject=Pro%20Plan%20Waitlist", "_blank"),
             highlight: false,
             color: "purple"
         },
@@ -88,20 +67,17 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
             name: "ENTERPRISE",
             badge: "Coming Soon",
             status: "Contact Sales",
-            description: "For national media, government, and security operations.",
+            description: "Custom solutions for large-scale organizations.",
             price: "Custom",
             period: "Contact",
             icon: Building2,
             features: [
-                "Unlimited verification & registration",
-                "Dedicated blockchain indexer node",
-                "Private endpoints & secure tunnel",
-                "On-premise / air-gapped option",
-                "24/7 SLA Priority Support",
-                "Custom ML model tuning",
-                "Legal forensics compliance"
+                "Unlimited Scale & Throughput",
+                "Dedicated Blockchain Nodes",
+                "On-Premise Deployment",
+                "Custom SLA & Compliance",
+                "24/7 Dedicated Support"
             ],
-            limits: [],
             cta: "Contact Sales",
             action: () => window.open("mailto:sales@signet.com?subject=Enterprise%20Plan%20Inquiry", "_blank"),
             highlight: false,
@@ -120,14 +96,14 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
                     className="text-center mb-16"
                 >
                     <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
-                        Choose Your Plan
+                        Simple, Transparent Pricing
                     </h2>
-                    <p className="text-muted-foreground max-w-2xl mx-auto">
-                        Start for free with our Launch Edition, or scale up for enterprise-grade verification and security needs.
+                    <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+                        Start for free. Upgrade as you grow.
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-12">
                     {plans.map((plan, i) => (
                         <motion.div
                             key={i}
@@ -138,74 +114,56 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
                             className="h-full"
                         >
                             <GlassCard
-                                className={`relative flex flex-col h-full p-6 ${plan.highlight
+                                className={`relative flex flex-col h-full p-8 ${plan.highlight
                                     ? "border-blue-500/20 dark:border-blue-500/30 shadow-[0_0_40px_rgba(59,130,246,0.1)] dark:shadow-[0_0_40px_rgba(59,130,246,0.15)] bg-blue-500/5 dark:bg-blue-900/10"
-                                    : "hover:border-white/[0.15] dark:hover:border-white/20"
+                                    : "opacity-80 hover:opacity-100 transition-opacity"
                                     }`}
                             >
                                 {plan.badge && (
-                                    <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-bl-xl rounded-tr-[20px] border-l border-b ${plan.color === 'blue' ? 'bg-blue-600/80 dark:bg-blue-600/80 border-blue-400/30 text-white dark:text-white' :
-                                        plan.color === 'purple' ? 'bg-purple-600/80 dark:bg-purple-600/80 border-purple-400/30 text-white dark:text-white' :
-                                            'bg-rose-600/80 dark:bg-rose-600/80 border-rose-400/30 text-white dark:text-white'
+                                    <div className={`absolute top-0 right-0 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded-bl-2xl rounded-tr-[22px] border-l border-b ${plan.color === 'blue' ? 'bg-blue-600/90 border-blue-400/30 text-white' :
+                                        plan.color === 'purple' ? 'bg-purple-600/90 border-purple-400/30 text-white' :
+                                            'bg-rose-600/90 border-rose-400/30 text-white'
                                         }`}>
                                         {plan.badge}
                                     </div>
                                 )}
 
-                                <div className="mb-6">
-                                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${plan.color === 'blue' ? 'bg-blue-500/20 text-blue-400' :
+                                <div className="mb-8">
+                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${plan.color === 'blue' ? 'bg-blue-500/20 text-blue-400' :
                                         plan.color === 'purple' ? 'bg-purple-500/20 text-purple-400' :
                                             'bg-rose-500/20 text-rose-400'
                                         }`}>
-                                        <plan.icon className="w-6 h-6" />
+                                        <plan.icon className="w-7 h-7" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-foreground mb-2">
+                                    <h3 className="text-2xl font-bold text-foreground mb-2">
                                         {plan.name}
                                     </h3>
-                                    <p className="text-sm text-muted-foreground min-h-[40px]">
+                                    <p className="text-sm text-muted-foreground min-h-[40px] leading-relaxed">
                                         {plan.description}
                                     </p>
                                 </div>
 
-                                <div className="mb-6 pb-6 border-b border-white/[0.08] dark:border-white/[0.08]">
+                                <div className="mb-8">
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-bold text-foreground">
+                                        <span className="text-4xl font-bold text-foreground">
                                             {plan.price}
                                         </span>
-                                        {plan.period && <span className="text-muted-foreground text-sm">/ {plan.period}</span>}
+                                        {plan.period && plan.price !== "Free" && plan.price !== "Custom" && plan.price !== "TBD" && <span className="text-muted-foreground text-sm">/ {plan.period}</span>}
                                     </div>
                                 </div>
 
-                                <div className="flex-1 space-y-6">
-                                    <div>
-                                        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                                            Features
-                                        </h4>
-                                        <ul className="space-y-3">
-                                            {plan.features.map((feat, j) => (
-                                                <CheckItem key={j}>{feat}</CheckItem>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    {plan.limits.length > 0 && (
-                                        <div>
-                                            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                                                Limits
-                                            </h4>
-                                            <div className="bg-white/[0.05] dark:bg-white/5 rounded-lg p-3 space-y-1 border border-white/[0.05] dark:border-white/[0.05]">
-                                                {plan.limits.map((limit, k) => (
-                                                    <StatusItem key={k} label={limit.label} value={limit.value} />
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
+                                <div className="flex-1 mb-8">
+                                    <ul className="space-y-4">
+                                        {plan.features.map((feat, j) => (
+                                            <CheckItem key={j}>{feat}</CheckItem>
+                                        ))}
+                                    </ul>
                                 </div>
 
-                                <div className="mt-8">
+                                <div>
                                     <GlowButton
                                         variant={plan.highlight ? "primary" : "secondary"}
-                                        className="w-full justify-center"
+                                        className="w-full justify-center py-6 text-base"
                                         onClick={plan.action}
                                         disabled={!plan.highlight && !plan.action}
                                     >
@@ -224,15 +182,15 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
                     transition={{ delay: 0.5 }}
                     className="text-center"
                 >
-                    <Link href="/pricing">
+                    <Link href="/contact">
                         <span className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group text-sm cursor-pointer">
-                            See full pricing details
+                            Have more questions? Contact us
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </span>
                     </Link>
-
                 </motion.div>
             </div>
         </section>
     );
 };
+

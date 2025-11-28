@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence, useMotionValue, useMotionTemplate } from "framer-motion";
 import {
     Fingerprint,
     Lock,
@@ -9,8 +9,8 @@ import {
     Search,
     X,
     ArrowRight,
+    CheckCircle2,
 } from "lucide-react";
-import { GlassCard } from "@/components/ui/glass-card";
 import { cn } from "@/lib/utils";
 
 const FEATURES = [
@@ -24,6 +24,7 @@ const FEATURES = [
         tags: ["AI Analysis", "Content ID", "Robust"],
         gradient: "from-blue-500/20 to-cyan-500/20",
         border: "group-hover:border-blue-500/50",
+        colSpan: "md:col-span-2",
     },
     {
         id: "immutable-record",
@@ -35,6 +36,7 @@ const FEATURES = [
         tags: ["Blockchain", "Lisk L2", "Security"],
         gradient: "from-purple-500/20 to-pink-500/20",
         border: "group-hover:border-purple-500/50",
+        colSpan: "md:col-span-1",
     },
     {
         id: "verification-api",
@@ -46,6 +48,7 @@ const FEATURES = [
         tags: ["Developer Tools", "High Performance", "Scalable"],
         gradient: "from-amber-500/20 to-orange-500/20",
         border: "group-hover:border-amber-500/50",
+        colSpan: "md:col-span-1",
     },
     {
         id: "publisher-identity",
@@ -57,6 +60,7 @@ const FEATURES = [
         tags: ["Identity", "DID", "Trust"],
         gradient: "from-emerald-500/20 to-green-500/20",
         border: "group-hover:border-emerald-500/50",
+        colSpan: "md:col-span-2",
     },
     {
         id: "anti-deepfake",
@@ -68,6 +72,7 @@ const FEATURES = [
         tags: ["AI Safety", "Deepfake Detection", "Protection"],
         gradient: "from-red-500/20 to-rose-500/20",
         border: "group-hover:border-red-500/50",
+        colSpan: "md:col-span-1",
     },
     {
         id: "public-portal",
@@ -79,13 +84,60 @@ const FEATURES = [
         tags: ["Open Access", "Transparency", "Free"],
         gradient: "from-indigo-500/20 to-violet-500/20",
         border: "group-hover:border-indigo-500/50",
+        colSpan: "md:col-span-2",
     },
 ];
+
+function SpotlightCard({ children, className = "", onClick, layoutId, gradient }: any) {
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    function handleMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+        const { left, top } = currentTarget.getBoundingClientRect();
+        mouseX.set(clientX - left);
+        mouseY.set(clientY - top);
+    }
+
+    return (
+        <motion.div
+            layoutId={layoutId}
+            onClick={onClick}
+            className={cn(
+                "group relative border border-white/[0.1] bg-white/[0.05] dark:bg-white/[0.02] overflow-hidden rounded-3xl cursor-pointer backdrop-blur-sm",
+                className
+            )}
+            onMouseMove={handleMouseMove}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+        >
+            <motion.div
+                className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 group-hover:opacity-100"
+                style={{
+                    background: useMotionTemplate`
+            radial-gradient(
+              650px circle at ${mouseX}px ${mouseY}px,
+              rgba(255,255,255,0.1),
+              transparent 80%
+            )
+          `,
+                }}
+            />
+            <div className={cn(
+                "absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-gradient-to-br",
+                gradient
+            )} />
+            <div className="relative h-full">
+                {children}
+            </div>
+        </motion.div>
+    );
+}
 
 export function FeaturesSection() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
-    // Close modal on escape key
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") setSelectedId(null);
@@ -95,92 +147,84 @@ export function FeaturesSection() {
     }, []);
 
     return (
-        <section id="features" className="py-24 relative z-10">
-            <div className="max-w-7xl mx-auto px-6">
+        <section id="features" className="py-24 relative z-10 overflow-hidden">
+            {/* Background Elements */}
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="mb-16 text-center md:text-left"
+                    className="mb-20 text-center"
                 >
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
+                    <h2 className="text-4xl md:text-6xl font-bold mb-6 text-foreground tracking-tight">
                         Powerful Features
                     </h2>
-                    <p className="text-muted-foreground text-lg">
+                    <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
                         Everything you need to secure digital trust.
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {FEATURES.map((feature) => (
-                        <motion.div
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
+                    {FEATURES.map((feature, i) => (
+                        <SpotlightCard
                             key={feature.id}
                             layoutId={`card-${feature.id}`}
                             onClick={() => setSelectedId(feature.id)}
-                            className={cn(
-                                "relative group cursor-pointer rounded-3xl overflow-hidden",
-                                "border border-white/[0.1] dark:border-white/[0.08] bg-white/[0.05] dark:bg-white/[0.02] backdrop-blur-[12px]",
-                                "hover:bg-white/[0.08] dark:hover:bg-white/[0.05] hover:border-white/[0.15] dark:hover:border-white/[0.12]",
-                                "transition-colors duration-300 shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-                            )}
-                            whileHover={{ y: -5 }}
+                            className={feature.colSpan}
+                            gradient={feature.gradient}
                         >
-                            {/* Gradient Background Effect */}
-                            <div
-                                className={cn(
-                                    "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br",
-                                    feature.gradient
-                                )}
-                            />
-
-                            <div className="relative p-8 h-full flex flex-col">
-                                <div
-                                    className={cn(
-                                        "w-12 h-12 rounded-xl flex items-center justify-center mb-6",
-                                        "bg-white/[0.05] dark:bg-white/5 border border-white/[0.1] dark:border-white/[0.08]",
-                                        "group-hover:scale-110 transition-transform duration-500",
-                                        feature.border
-                                    )}
-                                >
-                                    <feature.icon className="w-6 h-6 text-foreground" />
+                            <div className="p-8 h-full flex flex-col">
+                                <div className="flex items-start justify-between mb-8">
+                                    <div
+                                        className={cn(
+                                            "w-14 h-14 rounded-2xl flex items-center justify-center",
+                                            "bg-white/[0.05] dark:bg-white/5 border border-white/[0.1] dark:border-white/[0.08]",
+                                            "group-hover:scale-110 transition-transform duration-500 shadow-lg",
+                                            feature.border
+                                        )}
+                                    >
+                                        <feature.icon className="w-7 h-7 text-foreground" />
+                                    </div>
+                                    <div className="w-8 h-8 rounded-full bg-white/[0.05] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <ArrowRight className="w-4 h-4 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                                    </div>
                                 </div>
 
-                                <motion.h3
-                                    layoutId={`title-${feature.id}`}
-                                    className="text-xl font-semibold mb-3 text-foreground"
-                                >
-                                    {feature.title}
-                                </motion.h3>
+                                <div className="mt-auto">
+                                    <motion.h3
+                                        layoutId={`title-${feature.id}`}
+                                        className="text-2xl font-bold mb-3 text-foreground"
+                                    >
+                                        {feature.title}
+                                    </motion.h3>
 
-                                <motion.p
-                                    layoutId={`desc-${feature.id}`}
-                                    className="text-muted-foreground text-sm leading-relaxed mb-6"
-                                >
-                                    {feature.shortDesc}
-                                </motion.p>
-
-                                <div className="mt-auto flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                                    Learn more <ArrowRight className="w-4 h-4 ml-2" />
+                                    <motion.p
+                                        layoutId={`desc-${feature.id}`}
+                                        className="text-muted-foreground text-base leading-relaxed"
+                                    >
+                                        {feature.shortDesc}
+                                    </motion.p>
                                 </div>
                             </div>
-                        </motion.div>
+                        </SpotlightCard>
                     ))}
                 </div>
 
                 <AnimatePresence>
                     {selectedId && (
                         <>
-                            {/* Backdrop */}
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 onClick={() => setSelectedId(null)}
-                                className="fixed inset-0 bg-background/60 dark:bg-black/60 backdrop-blur-sm z-50"
+                                className="fixed inset-0 bg-background/80 backdrop-blur-md z-50"
                             />
 
-                            {/* Modal */}
                             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
                                 {FEATURES.map(
                                     (feature) =>
@@ -188,68 +232,73 @@ export function FeaturesSection() {
                                             <motion.div
                                                 key={feature.id}
                                                 layoutId={`card-${feature.id}`}
-                                                className="w-full max-w-5xl bg-white/[0.05] dark:bg-[#0A0A0A] backdrop-blur-[12px] border border-white/[0.1] dark:border-white/[0.08] rounded-3xl overflow-hidden shadow-2xl pointer-events-auto relative"
+                                                className="w-full max-w-4xl bg-[#0A0A0A] border border-white/[0.1] rounded-3xl overflow-hidden shadow-2xl pointer-events-auto relative flex flex-col md:flex-row max-h-[90vh]"
                                             >
-                                                {/* Close Button */}
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         setSelectedId(null);
                                                     }}
-                                                    className="absolute top-4 right-4 p-2 rounded-full bg-white/5 dark:bg-white/5 hover:bg-white/10 dark:hover:bg-white/10 transition-colors z-10"
+                                                    className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors z-20"
                                                 >
                                                     <X className="w-5 h-5 text-foreground" />
                                                 </button>
 
-                                                <div className="grid md:grid-cols-2 h-full">
-                                                    {/* Left: Visual/Icon */}
-                                                    <div
-                                                        className={cn(
-                                                            "p-8 flex items-center justify-center relative overflow-hidden",
-                                                            "bg-gradient-to-br",
-                                                            feature.gradient
-                                                        )}
-                                                    >
-                                                        <feature.icon className="w-32 h-32 text-foreground drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
+                                                <div
+                                                    className={cn(
+                                                        "w-full md:w-2/5 p-8 flex items-center justify-center relative overflow-hidden",
+                                                        "bg-gradient-to-br",
+                                                        feature.gradient
+                                                    )}
+                                                >
+                                                    <feature.icon className="w-32 h-32 text-foreground relative z-10 drop-shadow-2xl" />
+                                                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+                                                </div>
 
-                                                        {/* Decorative circles */}
-                                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-foreground/20 rounded-full opacity-20 scale-150" />
-                                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-foreground/20 rounded-full opacity-30 scale-125" />
+                                                <div className="w-full md:w-3/5 p-8 md:p-10 flex flex-col bg-[#0A0A0A] overflow-y-auto">
+                                                    <motion.h3
+                                                        layoutId={`title-${feature.id}`}
+                                                        className="text-3xl md:text-4xl font-bold mb-4 text-foreground"
+                                                    >
+                                                        {feature.title}
+                                                    </motion.h3>
+
+                                                    <div className="flex flex-wrap gap-2 mb-8">
+                                                        {feature.tags.map((tag, i) => (
+                                                            <span
+                                                                key={i}
+                                                                className="px-3 py-1 text-xs font-medium rounded-full bg-white/10 border border-white/10 text-muted-foreground"
+                                                            >
+                                                                {tag}
+                                                            </span>
+                                                        ))}
                                                     </div>
 
-                                                    {/* Right: Content */}
-                                                    <div className="p-8 flex flex-col justify-center bg-background dark:bg-[#0A0A0A]">
-                                                        <motion.h3
-                                                            layoutId={`title-${feature.id}`}
-                                                            className="text-3xl font-bold mb-4 text-foreground"
-                                                        >
-                                                            {feature.title}
-                                                        </motion.h3>
+                                                    <motion.p
+                                                        layoutId={`desc-${feature.id}`}
+                                                        className="text-muted-foreground text-lg leading-relaxed mb-8"
+                                                    >
+                                                        {feature.longDesc}
+                                                    </motion.p>
 
-                                                        <div className="flex flex-wrap gap-2 mb-6">
-                                                            {feature.tags.map((tag, i) => (
-                                                                <span
-                                                                    key={i}
-                                                                    className="px-3 py-1 text-xs font-medium rounded-full bg-white/[0.05] dark:bg-white/5 border border-white/[0.1] dark:border-white/[0.08] text-muted-foreground"
-                                                                >
-                                                                    {tag}
-                                                                </span>
-                                                            ))}
-                                                        </div>
-
-                                                        <motion.p
-                                                            layoutId={`desc-${feature.id}`}
-                                                            className="text-muted-foreground leading-relaxed mb-8"
-                                                        >
-                                                            {feature.longDesc}
-                                                        </motion.p>
-
-                                                        <button
-                                                            onClick={() => setSelectedId(null)}
-                                                            className="w-full py-3 rounded-xl bg-foreground text-background font-semibold hover:opacity-90 transition-opacity"
-                                                        >
-                                                            Got it
-                                                        </button>
+                                                    <div className="mt-auto pt-8 border-t border-white/10">
+                                                        <h4 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">
+                                                            Key Benefits
+                                                        </h4>
+                                                        <ul className="grid grid-cols-1 gap-3">
+                                                            <li className="flex items-center gap-3 text-muted-foreground">
+                                                                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                                                <span>Enterprise-grade security</span>
+                                                            </li>
+                                                            <li className="flex items-center gap-3 text-muted-foreground">
+                                                                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                                                <span>Real-time verification</span>
+                                                            </li>
+                                                            <li className="flex items-center gap-3 text-muted-foreground">
+                                                                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                                                <span>Seamless integration</span>
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </motion.div>
@@ -263,3 +312,4 @@ export function FeaturesSection() {
         </section>
     );
 }
+
