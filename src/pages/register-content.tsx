@@ -78,7 +78,7 @@ export default function RegisterContent() {
       <Layout>
         <div className="flex items-center justify-center h-[60vh]">
           <div className="text-center">
-            <p className="text-gray-400">Loading...</p>
+            <p className="text-muted-foreground">Loading...</p>
           </div>
         </div>
       </Layout>
@@ -92,7 +92,7 @@ export default function RegisterContent() {
           <div className="text-center space-y-4">
             <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
             <h2 className="text-2xl font-bold text-white">Access Denied</h2>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               You need to connect your wallet and be registered as a publisher
               to access this page.
             </p>
@@ -117,11 +117,11 @@ export default function RegisterContent() {
             <h2 className="text-3xl font-bold text-white">
               Registration Successful!
             </h2>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               Your content has been successfully hashed and registered on the
               Lisk blockchain (gasless via relayer).
             </p>
-            <div className="bg-black/30 p-4 rounded-xl border border-white/10 space-y-2">
+            <div className="bg-black/30 dark:bg-black/30 p-4 rounded-xl border border-black/10 dark:border-white/10 space-y-2">
               <div className="font-mono text-xs text-gray-400 break-all">
                 <span className="text-gray-500">TX Hash:</span>{" "}
                 {result.txHash}
@@ -159,7 +159,7 @@ export default function RegisterContent() {
             <h2 className="text-3xl font-bold text-white">
               Registration Failed!
             </h2>
-            <p className="text-gray-400">{error}</p>
+            <p className="text-muted-foreground">{error}</p>
             <div className="flex gap-3">
               <GlowButton
                 onClick={() => {
@@ -179,8 +179,8 @@ export default function RegisterContent() {
   return (
     <Layout>
       <header className="mb-8">
-        <h2 className="text-3xl font-bold text-white">Register Content</h2>
-        <p className="text-gray-400 mt-1">
+        <h2 className="text-3xl font-bold text-foreground">Register Content</h2>
+        <p className="text-muted-foreground mt-1">
           Upload assets to generate a perceptual hash and anchor it to the
           blockchain.
         </p>
@@ -195,7 +195,7 @@ export default function RegisterContent() {
               border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300
               ${isDragActive
                 ? "border-blue-500 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.2)]"
-                : "border-white/10 hover:border-white/20 hover:bg-white/5 bg-white/2"
+                : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 hover:bg-black/[0.03] dark:hover:bg-white/5 bg-black/[0.01] dark:bg-white/2"
               }
             `}
           >
@@ -205,7 +205,7 @@ export default function RegisterContent() {
                 <UploadCloud className="w-8 h-8 text-blue-400" />
               </div>
               <div>
-                <p className="text-lg font-medium text-white">
+                <p className="text-lg font-medium text-foreground">
                   {isDragActive
                     ? "Drop file here"
                     : "Drag & drop file or click to browse"}
@@ -219,22 +219,22 @@ export default function RegisterContent() {
 
           {/* Metadata Form */}
           <GlassCard>
-            <h3 className="text-lg font-semibold text-white mb-6">Metadata</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-6">Metadata</h3>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-gray-400">Content Title</Label>
+                <Label className="text-muted-foreground">Content Title</Label>
                 <Input
                   placeholder="e.g. Q3 Financial Report"
-                  className="bg-white/5 border-white/10 text-white placeholder:text-gray-600"
+                  className="bg-black/[0.03] dark:bg-white/5 border-black/10 dark:border-white/10 text-foreground placeholder:text-muted-foreground"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label className="text-gray-400">Description</Label>
+                <Label className="text-muted-foreground">Description</Label>
                 <Textarea
                   placeholder="Brief description of the content..."
-                  className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 min-h-[100px]"
+                  className="bg-black/[0.03] dark:bg-white/5 border-black/10 dark:border-white/10 text-foreground placeholder:text-muted-foreground min-h-[100px]"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -264,16 +264,16 @@ export default function RegisterContent() {
                 className="space-y-6"
               >
                 <GlassCard className="border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.1)]">
-                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                     <File className="w-5 h-5 text-blue-400" />
                     Selected File
                   </h3>
-                  <div className="flex items-center gap-4 p-4 rounded-xl bg-black/40 border border-white/10">
-                    <div className="w-12 h-12 rounded bg-white/10 flex items-center justify-center text-xs font-bold text-gray-400 uppercase">
+                  <div className="flex items-center gap-4 p-4 rounded-xl bg-black/20 dark:bg-black/40 border border-black/10 dark:border-white/10">
+                    <div className="w-12 h-12 rounded bg-black/10 dark:bg-white/10 flex items-center justify-center text-xs font-bold text-muted-foreground uppercase">
                       {file.name.split(".").pop()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-white font-medium truncate">
+                      <p className="text-foreground font-medium truncate">
                         {file.name}
                       </p>
                       <p className="text-sm text-gray-500">
@@ -292,7 +292,7 @@ export default function RegisterContent() {
                   </div>
                 </GlassCard>
 
-                <div className="flex items-start gap-3 text-sm text-gray-400 bg-white/5 p-3 rounded-lg mt-4">
+                <div className="flex items-start gap-3 text-sm text-muted-foreground bg-black/[0.03] dark:bg-white/5 p-3 rounded-lg mt-4">
                   <AlertCircle className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
                   <p>
                     Registration is gasless - the backend will handle the

@@ -4,7 +4,7 @@ import abstractShapes from "@/assets/img/finger.png";
 
 export function LandingFooter() {
   return (
-    <footer className="border-t border-white/[0.1] dark:border-white/[0.08] bg-background/40 dark:bg-black/40 backdrop-blur-[12px] pt-20 pb-10 relative z-10">
+    <footer className="border-t border-black/[0.1] dark:border-white/[0.08] bg-black/[0.02] dark:bg-black/40 backdrop-blur-[12px] pt-20 pb-10 relative z-10">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
           <div className="col-span-2 md:col-span-1">
@@ -83,7 +83,7 @@ export function LandingFooter() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/[0.08] dark:border-white/[0.08] flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-8 border-t border-black/[0.08] dark:border-white/[0.08] flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">© 2025 SIGNET. All rights reserved.</p>
           <div className="flex gap-6">
             {[Globe, Activity, Upload].map((Icon, i) => (

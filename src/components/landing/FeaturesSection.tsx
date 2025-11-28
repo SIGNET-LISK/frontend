@@ -103,7 +103,7 @@ function SpotlightCard({ children, className = "", onClick, layoutId, gradient }
             layoutId={layoutId}
             onClick={onClick}
             className={cn(
-                "group relative border border-white/[0.1] bg-white/[0.05] dark:bg-white/[0.02] overflow-hidden rounded-3xl cursor-pointer backdrop-blur-sm",
+                "group relative border border-black/[0.1] bg-black/[0.03] dark:bg-white/[0.02] dark:border-white/[0.1] overflow-hidden rounded-3xl cursor-pointer backdrop-blur-sm",
                 className
             )}
             onMouseMove={handleMouseMove}
@@ -182,7 +182,7 @@ export function FeaturesSection() {
                                     <div
                                         className={cn(
                                             "w-14 h-14 rounded-2xl flex items-center justify-center",
-                                            "bg-white/[0.05] dark:bg-white/5 border border-white/[0.1] dark:border-white/[0.08]",
+                                            "bg-black/[0.03] dark:bg-white/5 border border-black/[0.1] dark:border-white/[0.08]",
                                             "group-hover:scale-110 transition-transform duration-500 shadow-lg",
                                             feature.border
                                         )}

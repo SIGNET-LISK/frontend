@@ -72,7 +72,7 @@ export const HowItWorksSection = () => {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
+                    <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
                         How SIGNET Works
                     </h2>
                     <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -105,8 +105,8 @@ export const HowItWorksSection = () => {
                                     >
                                         <GlassCard
                                             className={`p-6 transition-all duration-500 ${isActive
-                                                ? "border-white/30 bg-gradient-to-br " + step.gradient
-                                                : "border-white/10 hover:border-white/20"
+                                                ? "border-white/30 dark:border-white/30 bg-gradient-to-br " + step.gradient
+                                                : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20"
                                                 }`}
                                         >
                                             <div className="flex items-start gap-4">
@@ -115,7 +115,7 @@ export const HowItWorksSection = () => {
                                                     <motion.div
                                                         className={`w-16 h-16 rounded-xl flex items-center justify-center border-2 transition-all duration-500 ${isActive
                                                             ? `border-${step.color}-400 bg-${step.color}-500/20`
-                                                            : "border-white/10 bg-white/5"
+                                                            : "border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-white/5"
                                                             }`}
                                                         animate={
                                                             isActive
@@ -143,7 +143,7 @@ export const HowItWorksSection = () => {
                                                     <div
                                                         className={`absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-500 ${isActive
                                                             ? `bg-${step.color}-500 text-white`
-                                                            : "bg-white/10 text-gray-500"
+                                                            : "bg-black/10 dark:bg-white/10 text-gray-500"
                                                             }`}
                                                         style={
                                                             isActive
@@ -158,15 +158,15 @@ export const HowItWorksSection = () => {
                                                 {/* Content */}
                                                 <div className="flex-1 min-w-0">
                                                     <h3
-                                                        className={`text-xl font-bold mb-2 transition-colors duration-300 ${isActive ? "text-white" : "text-gray-400"
+                                                        className={`text-xl font-bold mb-2 transition-colors duration-300 ${isActive ? "text-foreground" : "text-muted-foreground"
                                                             }`}
                                                     >
                                                         {step.title}
                                                     </h3>
                                                     <p
                                                         className={`text-sm leading-relaxed transition-all duration-300 ${isActive
-                                                            ? "text-gray-300 opacity-100"
-                                                            : "text-gray-500 opacity-70"
+                                                            ? "text-foreground opacity-100"
+                                                            : "text-muted-foreground opacity-70"
                                                             }`}
                                                     >
                                                         {step.desc}
@@ -175,7 +175,7 @@ export const HowItWorksSection = () => {
                                                     {/* Progress bar for active step */}
                                                     {isActive && (
                                                         <motion.div
-                                                            className="mt-4 h-1 bg-white/10 rounded-full overflow-hidden"
+                                                            className="mt-4 h-1 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden"
                                                             initial={{ opacity: 0 }}
                                                             animate={{ opacity: 1 }}
                                                             exit={{ opacity: 0 }}
@@ -328,7 +328,7 @@ export const HowItWorksSection = () => {
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: 0.3 }}
-                                            className="relative z-10 text-3xl md:text-4xl font-bold text-center mb-4 text-white"
+                                            className="relative z-10 text-3xl md:text-4xl font-bold text-center mb-4 text-foreground"
                                         >
                                             {STEPS[activeStep].title}
                                         </motion.h3>
@@ -338,7 +338,7 @@ export const HowItWorksSection = () => {
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
                                             transition={{ delay: 0.4 }}
-                                            className="relative z-10 text-center text-gray-300 leading-relaxed max-w-md"
+                                            className="relative z-10 text-center text-muted-foreground leading-relaxed max-w-md"
                                         >
                                             {STEPS[activeStep].desc}
                                         </motion.p>

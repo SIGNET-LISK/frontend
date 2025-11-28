@@ -107,8 +107,8 @@ export default function MyContents() {
     <Layout>
       <header className="mb-8 flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold text-white">My Contents</h2>
-          <p className="text-gray-400 mt-1">
+          <h2 className="text-3xl font-bold text-foreground">My Contents</h2>
+          <p className="text-muted-foreground mt-1">
             Manage your registered digital assets and view their blockchain
             proofs.
           </p>
@@ -155,7 +155,7 @@ export default function MyContents() {
             <>
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="text-gray-500 border-b border-white/5 text-sm uppercase tracking-wider bg-white/[0.02]">
+                  <tr className="text-muted-foreground border-b border-black/5 dark:border-white/5 text-sm uppercase tracking-wider bg-black/[0.02] dark:bg-white/[0.02]">
                     <th className="p-6 font-medium">Asset Details</th>
                     <th className="p-6 font-medium">pHash</th>
                     <th className="p-6 font-medium">TX Hash</th>
@@ -167,7 +167,7 @@ export default function MyContents() {
                   {currentContents.map((item: any) => (
                     <tr
                       key={item.id}
-                      className="group hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                      className="group hover:bg-black/[0.03] dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5 last:border-0"
                     >
                       <td className="p-6">
                         <div className="flex items-center gap-4">
@@ -175,7 +175,7 @@ export default function MyContents() {
                             <FileText className="w-5 h-5 text-blue-400" />
                           </div>
                           <div>
-                            <p className="font-medium text-white">
+                            <p className="font-medium text-foreground">
                               {item.title || "Untitled"}
                             </p>
                             <p className="text-xs text-gray-500">
@@ -201,7 +201,7 @@ export default function MyContents() {
                           href={`https://sepolia-blockscout.lisk.com/tx/${item.txhash}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors cursor-pointer group/tx font-mono"
+                          className="flex items-center gap-2 text-muted-foreground hover:text-blue-400 transition-colors cursor-pointer group/tx font-mono"
                         >
                           <span>{formatTxHash(item.txhash)}</span>
                           <ExternalLink className="w-3 h-3 opacity-0 group-hover/tx:opacity-100 transition-opacity" />
@@ -214,7 +214,7 @@ export default function MyContents() {
                         </div>
                       </td>
                       <td className="p-6">
-                        <button className="p-2 hover:bg-white/10 rounded-full text-gray-400 hover:text-white transition-colors">
+                        <button className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full text-muted-foreground hover:text-foreground transition-colors">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </td>
@@ -225,7 +225,7 @@ export default function MyContents() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="p-6 border-t border-white/5 bg-white/[0.02]">
+                <div className="p-6 border-t border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02]">
                   <Pagination>
                     <PaginationContent>
                       <PaginationItem>
