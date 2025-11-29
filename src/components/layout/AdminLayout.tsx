@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAccount, useDisconnect } from "wagmi";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import abstractShapes from "@/assets/img/signet-logo.svg";
+import abstractShapes from "@/assets/img/logos.png";
 import LiquidEther from "@/components/LiquidEther";
 
 // Helper function to format address
@@ -106,7 +106,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             <img
               src={abstractShapes}
               alt="SIGNET"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-[10px]"
             />
           </div>
 

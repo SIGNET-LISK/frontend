@@ -36,7 +36,7 @@ const BENEFITS = [
   {
     icon: ShieldCheck,
     title: "Protect Brand Reputation",
-    desc: "Prevent misinformation from damaging trust.",
+    desc: "Prevent misinformation from damaging trust",
   },
   {
     icon: Scale,
@@ -357,7 +357,7 @@ export default function LandingPage() {
                     </div>
                     <div className="flex flex-col gap-4">
                       <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed text-left">
-                        An AI-powered, blockchain-backed platform to
+                        A perceptual hashing and blockchain-backed platform to
                         authenticate images, videos, and documents — stopping
                         deepfakes and misinformation at the source.
                       </p>

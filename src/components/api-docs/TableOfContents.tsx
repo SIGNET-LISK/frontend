@@ -13,9 +13,9 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen w-[280px] flex flex-col z-30 overflow-hidden",
+        "fixed left-4 top-28 bottom-4 w-[280px] flex flex-col z-30 overflow-hidden rounded-3xl",
         // Glassmorphism bright style to match verify small screens
-        "border-r border-white/[0.18] dark:border-white/[0.08] shadow-[0_18px_45px_rgba(15,23,42,0.18)]",
+        "border border-white/[0.18] dark:border-white/[0.08] shadow-[0_18px_45px_rgba(15,23,42,0.18)]",
         "bg-white/80 dark:bg-[rgba(20,20,20,0.6)]"
       )}
       style={{
@@ -23,8 +23,6 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
         WebkitBackdropFilter: "blur(24px)",
       }}
     >
-      {/* Spacer untuk navbar */}
-      <div className="h-20 flex-shrink-0" />
 
       {/* Navigation items - No scroll, items fit in available space */}
       <div className="flex-1 overflow-hidden pt-6 px-6 pb-6">

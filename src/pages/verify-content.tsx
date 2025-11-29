@@ -10,7 +10,7 @@ import { VerifyInput } from "@/components/verify/VerifyInput";
 import { VerifyResult } from "@/components/verify/VerifyResult";
 import { VerifyLoading } from "@/components/verify/VerifyLoading";
 import LiquidEther from "@/components/LiquidEther";
-import abstractShapes from "@/assets/img/signet-logo.svg";
+import abstractShapes from "@/assets/img/logos.png";
 import { verifyContent } from "@/lib/api";
 
 type VerificationResult = {
@@ -199,7 +199,7 @@ export default function VerifyContent() {
               <img
                 src={abstractShapes}
                 alt="SIGNET"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-[10px]"
               />
             </div>
             <span className="font-bold text-xl tracking-tight">SIGNET</span>

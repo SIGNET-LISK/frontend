@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllContents } from "@/lib/api";
 import { GlassCard } from "@/components/ui/glass-card";
+import { motion } from "framer-motion";
 import {
   Pagination,
   PaginationContent,
@@ -21,11 +22,16 @@ import {
   Database,
   Search,
   X,
+  ArrowLeft,
+  Home,
 } from "lucide-react";
-import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { LandingFooter } from "@/components/landing/LandingFooter";
+import { GlowButton } from "@/components/ui/glow-button";
+import { Link } from "wouter";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import LiquidEther from "@/components/LiquidEther";
 import { Input } from "@/components/ui/input";
+import abstractShapes from "@/assets/img/logos.png";
 
 // Helper to format address
 const formatAddress = (address: string) => {
@@ -193,7 +199,37 @@ export default function Activity() {
       {/* Content wrapper */}
       <div className="relative z-10">
         {/* Navbar */}
-        <LandingNavbar scrolled={scrolled} />
+        <motion.nav
+          className="fixed top-4 left-4 right-4 z-50 rounded-full border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <Link
+              href="/"
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                <img
+                  src={abstractShapes}
+                  alt="SIGNET"
+                  className="w-full h-full object-cover rounded-[10px]"
+                />
+              </div>
+              <span className="font-bold text-xl tracking-tight">SIGNET</span>
+            </Link>
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <Link href="/">
+                <GlowButton variant="secondary" className="gap-2">
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to Home
+                </GlowButton>
+              </Link>
+            </div>
+          </div>
+        </motion.nav>
 
         {/* Main Content */}
         <main className="pt-32 pb-20 px-4 md:px-6 lg:px-8">

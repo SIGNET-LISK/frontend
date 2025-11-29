@@ -22,7 +22,7 @@ export default function Introduction() {
             </h3>
           </div>
           <code className="block bg-black/5 dark:bg-black/30 p-3 rounded-lg text-blue-700 dark:text-blue-300 font-mono">
-            http://localhost:8000
+            https://backend-production-15e9.up.railway.app
           </code>
         </GlassCard>
       </section>

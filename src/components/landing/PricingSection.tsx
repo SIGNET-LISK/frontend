@@ -33,35 +33,14 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
             icon: Users,
             features: [
                 "Content Registration & Hashing",
-                "Lisk Blockchain Timestamping",
+                "Lisk Blockchain Store Hashing",
                 "Unlimited Verification Portal",
-                "Basic API Access",
                 "Community Support"
             ],
             cta: "Start Verifying",
             action: onConnect,
             highlight: true,
             color: "blue"
-        },
-        {
-            name: "PRO",
-            badge: "Coming Soon",
-            status: "Waitlist",
-            description: "Advanced power for agencies and growing teams.",
-            price: "TBD",
-            period: "Month",
-            icon: Zap,
-            features: [
-                "Higher API Rate Limits",
-                "Bulk Content Processing",
-                "Team Management",
-                "Advanced Analytics",
-                "Priority Support"
-            ],
-            cta: "Join Waitlist",
-            action: () => window.open("mailto:sales@signet.com?subject=Pro%20Plan%20Waitlist", "_blank"),
-            highlight: false,
-            color: "purple"
         },
         {
             name: "ENTERPRISE",
@@ -103,7 +82,7 @@ export const PricingSection = ({ onConnect }: PricingSectionProps) => {
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12">
                     {plans.map((plan, i) => (
                         <motion.div
                             key={i}

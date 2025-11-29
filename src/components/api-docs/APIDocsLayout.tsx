@@ -55,11 +55,16 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
         style={{ zIndex: 1 }}
       />
 
-      {/* Top Navbar - Fixed above sidebar (desktop) */}
-      <nav className="hidden lg:block fixed top-0 left-[280px] right-0 z-40 border-b border-white/[0.1] dark:border-white/[0.08] bg-background/70 dark:bg-black/60 backdrop-blur-xl h-20">
-        <div className="h-full px-6 flex justify-between items-center">
+      {/* Top Navbar - Fixed rounded-full navbar (desktop) */}
+      <motion.nav
+        className="hidden lg:block fixed top-4 left-4 right-4 z-50 rounded-full border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
           <Link href="/">
-            <div className="flex items-center gap-2 cursor-pointer">
+            <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
                 <img
                   src={abstractShapes}
@@ -67,49 +72,38 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
                   className="w-full h-full object-cover rounded-[10px]"
                 />
               </div>
-
               <span className="font-bold text-xl tracking-tight">SIGNET</span>
+              <span className="text-muted-foreground font-normal ml-2 text-sm hidden xl:inline">
+                API Docs
+              </span>
             </div>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <Link href="/">
-              <span className="hover:text-foreground transition-colors cursor-pointer">
-                Home
-              </span>
-            </Link>
-            <Link href="/verify">
-              <span className="hover:text-foreground transition-colors cursor-pointer">
-                Verify
-              </span>
-            </Link>
-            <Link href="/dashboard">
-              <span className="hover:text-foreground transition-colors cursor-pointer">
-                Dashboard
-              </span>
-            </Link>
-          </div>
-
           <div className="flex items-center gap-4">
-            <Link href="/dashboard/api">
-              <GlowButton className="hidden sm:flex h-9 px-4 text-sm">
-                Get API Key
+            <ThemeToggle />
+            <Link href="/">
+              <GlowButton variant="secondary" className="gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4 h-4"
+                >
+                  <path d="m12 19-7-7 7-7" />
+                  <path d="M19 12H5" />
+                </svg>
+                Back to Home
               </GlowButton>
             </Link>
-            <ThemeToggle />
-            <button
-              className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
-              onClick={() => setIsMobileOpen(!isMobileOpen)}
-            >
-              {isMobileOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </button>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Desktop Layout: Fixed Sidebar + Content Area */}
       <div className="hidden lg:flex relative z-30">
@@ -118,11 +112,11 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
 
         {/* Content Area - Independent scrollable container */}
         <div
-          className="flex-1 ml-[280px] h-screen overflow-y-auto relative z-30"
+          className="flex-1 ml-[296px] h-screen overflow-y-auto relative z-30"
           style={{ scrollBehavior: "smooth" }}
         >
-          {/* Spacer for navbar */}
-          <div className="h-20 flex-shrink-0" />
+          {/* Spacer for navbar - increased for rounded navbar */}
+          <div className="h-28 flex-shrink-0" />
 
           {/* Content */}
           <div className="p-6 lg:p-10 pb-20">{children}</div>
@@ -131,12 +125,17 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
 
       {/* Mobile Layout */}
       <div className="lg:hidden relative z-30">
-        {/* Mobile Navbar */}
-        <nav className="sticky top-0 left-0 right-0 z-50 border-b border-white/[0.1] dark:border-white/[0.08] bg-background/50 dark:bg-black/50 backdrop-blur-xl h-20">
+        {/* Mobile Navbar - Rounded full */}
+        <motion.nav
+          className="fixed top-4 left-4 right-4 z-50 rounded-full border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-20"
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="px-6 h-full flex justify-between items-center">
             <Link href="/">
-              <div className="flex items-center gap-2 cursor-pointer">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+              <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
                   <img src={abstractShapes} alt="SIGNET" className="w-full h-full object-cover rounded-[10px]" />
                 </div>
                 <span className="font-bold text-xl tracking-tight">
@@ -162,7 +161,7 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
               </button>
             </div>
           </div>
-        </nav>
+        </motion.nav>
 
         {/* Mobile Sidebar - slides in from the right */}
         <motion.div
@@ -171,9 +170,9 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
           exit={{ x: "100%" }}
           transition={{ type: "spring", damping: 25, stiffness: 200 }}
           className={cn(
-            "fixed top-20 right-0 h-[calc(100vh-80px)] w-[280px] z-40",
+            "fixed top-24 right-4 bottom-4 w-[280px] z-40 rounded-3xl overflow-hidden",
             "bg-white/[0.05] dark:bg-black/90 backdrop-blur-[12px]",
-            "border-l border-white/[0.1] dark:border-white/[0.08]",
+            "border border-white/[0.1] dark:border-white/[0.08]",
             "shadow-[0_8px_32px_rgba(0,0,0,0.3)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
           )}
           style={{ pointerEvents: isMobileOpen ? "auto" : "none" }}
@@ -195,7 +194,7 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
         </AnimatePresence>
 
         {/* Mobile Content */}
-        <div className="overflow-y-auto" style={{ scrollBehavior: "smooth" }}>
+        <div className="overflow-y-auto pt-24" style={{ scrollBehavior: "smooth" }}>
           <div className="p-6 pb-20">{children}</div>
         </div>
       </div>
