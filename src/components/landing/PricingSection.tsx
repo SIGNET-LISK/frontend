@@ -3,7 +3,6 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { GlowButton } from "@/components/ui/glow-button";
 import {
     CheckCircle,
-    Zap,
     Building2,
     Users,
     ArrowRight

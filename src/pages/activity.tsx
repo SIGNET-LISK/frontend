@@ -23,7 +23,6 @@ import {
   Search,
   X,
   ArrowLeft,
-  Home,
 } from "lucide-react";
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { GlowButton } from "@/components/ui/glow-button";
@@ -71,7 +70,6 @@ const formatDate = (timestamp: number) => {
 
 export default function Activity() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
 
@@ -122,15 +120,6 @@ export default function Activity() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentContents = filteredContents.slice(startIndex, endIndex);
-
-  // Handle scroll for navbar effect
-  useState(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  });
 
   // Generate page numbers for pagination
   const getPageNumbers = () => {
