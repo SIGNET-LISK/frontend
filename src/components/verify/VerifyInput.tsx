@@ -65,7 +65,7 @@ export function VerifyInput({ file, url, isVerifying, onFileChange, onUrlChange 
           "relative group border-2 border-dashed rounded-3xl p-12 text-center cursor-pointer transition-all duration-500 overflow-hidden",
           isDragActive
             ? "border-blue-500 bg-blue-500/10 shadow-[0_0_40px_rgba(59,130,246,0.3)] scale-[1.02]"
-            : "border-white/[0.1] dark:border-white/[0.08] hover:border-blue-400/50 dark:hover:border-blue-400/50 hover:bg-blue-900/5 dark:hover:bg-blue-900/5 bg-white/[0.05] dark:bg-black/20",
+            : "border-slate-300/80 dark:border-white/[0.08] hover:border-blue-500/60 dark:hover:border-blue-400/50 hover:bg-white/80 dark:hover:bg-blue-900/5 bg-white/70 dark:bg-black/20",
           isVerifying && "opacity-50 cursor-not-allowed"
         )}
       >

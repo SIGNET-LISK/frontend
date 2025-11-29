@@ -7,19 +7,22 @@ interface MobileTableOfContentsProps {
   onItemClick?: () => void;
 }
 
-export function MobileTableOfContents({ onItemClick }: MobileTableOfContentsProps) {
+export function MobileTableOfContents({
+  onItemClick,
+}: MobileTableOfContentsProps) {
   const [location] = useLocation();
 
   return (
-    <div className="h-full bg-[rgba(20,20,20,0.4)] backdrop-blur-[28px] border-r border-white/[0.1] dark:border-white/[0.08] shadow-[0_0_20px_rgba(150,180,255,0.25)] overflow-y-auto custom-scrollbar p-6">
+    <div className="h-full overflow-y-auto custom-scrollbar p-6">
       <div className="space-y-1">
-        <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-6 px-3">
+        <h3 className="text-xs font-semibold text-blue-500 dark:text-blue-400 uppercase tracking-wider mb-6 px-3">
           Table of Contents
         </h3>
         {SECTIONS.map((section) => {
           const Icon = section.icon;
-          const isActive = location === section.href || location.startsWith(section.href);
-          
+          const isActive =
+            location === section.href || location.startsWith(section.href);
+
           return (
             <Link key={section.id} href={section.href}>
               <motion.button
@@ -29,15 +32,19 @@ export function MobileTableOfContents({ onItemClick }: MobileTableOfContentsProp
                   "flex items-center gap-3 group",
                   "border-l-2",
                   isActive
-                    ? "text-white bg-white/10 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
-                    : "text-gray-200 hover:text-white hover:bg-white/5 border-transparent hover:border-blue-500/50"
+                    ? "text-gray-900 dark:text-white bg-white/10 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/5 border-transparent hover:border-blue-500/50"
                 )}
                 onClick={onItemClick}
               >
-                <Icon className={cn(
-                  "w-4 h-4 transition-colors",
-                  isActive ? "text-blue-400" : "text-gray-300 group-hover:text-blue-400"
-                )} />
+                <Icon
+                  className={cn(
+                    "w-4 h-4 transition-colors",
+                    isActive
+                      ? "text-blue-500 dark:text-blue-400"
+                      : "text-gray-400 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-300"
+                  )}
+                />
                 <span>{section.label}</span>
               </motion.button>
             </Link>
@@ -47,4 +54,3 @@ export function MobileTableOfContents({ onItemClick }: MobileTableOfContentsProp
     </div>
   );
 }
-

@@ -1,6 +1,8 @@
 import axios, { AxiosError } from "axios";
 
-const API_BASE_URL = "https://backend-production-15e9.up.railway.app";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://backend-production-15e9.up.railway.app";
 
 const api = axios.create({
   baseURL: API_BASE_URL,

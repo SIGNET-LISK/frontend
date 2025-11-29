@@ -58,9 +58,12 @@ export function VerifyLoading() {
 
           {/* Loading Text */}
           <div className="text-center space-y-2">
-            <h3 className="text-2xl font-bold text-white">Analyzing Content</h3>
-            <p className="text-gray-400">
-              Calculating perceptual hash and checking against blockchain registry...
+            <h3 className="text-2xl font-bold text-foreground">
+              Analyzing Content
+            </h3>
+            <p className="text-muted-foreground">
+              Calculating perceptual hash and checking against blockchain
+              registry...
             </p>
           </div>
 
@@ -73,7 +76,9 @@ export function VerifyLoading() {
               >
                 <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
               </motion.div>
-              <span className="text-sm text-gray-300">Processing file...</span>
+              <span className="text-sm text-muted-foreground">
+                Processing file...
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <motion.div
@@ -82,7 +87,9 @@ export function VerifyLoading() {
               >
                 <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
               </motion.div>
-              <span className="text-sm text-gray-300">Generating fingerprint...</span>
+              <span className="text-sm text-muted-foreground">
+                Generating fingerprint...
+              </span>
             </div>
             <div className="flex items-center gap-3">
               <motion.div
@@ -91,7 +98,9 @@ export function VerifyLoading() {
               >
                 <Loader2 className="w-5 h-5 text-blue-400 animate-spin" />
               </motion.div>
-              <span className="text-sm text-gray-300">Querying blockchain...</span>
+              <span className="text-sm text-muted-foreground">
+                Querying blockchain...
+              </span>
             </div>
           </div>
 
@@ -115,4 +124,3 @@ export function VerifyLoading() {
     </motion.div>
   );
 }
-

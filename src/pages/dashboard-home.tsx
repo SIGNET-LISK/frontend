@@ -1,4 +1,3 @@
-import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
 import {
   Activity,
@@ -69,7 +68,7 @@ export default function DashboardHome() {
   const recentActivity = contents.slice(0, 5);
 
   return (
-    <Layout>
+    <>
       <motion.header
         className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8"
         initial={{ opacity: 0, y: 20 }}
@@ -287,6 +286,6 @@ export default function DashboardHome() {
           </div>
         </GlassCard>
       </motion.div>
-    </Layout>
+    </>
   );
 }

@@ -1,4 +1,3 @@
-import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlowButton } from "@/components/ui/glow-button";
 import { useDropzone } from "react-dropzone";
@@ -75,109 +74,103 @@ export default function RegisterContent() {
 
   if (isLoadingPublisher) {
     return (
-      <Layout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="text-center">
-            <p className="text-muted-foreground">Loading...</p>
-          </div>
+      <div className="flex items-center justify-center h-[60vh]">
+        <div className="text-center">
+          <p className="text-muted-foreground">Loading...</p>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   if (!isConnected || !isPublisher) {
     return (
-      <Layout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="text-center space-y-4">
-            <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
-            <h2 className="text-2xl font-bold text-white">Access Denied</h2>
-            <p className="text-muted-foreground">
-              You need to connect your wallet and be registered as a publisher
-              to access this page.
-            </p>
-          </div>
+      <div className="flex items-center justify-center h-[60vh]">
+        <div className="text-center space-y-4">
+          <AlertCircle className="w-16 h-16 text-red-400 mx-auto" />
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Access Denied
+          </h2>
+          <p className="text-muted-foreground">
+            You need to connect your wallet and be registered as a publisher to
+            access this page.
+          </p>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   if (result) {
     return (
-      <Layout>
-        <div className="flex flex-col items-center justify-center h-[60vh]">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="text-center space-y-6 max-w-md"
+      <div className="flex flex-col items-center justify-center h-[60vh]">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="text-center space-y-6 max-w-md"
+        >
+          <div className="w-24 h-24 mx-auto rounded-full bg-green-500/20 flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(34,197,94,0.3)]">
+            <CheckCircle2 className="w-12 h-12 text-green-400" />
+          </div>
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+            Registration Successful!
+          </h2>
+          <p className="text-muted-foreground">
+            Your content has been successfully hashed and registered on the Lisk
+            blockchain (gasless via relayer).
+          </p>
+          <div className="bg-black/5 dark:bg-black/30 p-4 rounded-xl border border-black/10 dark:border-white/10 space-y-2">
+            <div className="font-mono text-xs text-slate-700 dark:text-gray-400 break-all">
+              <span className="text-gray-600 dark:text-gray-500">TX Hash:</span>{" "}
+              {result.txHash}
+            </div>
+            <div className="font-mono text-xs text-slate-700 dark:text-gray-400 break-all">
+              <span className="text-gray-600 dark:text-gray-500">pHash:</span>{" "}
+              {result.pHash}
+            </div>
+          </div>
+          <GlowButton
+            onClick={() => {
+              window.location.reload();
+            }}
           >
-            <div className="w-24 h-24 mx-auto rounded-full bg-green-500/20 flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(34,197,94,0.3)]">
-              <CheckCircle2 className="w-12 h-12 text-green-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white">
-              Registration Successful!
-            </h2>
-            <p className="text-muted-foreground">
-              Your content has been successfully hashed and registered on the
-              Lisk blockchain (gasless via relayer).
-            </p>
-            <div className="bg-black/30 dark:bg-black/30 p-4 rounded-xl border border-black/10 dark:border-white/10 space-y-2">
-              <div className="font-mono text-xs text-gray-400 break-all">
-                <span className="text-gray-500">TX Hash:</span>{" "}
-                {result.txHash}
-              </div>
-              <div className="font-mono text-xs text-gray-400 break-all">
-                <span className="text-gray-500">pHash:</span>{" "}
-                {result.pHash}
-              </div>
-            </div>
-            <GlowButton
-              onClick={() => {
-                window.location.reload();
-              }}
-            >
-              Register Another
-            </GlowButton>
-          </motion.div>
-        </div>
-      </Layout>
+            Register Another
+          </GlowButton>
+        </motion.div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Layout>
-        <div className="flex flex-col items-center justify-center h-[60vh]">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="text-center space-y-6 max-w-md"
-          >
-            <div className="w-24 h-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(239,68,68,0.3)]">
-              <XCircle className="w-12 h-12 text-red-400" />
-            </div>
-            <h2 className="text-3xl font-bold text-white">
-              Registration Failed!
-            </h2>
-            <p className="text-muted-foreground">{error}</p>
-            <div className="flex gap-3">
-              <GlowButton
-                onClick={() => {
-                  window.location.reload(); // Simple reset
-                }}
-                className="flex-1"
-              >
-                Try Again
-              </GlowButton>
-            </div>
-          </motion.div>
-        </div>
-      </Layout>
+      <div className="flex flex-col items-center justify-center h-[60vh]">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="text-center space-y-6 max-w-md"
+        >
+          <div className="w-24 h-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(239,68,68,0.3)]">
+            <XCircle className="w-12 h-12 text-red-400" />
+          </div>
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+            Registration Failed!
+          </h2>
+          <p className="text-muted-foreground">{error}</p>
+          <div className="flex gap-3">
+            <GlowButton
+              onClick={() => {
+                window.location.reload(); // Simple reset
+              }}
+              className="flex-1"
+            >
+              Try Again
+            </GlowButton>
+          </div>
+        </motion.div>
+      </div>
     );
   }
 
   return (
-    <Layout>
+    <>
       <header className="mb-8">
         <h2 className="text-3xl font-bold text-foreground">Register Content</h2>
         <p className="text-muted-foreground mt-1">
@@ -193,9 +186,10 @@ export default function RegisterContent() {
             {...getRootProps()}
             className={`
               border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300
-              ${isDragActive
-                ? "border-blue-500 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.2)]"
-                : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 hover:bg-black/[0.03] dark:hover:bg-white/5 bg-black/[0.01] dark:bg-white/2"
+              ${
+                isDragActive
+                  ? "border-blue-500 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.2)]"
+                  : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 hover:bg-black/[0.03] dark:hover:bg-white/5 bg-black/[0.01] dark:bg-white/2"
               }
             `}
           >
@@ -219,7 +213,9 @@ export default function RegisterContent() {
 
           {/* Metadata Form */}
           <GlassCard>
-            <h3 className="text-lg font-semibold text-foreground mb-6">Metadata</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-6">
+              Metadata
+            </h3>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-muted-foreground">Content Title</Label>
@@ -311,6 +307,6 @@ export default function RegisterContent() {
           </AnimatePresence>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

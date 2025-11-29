@@ -14,11 +14,13 @@ import APIUsage from "@/pages/api-usage";
 import APIDocs from "@/pages/api-docs";
 import VerifyContent from "@/pages/verify-content";
 import Activity from "@/pages/activity";
-import ManagePublishers from "@/pages/manage-publishers";
-import ContentReview from "@/pages/content-review";
-import SystemMonitor from "@/pages/system-monitor";
+import ManagePublishers from "@/pages/admin";
+import ContentReview from "@/pages/admin/content-review";
+import SystemMonitor from "@/pages/admin/system-monitor";
 import NotFound from "@/pages/not-found";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Layout } from "@/components/layout/Layout";
+import { AdminLayout } from "@/components/layout/AdminLayout";
 
 function Router() {
   return (
@@ -29,28 +31,36 @@ function Router() {
       <Route path="/dashboard">
         {() => (
           <ProtectedRoute requirePublisher>
-            <DashboardHome />
+            <Layout>
+              <DashboardHome />
+            </Layout>
           </ProtectedRoute>
         )}
       </Route>
       <Route path="/dashboard/upload">
         {() => (
           <ProtectedRoute requirePublisher>
-            <RegisterContent />
+            <Layout>
+              <RegisterContent />
+            </Layout>
           </ProtectedRoute>
         )}
       </Route>
       <Route path="/dashboard/contents">
         {() => (
           <ProtectedRoute requirePublisher>
-            <MyContents />
+            <Layout>
+              <MyContents />
+            </Layout>
           </ProtectedRoute>
         )}
       </Route>
       <Route path="/dashboard/api">
         {() => (
           <ProtectedRoute requirePublisher>
-            <APIUsage />
+            <Layout>
+              <APIUsage />
+            </Layout>
           </ProtectedRoute>
         )}
       </Route>
@@ -68,24 +78,30 @@ function Router() {
       <Route path="/docs/notes" component={APIDocs} />
 
       {/* Protected Admin Routes */}
-      <Route path="/dashboard/admin/publishers">
+      <Route path="/admin/publishers">
         {() => (
           <ProtectedRoute requireOwner>
-            <ManagePublishers />
+            <AdminLayout>
+              <ManagePublishers />
+            </AdminLayout>
           </ProtectedRoute>
         )}
       </Route>
-      <Route path="/dashboard/admin/review">
+      <Route path="/admin/review">
         {() => (
           <ProtectedRoute requireOwner>
-            <ContentReview />
+            <AdminLayout>
+              <ContentReview />
+            </AdminLayout>
           </ProtectedRoute>
         )}
       </Route>
-      <Route path="/dashboard/admin/monitor">
+      <Route path="/admin/monitor">
         {() => (
           <ProtectedRoute requireOwner>
-            <SystemMonitor />
+            <AdminLayout>
+              <SystemMonitor />
+            </AdminLayout>
           </ProtectedRoute>
         )}
       </Route>

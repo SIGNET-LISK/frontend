@@ -240,7 +240,7 @@ export default function Activity() {
                     placeholder="Search by title, description, publisher, TX hash, or pHash..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 pr-10 bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus-visible:ring-blue-500/50 w-full"
+                    className="pl-10 pr-10 bg-white/60 dark:bg-white/5 border-slate-300/60 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-600 focus-visible:ring-blue-500/50 w-full"
                   />
                   {searchQuery && (
                     <button
@@ -248,7 +248,7 @@ export default function Activity() {
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-white/10 rounded-full transition-colors z-10"
                       aria-label="Clear search"
                     >
-                      <X className="w-4 h-4 text-gray-400 hover:text-white" />
+                      <X className="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white" />
                     </button>
                   )}
                 </div>
@@ -282,7 +282,7 @@ export default function Activity() {
                   <>
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="text-gray-500 border-b border-white/5 text-sm uppercase tracking-wider bg-white/[0.02]">
+                        <tr className="text-slate-900 dark:text-white border-b border-white/5 text-sm uppercase tracking-wider bg-white/[0.02]">
                           <th className="p-6 font-medium">Content</th>
                           <th className="p-6 font-medium">Publisher</th>
                           <th className="p-6 font-medium">pHash</th>
@@ -302,7 +302,7 @@ export default function Activity() {
                                   <ActivityIcon className="w-5 h-5 text-blue-400" />
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="font-medium text-white truncate">
+                                  <p className="font-medium text-slate-900 dark:text-white truncate">
                                     {item.title || "Untitled"}
                                   </p>
                                   <p className="text-xs text-gray-500 line-clamp-2">
@@ -317,7 +317,7 @@ export default function Activity() {
                             <td className="p-6">
                               <div className="flex items-center gap-2">
                                 <User className="w-4 h-4 text-purple-400" />
-                                <span className="font-mono text-xs text-purple-300">
+                                <span className="font-mono text-xs text-slate-900 dark:text-white">
                                   {formatAddress(item.publisher)}
                                 </span>
                               </div>
@@ -325,7 +325,7 @@ export default function Activity() {
                             <td className="p-6">
                               <div className="flex items-center gap-2">
                                 <Hash className="w-4 h-4 text-blue-400" />
-                                <div className="font-mono text-xs text-blue-300 bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded">
+                                <div className="font-mono text-xs text-slate-900 dark:text-white bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded">
                                   {item.phash
                                     ? `${item.phash.substring(0, 12)}...`
                                     : "N/A"}
@@ -337,7 +337,7 @@ export default function Activity() {
                                 href={`https://sepolia-blockscout.lisk.com/tx/${item.txhash}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors cursor-pointer group/tx font-mono"
+                                className="flex items-center gap-2 text-slate-900 dark:text-white hover:text-blue-500 transition-colors cursor-pointer group/tx font-mono"
                               >
                                 <span>{formatTxHash(item.txhash)}</span>
                                 <ExternalLink className="w-3 h-3 opacity-0 group-hover/tx:opacity-100 transition-opacity" />

@@ -13,16 +13,14 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen w-[280px] flex flex-col z-40 overflow-hidden",
-        // Glassmorphism dengan spesifikasi yang diminta
-        "bg-[rgba(20,20,20,0.4)]",
-        "border-r border-white/[0.1] dark:border-white/[0.08]",
-        "shadow-[0_0_20px_rgba(150,180,255,0.25)]"
+        "fixed left-0 top-0 h-screen w-[280px] flex flex-col z-30 overflow-hidden",
+        // Glassmorphism bright style to match verify small screens
+        "border-r border-white/[0.18] dark:border-white/[0.08] shadow-[0_18px_45px_rgba(15,23,42,0.18)]",
+        "bg-white/80 dark:bg-[rgba(20,20,20,0.6)]"
       )}
       style={{
-        backgroundColor: "rgba(20, 20, 20, 0.4)",
-        backdropFilter: "blur(28px)",
-        WebkitBackdropFilter: "blur(28px)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
       }}
     >
       {/* Spacer untuk navbar */}
@@ -31,7 +29,7 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
       {/* Navigation items - No scroll, items fit in available space */}
       <div className="flex-1 overflow-hidden pt-6 px-6 pb-6">
         <div className="space-y-1 h-full flex flex-col">
-          <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-4 px-3 flex-shrink-0">
+          <h3 className="text-xs font-semibold text-blue-500 dark:text-blue-400 uppercase tracking-wider mb-4 px-3 flex-shrink-0">
             Table of Contents
           </h3>
           <div className="flex-1 space-y-1 overflow-hidden">
@@ -49,8 +47,8 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
                       "flex items-center gap-3 group",
                       "border-l-2",
                       isActive
-                        ? "text-white bg-white/10 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
-                        : "text-gray-200 hover:text-white hover:bg-white/5 border-transparent hover:border-blue-500/50"
+                        ? "text-gray-900 dark:text-white bg-white/10 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                        : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/5 border-transparent hover:border-blue-500/50"
                     )}
                     onClick={onItemClick}
                   >
@@ -58,8 +56,8 @@ export function TableOfContents({ onItemClick }: TableOfContentsProps) {
                       className={cn(
                         "w-4 h-4 transition-colors flex-shrink-0",
                         isActive
-                          ? "text-blue-400"
-                          : "text-gray-300 group-hover:text-blue-400"
+                          ? "text-blue-500 dark:text-blue-400"
+                          : "text-gray-400 dark:text-gray-400 group-hover:text-blue-500 dark:group-hover:text-blue-300"
                       )}
                     />
                     <span className="truncate">{section.label}</span>

@@ -56,7 +56,7 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
       />
 
       {/* Top Navbar - Fixed above sidebar (desktop) */}
-      <nav className="hidden lg:block fixed top-0 left-[280px] right-0 z-50 border-b border-white/[0.1] dark:border-white/[0.08] bg-background/50 dark:bg-black/50 backdrop-blur-xl h-20">
+      <nav className="hidden lg:block fixed top-0 left-[280px] right-0 z-40 border-b border-white/[0.1] dark:border-white/[0.08] bg-background/70 dark:bg-black/60 backdrop-blur-xl h-20">
         <div className="h-full px-6 flex justify-between items-center">
           <Link href="/">
             <div className="flex items-center gap-2 cursor-pointer">
@@ -112,13 +112,13 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
       </nav>
 
       {/* Desktop Layout: Fixed Sidebar + Content Area */}
-      <div className="hidden lg:flex">
+      <div className="hidden lg:flex relative z-30">
         {/* Fixed Sidebar - Independent container */}
         <TableOfContents />
 
         {/* Content Area - Independent scrollable container */}
         <div
-          className="flex-1 ml-[280px] h-screen overflow-y-auto"
+          className="flex-1 ml-[280px] h-screen overflow-y-auto relative z-30"
           style={{ scrollBehavior: "smooth" }}
         >
           {/* Spacer for navbar */}
@@ -130,7 +130,7 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
       </div>
 
       {/* Mobile Layout */}
-      <div className="lg:hidden">
+      <div className="lg:hidden relative z-30">
         {/* Mobile Navbar */}
         <nav className="sticky top-0 left-0 right-0 z-50 border-b border-white/[0.1] dark:border-white/[0.08] bg-background/50 dark:bg-black/50 backdrop-blur-xl h-20">
           <div className="px-6 h-full flex justify-between items-center">
@@ -150,30 +150,36 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
 
             <div className="flex items-center gap-2">
               <ThemeToggle />
-            <button
+              <button
                 className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-              onClick={() => setIsMobileOpen(!isMobileOpen)}
-            >
-              {isMobileOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
-            </button>
+                onClick={() => setIsMobileOpen(!isMobileOpen)}
+              >
+                {isMobileOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
+              </button>
             </div>
           </div>
         </nav>
 
-        {/* Mobile Sidebar */}
-        <div
+        {/* Mobile Sidebar - slides in from the right */}
+        <motion.div
+          initial={{ x: "100%" }}
+          animate={{ x: isMobileOpen ? 0 : "100%" }}
+          exit={{ x: "100%" }}
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
           className={cn(
-            "fixed top-20 left-0 h-[calc(100vh-80px)] w-[280px] z-40",
-            "transition-transform duration-300 ease-in-out",
-            isMobileOpen ? "translate-x-0" : "-translate-x-full"
+            "fixed top-20 right-0 h-[calc(100vh-80px)] w-[280px] z-40",
+            "bg-white/[0.05] dark:bg-black/90 backdrop-blur-[12px]",
+            "border-l border-white/[0.1] dark:border-white/[0.08]",
+            "shadow-[0_8px_32px_rgba(0,0,0,0.3)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
           )}
+          style={{ pointerEvents: isMobileOpen ? "auto" : "none" }}
         >
           <MobileTableOfContents onItemClick={() => setIsMobileOpen(false)} />
-        </div>
+        </motion.div>
 
         {/* Mobile Overlay */}
         <AnimatePresence>
@@ -182,7 +188,7 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-background/50 dark:bg-black/50 backdrop-blur-sm z-30"
+              className="fixed inset-0 bg-background/40 dark:bg-black/60 backdrop-blur-sm z-30"
               onClick={() => setIsMobileOpen(false)}
             />
           )}

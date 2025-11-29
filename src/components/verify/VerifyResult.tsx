@@ -182,7 +182,7 @@ export function VerifyResult({ result }: VerifyResultProps) {
               {/* Similarity Score */}
               {(result.similarity > 0 ||
                 result.hammingDistance !== undefined) && (
-                <div className="flex flex-wrap gap-4 pt-4 border-t border-white/[0.1] dark:border-white/[0.08]">
+                <div className="flex flex-wrap gap-4 pt-4 border-t border-gray-300 dark:border-white/8">
                   {result.similarity > 0 && (
                     <div className="flex items-center gap-2">
                       <div className="p-2 rounded-lg bg-blue-500/10 dark:bg-blue-500/10 border border-blue-500/20 dark:border-blue-500/20">
@@ -220,7 +220,7 @@ export function VerifyResult({ result }: VerifyResultProps) {
 
           {/* Publisher Identity */}
           {result.publisher && (
-            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-white/[0.1] dark:border-white/[0.08] space-y-4">
+            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-gray-300 dark:border-white/[0.08] space-y-4">
               <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <Building2 className="w-4 h-4" />
                 Publisher Identity
@@ -265,7 +265,7 @@ export function VerifyResult({ result }: VerifyResultProps) {
 
           {/* Content Metadata */}
           {result.metadata && (
-            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-white/[0.1] dark:border-white/[0.08] space-y-4">
+            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-gray-300 dark:border-white/[0.08] space-y-4">
               <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <FileText className="w-4 h-4" />
                 Content Metadata
@@ -301,18 +301,18 @@ export function VerifyResult({ result }: VerifyResultProps) {
 
           {/* Blockchain Proof */}
           {result.blockchainProof && (
-            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-white/[0.1] dark:border-white/[0.08] space-y-4">
+            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-gray-300 dark:border-white/[0.08] space-y-4">
               <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <Hash className="w-4 h-4" />
                 Blockchain Proof
               </h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-white/[0.03] dark:bg-black/60 border border-white/[0.05] dark:border-white/[0.05]">
+                <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-white/[0.03] dark:bg-black/60 border border-gray-300 dark:border-white/[0.05]">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-muted-foreground mb-1">
                       Transaction Hash
                     </p>
-                    <p className="font-mono text-sm text-green-400/80 truncate">
+                    <p className="font-mono text-sm text-green-600 dark:text-green-400 truncate">
                       {result.blockchainProof.txHash}
                     </p>
                   </div>
@@ -384,7 +384,7 @@ export function VerifyResult({ result }: VerifyResultProps) {
 
           {/* Similar Content */}
           {result.similarContent && result.similarContent.length > 0 && (
-            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-white/[0.1] dark:border-white/[0.08] space-y-4">
+            <div className="bg-white/[0.05] dark:bg-black/40 rounded-xl p-6 border border-gray-300 dark:border-white/[0.08] space-y-4">
               <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                 <Link2 className="w-4 h-4" />
                 Similar Content Found
@@ -393,7 +393,7 @@ export function VerifyResult({ result }: VerifyResultProps) {
                 {result.similarContent.map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-4 rounded-lg bg-white/[0.03] dark:bg-black/60 border border-white/[0.05] dark:border-white/[0.05] hover:border-blue-500/30 dark:hover:border-blue-500/30 transition-colors"
+                    className="p-4 rounded-lg bg-white/[0.03] dark:bg-black/60 border border-gray-300 dark:border-white/[0.05] hover:border-blue-500/30 dark:hover:border-blue-500/30 transition-colors"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
@@ -420,8 +420,8 @@ export function VerifyResult({ result }: VerifyResultProps) {
           )}
 
           {/* Security Note */}
-          <div className="bg-blue-500/5 rounded-xl p-4 border border-blue-500/20">
-            <p className="text-sm text-blue-200 flex items-start gap-2">
+          <div className="bg-blue-500/10 rounded-xl p-4 border border-blue-400 dark:border-blue-500/30">
+            <p className="text-sm text-blue-600 dark:text-blue-200 flex items-start gap-2">
               <ShieldCheck className="w-5 h-5 shrink-0 mt-0.5" />
               <span>
                 <strong>Security Note:</strong> SIGNET does not store your

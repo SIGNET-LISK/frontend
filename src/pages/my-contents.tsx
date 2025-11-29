@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Layout } from "@/components/layout/Layout";
 import { GlassCard } from "@/components/ui/glass-card";
 import {
   Pagination,
@@ -104,7 +103,7 @@ export default function MyContents() {
   };
 
   return (
-    <Layout>
+    <>
       <header className="mb-8 flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold text-foreground">My Contents</h2>
@@ -277,6 +276,6 @@ export default function MyContents() {
           )}
         </div>
       </GlassCard>
-    </Layout>
+    </>
   );
 }

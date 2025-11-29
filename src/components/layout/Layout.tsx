@@ -42,16 +42,6 @@ const NAV_ITEMS = [
   { label: "API Usage", icon: Zap, href: "/dashboard/api" },
 ];
 
-const ADMIN_ITEMS = [
-  {
-    label: "Manage Publishers",
-    icon: Building2,
-    href: "/dashboard/admin/publishers",
-  },
-  { label: "Content Review", icon: Eye, href: "/dashboard/admin/review" },
-  { label: "System Monitor", icon: Server, href: "/dashboard/admin/monitor" },
-];
-
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -134,17 +124,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <AnimatePresence>
         {(isMobileOpen || window.innerWidth >= 768) && (
           <motion.aside
-            initial={{ x: -280 }}
+            initial={{ x: "-100%" }}
             animate={{ x: 0 }}
-            exit={{ x: -280 }}
-            transition={{ type: "spring", damping: 20 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className={cn(
               "fixed md:sticky top-0 h-screen w-[280px] flex flex-col p-6 z-40",
-              "bg-background/30 dark:bg-black/30 md:bg-background/20 dark:md:bg-black/20 border-r border-white/[0.1] dark:border-white/[0.08] backdrop-blur-[12px]",
-              isMobileOpen
-                ? "bg-background/90 dark:bg-black/90 backdrop-blur-[12px]"
-                : ""
+              "bg-white/[0.05] dark:bg-black/90 md:bg-background/20 md:dark:bg-black/20 border-r border-white/[0.1] dark:border-white/[0.08]",
+              "backdrop-blur-[12px]"
             )}
+            style={{
+              pointerEvents:
+                isMobileOpen || window.innerWidth >= 768 ? "auto" : "none",
+            }}
           >
             <div className="mb-10 flex items-center gap-3 px-2">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
@@ -158,84 +150,41 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <span className="font-bold text-xl tracking-tight">SIGNET</span>
             </div>
 
-            <nav className="flex-1 space-y-8">
-              {isPublisher && !location.startsWith("/dashboard/admin") && (
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
-                    Publisher
-                  </p>
-                  <ul className="space-y-2">
-                    {NAV_ITEMS.map((item) => (
-                      <li key={item.href}>
-                        <Link href={item.href}>
-                          <div
-                            className={cn(
-                              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer group relative overflow-hidden",
-                              location === item.href
-                                ? "text-foreground border border-white/[0.15] dark:border-white/[0.12] bg-accent shadow-[0_0_20px_rgba(100,130,255,0.12)] dark:shadow-[0_0_20px_rgba(100,130,255,0.12)]"
-                                : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                            )}
-                          >
-                            {location === item.href && (
-                              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/[0.15] to-purple-500/[0.15] opacity-100" />
-                            )}
-                            <item.icon
-                              className={cn(
-                                "w-5 h-5 transition-colors relative z-10",
-                                location === item.href
-                                  ? "text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]"
-                                  : "text-muted-foreground group-hover:text-foreground"
-                              )}
-                            />
-                            <span className="font-medium relative z-10">
-                              {item.label}
-                            </span>
-                          </div>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {isOwner && (
-                <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
-                    Admin
-                  </p>
-                  <ul className="space-y-2">
-                    {ADMIN_ITEMS.map((item) => (
-                      <li key={item.href}>
-                        <Link href={item.href}>
-                          <div
-                            className={cn(
-                              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer group relative overflow-hidden",
-                              location === item.href
-                                ? "text-foreground border border-white/[0.15] dark:border-white/[0.12] bg-accent shadow-[0_0_20px_rgba(255,100,100,0.12)] dark:shadow-[0_0_20px_rgba(255,100,100,0.12)]"
-                                : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                            )}
-                          >
-                            {location === item.href && (
-                              <div className="absolute inset-0 bg-gradient-to-r from-red-500/[0.15] to-orange-500/[0.15] opacity-100" />
-                            )}
-                            <item.icon
-                              className={cn(
-                                "w-5 h-5 transition-colors relative z-10",
-                                location === item.href
-                                  ? "text-red-400 drop-shadow-[0_0_8px_rgba(248,113,113,0.8)]"
-                                  : "text-muted-foreground group-hover:text-foreground"
-                              )}
-                            />
-                            <span className="font-medium relative z-10">
-                              {item.label}
-                            </span>
-                          </div>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+            <nav className="flex-1 space-y-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4 px-2">
+                Publisher
+              </p>
+              <ul className="space-y-2">
+                {NAV_ITEMS.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href}>
+                      <div
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 cursor-pointer group relative overflow-hidden",
+                          location === item.href
+                            ? "text-foreground border border-white/[0.15] dark:border-white/[0.12] bg-accent shadow-[0_0_20px_rgba(100,130,255,0.12)] dark:shadow-[0_0_20px_rgba(100,130,255,0.12)]"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                        )}
+                      >
+                        {location === item.href && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/[0.15] to-purple-500/[0.15] opacity-100" />
+                        )}
+                        <item.icon
+                          className={cn(
+                            "w-5 h-5 transition-colors relative z-10",
+                            location === item.href
+                              ? "text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]"
+                              : "text-muted-foreground group-hover:text-foreground"
+                          )}
+                        />
+                        <span className="font-medium relative z-10">
+                          {item.label}
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </nav>
 
             <div className="mt-auto pt-6 border-t border-white/[0.08] dark:border-white/[0.08] space-y-3">
@@ -279,6 +228,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </button>
             </div>
           </motion.aside>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Overlay - Blur effect when sidebar is open */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-background/40 dark:bg-black/60 backdrop-blur-sm z-30 md:hidden"
+            onClick={() => setIsMobileOpen(false)}
+          />
         )}
       </AnimatePresence>
 
