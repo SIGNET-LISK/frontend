@@ -1,7 +1,7 @@
 import { GlassCard } from "@/components/ui/glass-card";
 import { Copy, Check } from "lucide-react";
 import { useState } from "react";
-import { motion } from "framer-motion";
+
 
 type CodeBlockProps = {
   code: string;
@@ -9,7 +9,7 @@ type CodeBlockProps = {
   title?: string;
 };
 
-export function CodeBlock({ code, language = "javascript", title }: CodeBlockProps) {
+export function CodeBlock({ code, title }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {

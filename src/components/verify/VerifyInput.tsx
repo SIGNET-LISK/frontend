@@ -2,7 +2,7 @@ import { useDropzone } from "react-dropzone";
 import { useCallback } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { Input } from "@/components/ui/input";
-import { UploadCloud, Link as LinkIcon, CheckCircle2, X, File, Image, Video, FileText, Music } from "lucide-react";
+import { UploadCloud, Link as LinkIcon, X, Image, Video, FileText, Music } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 

@@ -1,8 +1,7 @@
 import { GlassCard } from "@/components/ui/glass-card";
 import { GlowButton } from "@/components/ui/glow-button";
 import {
-  BarChart,
-  Bar,
+
   XAxis,
   YAxis,
   Tooltip,
@@ -15,8 +14,6 @@ import {
   RefreshCw,
   AlertTriangle,
   Key,
-  TrendingUp,
-  Zap,
   BarChart3,
 } from "lucide-react";
 

@@ -5,7 +5,6 @@ import {
   Plus,
   Search,
   CheckCircle2,
-  XCircle,
   MoreVertical,
   Wallet,
   Calendar,
@@ -102,7 +101,7 @@ export default function ManagePublishers() {
         });
 
         const fetchedPublishers: Publisher[] = await Promise.all(
-          logs.map(async (log, index) => {
+          logs.map(async (log) => {
             const wallet = log.args.publisher!;
             // We don't have name/metadata on-chain, so we use address or "Unknown"
             // We could potentially fetch content count from API

@@ -5,10 +5,7 @@ import {
   BookOpen,
   Key,
   Code,
-  CheckCircle2,
-  Upload,
-  Building2,
-  FileText,
+
   Gauge,
   Terminal,
   AlertCircle,

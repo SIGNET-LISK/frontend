@@ -3,8 +3,7 @@ import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { defineChain } from "viem";
 
 // Get the project ID from environment variables
-const projectId =
-  import.meta.env.VITE_PROJECT_ID || "de217164330f177c24db00e46b038f35";
+const projectId = import.meta.env.VITE_PROJECT_ID;
 
 // Define Lisk Sepolia Testnet
 const liskSepolia = defineChain({
@@ -56,7 +55,7 @@ export const appKit = createAppKit({
   projectId,
   metadata,
   features: {
-    analytics: true, // Optional - defaults to your Cloud configuration
+    analytics: false, // Optional - defaults to your Cloud configuration
   },
   themeMode: "dark",
   themeVariables: {
@@ -69,7 +68,7 @@ export const appKit = createAppKit({
 // Priority: VITE_REGISTRY_ADDRESS > VITE_CONTRACT_ADDRESS > hardcoded fallback
 // Make sure to set VITE_REGISTRY_ADDRESS in your .env file
 export const CONTRACT_ADDRESS = (
-  import.meta.env.VITE_REGISTRY_ADDRESS || 
+  import.meta.env.VITE_REGISTRY_ADDRESS ||
   import.meta.env.VITE_CONTRACT_ADDRESS ||
   "0xe13c070791672Bf02e7Fc0C68FBB8b0EF7a547C0"
 ) as `0x${string}`;

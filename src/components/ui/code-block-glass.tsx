@@ -1,6 +1,6 @@
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+
 
 interface CodeBlockGlassProps {
   language?: string;
@@ -29,7 +29,7 @@ export function CodeBlockGlass({ language = "javascript", code, title }: CodeBlo
             </div>
             {title && <span className="text-xs font-mono text-gray-400 ml-2">{title}</span>}
           </div>
-          <button 
+          <button
             onClick={handleCopy}
             className="text-gray-500 hover:text-white transition-colors p-1"
           >

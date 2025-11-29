@@ -3,23 +3,14 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   UploadCloud,
-  FileText,
-  Key,
-  Users,
-  ShieldAlert,
-  Activity,
   LogOut,
   Menu,
   X,
   ArrowLeft,
   Copy,
   Wallet,
-  Building2,
   FileCheck,
   Zap,
-  Server,
-  Eye,
-  Settings,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -47,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const [copied, setCopied] = useState(false);
+
   const {
     isPublisher,
     isOwner,
@@ -72,8 +63,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const handleCopyAddress = async () => {
     if (address) {
       await navigator.clipboard.writeText(address);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
   };
 

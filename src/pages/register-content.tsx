@@ -7,10 +7,9 @@ import {
   File,
   CheckCircle2,
   AlertCircle,
-  ServerOff,
   XCircle,
 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -186,10 +185,9 @@ export default function RegisterContent() {
             {...getRootProps()}
             className={`
               border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300
-              ${
-                isDragActive
-                  ? "border-blue-500 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.2)]"
-                  : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 hover:bg-black/[0.03] dark:hover:bg-white/5 bg-black/[0.01] dark:bg-white/2"
+              ${isDragActive
+                ? "border-blue-500 bg-blue-500/10 shadow-[0_0_30px_rgba(59,130,246,0.2)]"
+                : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 hover:bg-black/[0.03] dark:hover:bg-white/5 bg-black/[0.01] dark:bg-white/2"
               }
             `}
           >

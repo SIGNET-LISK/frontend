@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
-import { useState, useEffect } from "react";
+
 import { getAllContents } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 
@@ -41,7 +41,7 @@ const formatTimeAgo = (timestamp: number) => {
 
 export default function DashboardHome() {
   const { address, isConnected } = useAccount();
-  const [copied, setCopied] = useState(false);
+
 
   // Fetch all contents for stats
   const {
@@ -57,8 +57,6 @@ export default function DashboardHome() {
   const handleCopyAddress = async () => {
     if (address) {
       await navigator.clipboard.writeText(address);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
   };
 

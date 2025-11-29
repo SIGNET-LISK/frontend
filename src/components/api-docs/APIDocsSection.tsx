@@ -1,5 +1,5 @@
 import { GlassCard } from "@/components/ui/glass-card";
-import { CodeBlock } from "./CodeBlock";
+
 import { motion } from "framer-motion";
 
 type APIDocsSectionProps = {

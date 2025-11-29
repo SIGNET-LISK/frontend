@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ShieldCheck, AlertTriangle } from "lucide-react";
+
 
 export const PhoneVerification = () => {
   return (
@@ -10,14 +10,14 @@ export const PhoneVerification = () => {
           <stop offset="100%" stopColor="#111827" />
         </linearGradient>
         <filter id="phoneGlow">
-          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
           <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
       </defs>
-      
+
       {/* Phone body */}
       <motion.rect
         x="50"
@@ -33,7 +33,7 @@ export const PhoneVerification = () => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       />
-      
+
       {/* Screen */}
       <rect
         x="65"
@@ -44,7 +44,7 @@ export const PhoneVerification = () => {
         fill="#000"
         opacity="0.8"
       />
-      
+
       {/* Notch */}
       <rect
         x="120"
@@ -54,7 +54,7 @@ export const PhoneVerification = () => {
         rx="5"
         fill="#1f2937"
       />
-      
+
       {/* Content on screen - Image placeholder */}
       <motion.rect
         x="80"
@@ -67,7 +67,7 @@ export const PhoneVerification = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       />
-      
+
       {/* Fake/Real indicator animation */}
       <motion.g
         initial={{ opacity: 0, y: 20 }}
@@ -94,7 +94,7 @@ export const PhoneVerification = () => {
             ease: "easeInOut"
           }}
         />
-        
+
         <motion.g
           animate={{
             scale: [1, 1.1, 1],
@@ -114,32 +114,32 @@ export const PhoneVerification = () => {
             strokeLinecap="round"
           />
         </motion.g>
-        
+
         <text x="130" y="255" fill="#10b981" fontSize="14" fontWeight="bold">
           VERIFIED
         </text>
       </motion.g>
-      
-      {/* Scanning animation lines */}
-<motion.line
-  x1="80"
-  x2="220"
-  stroke="#3b82f6"
-  strokeWidth="2"
-  opacity="0.6"
-  initial={{ y1: 100, y2: 100 }}
-  animate={{
-    y1: [100, 200, 100],
-    y2: [100, 200, 100],
-  }}
-  transition={{
-    duration: 2,
-    repeat: Infinity,
-    ease: "linear"
-  }}
-/>
 
-      
+      {/* Scanning animation lines */}
+      <motion.line
+        x1="80"
+        x2="220"
+        stroke="#3b82f6"
+        strokeWidth="2"
+        opacity="0.6"
+        initial={{ y1: 100, y2: 100 }}
+        animate={{
+          y1: [100, 200, 100],
+          y2: [100, 200, 100],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+      />
+
+
       {/* Details text */}
       <motion.g
         initial={{ opacity: 0 }}
@@ -149,7 +149,7 @@ export const PhoneVerification = () => {
         <rect x="85" y="300" width="130" height="3" rx="1.5" fill="#3b82f6" opacity="0.3" />
         <rect x="85" y="310" width="100" height="3" rx="1.5" fill="#3b82f6" opacity="0.3" />
         <rect x="85" y="320" width="120" height="3" rx="1.5" fill="#3b82f6" opacity="0.3" />
-        
+
         {/* Blockchain hash representation */}
         <text x="90" y="350" fill="#6b7280" fontSize="8" fontFamily="monospace">
           Hash: 0x4a3f...
@@ -158,7 +158,7 @@ export const PhoneVerification = () => {
           Block: 1,234,567
         </text>
       </motion.g>
-      
+
       {/* Floating particles around phone */}
       {[...Array(6)].map((_, i) => (
         <motion.circle

@@ -7,7 +7,7 @@ import { GlowButton } from "@/components/ui/glow-button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { TableOfContents } from "./TableOfContents";
 import { MobileTableOfContents } from "./MobileTableOfContents";
-import abstractShapes from "@/assets/img/signet-logo.svg";
+import abstractShapes from "@/assets/img/logos.png";
 import LiquidEther from "@/components/LiquidEther";
 
 interface APIDocsLayoutProps {
@@ -64,7 +64,7 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
                 <img
                   src={abstractShapes}
                   alt="SIGNET"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-[10px]"
                 />
               </div>
 
@@ -137,7 +137,7 @@ export function APIDocsLayout({ children }: APIDocsLayoutProps) {
             <Link href="/">
               <div className="flex items-center gap-2 cursor-pointer">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-                  <span className="font-bold text-white">S</span>
+                  <img src={abstractShapes} alt="SIGNET" className="w-full h-full object-cover rounded-[10px]" />
                 </div>
                 <span className="font-bold text-xl tracking-tight">
                   SIGNET{" "}

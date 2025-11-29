@@ -4,7 +4,6 @@ import {
   Activity,
   Database,
   Cpu,
-  HardDrive,
   Network,
   CheckCircle2,
   AlertTriangle,
@@ -20,8 +19,6 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  BarChart,
-  Bar,
 } from "recharts";
 
 const SYSTEM_METRICS = [

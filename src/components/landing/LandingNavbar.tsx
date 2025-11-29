@@ -8,7 +8,7 @@ import { useAppKit } from "@reown/appkit/react";
 import { Copy, LogOut, Menu, X, Settings } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import abstractShapes from "@/assets/img/finger.png";
+import abstractShapes from "@/assets/img/logos.png";
 import { usePublisher } from "@/hooks/usePublisher";
 
 type LandingNavbarProps = {
@@ -29,7 +29,6 @@ export function LandingNavbar({
   const { isConnected, address } = useAccount();
   const { open } = useAppKit();
   const { disconnect } = useDisconnect();
-  const [copied, setCopied] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isOwner, isLoading } = usePublisher();
 
@@ -54,36 +53,33 @@ export function LandingNavbar({
   const handleCopyAddress = async () => {
     if (address) {
       await navigator.clipboard.writeText(address);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
   };
 
   return (
     <>
       <motion.nav
-        className={`fixed top-4 left-4 right-4 z-40 rounded-full transition-all duration-300 ${
-          scrolled
-            ? "border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-            : "border border-white/[0.1] dark:border-white/[0.08] bg-background/20 dark:bg-black/20 backdrop-blur-[12px] shadow-[0_4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
-        }`}
+        className={`fixed top-4 left-4 right-4 z-40 rounded-full transition-all duration-300 ${scrolled
+          ? "border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+          : "border border-white/[0.1] dark:border-white/[0.08] bg-background/20 dark:bg-black/20 backdrop-blur-[12px] shadow-[0_4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
+          }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
               <img
                 src={abstractShapes}
                 alt="SIGNET"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-[10px]"
               />
             </div>
             <span className="font-bold text-xl tracking-tight">SIGNET</span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 text-sm font-medium text-muted-foreground">
             <a
               href="#features"
               className="hover:text-foreground transition-colors"

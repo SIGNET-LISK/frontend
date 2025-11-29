@@ -1,7 +1,7 @@
 import { GlassCard } from "@/components/ui/glass-card";
 import { CodeBlock } from "./CodeBlock";
 import { motion } from "framer-motion";
-import { CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
+import { CheckCircle2, AlertTriangle } from "lucide-react";
 
 type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 

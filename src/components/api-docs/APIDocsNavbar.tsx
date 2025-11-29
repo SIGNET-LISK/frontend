@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { GlowButton } from "@/components/ui/glow-button";
 import { Menu, X } from "lucide-react";
-import abstractShapes from "@/assets/img/signet-logo.svg";
+import abstractShapes from "@/assets/img/logos.png";
 
 type APIDocsNavbarProps = {
   isMobileOpen: boolean;
@@ -14,7 +14,7 @@ export function APIDocsNavbar({ isMobileOpen, onMobileToggle }: APIDocsNavbarPro
       <div className="max-w-7xl mx-auto px-6 h-full flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-            <img src={abstractShapes} alt="SIGNET" className="w-full h-full object-cover" />
+            <img src={abstractShapes} alt="SIGNET" className="w-full h-full object-cover rounded-[10px]" />
           </div>
           <span className="font-bold text-xl tracking-tight">
             SIGNET <span className="text-gray-500 font-normal ml-2 text-sm">API Docs</span>

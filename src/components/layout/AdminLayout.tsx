@@ -39,7 +39,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const [copied, setCopied] = useState(false);
+
 
   useEffect(() => {
     setIsMobileOpen(false);
@@ -48,8 +48,6 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
   const handleCopyAddress = async () => {
     if (address) {
       await navigator.clipboard.writeText(address);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
   };
 

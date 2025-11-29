@@ -23,10 +23,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyContents } from "@/lib/api";
 
 // Helper to format address
-const formatAddress = (address: string) => {
-  if (!address) return "";
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
+
 
 // Helper function to format TX Hash with 0x prefix
 const formatTxHash = (txHash: string) => {

@@ -3,19 +3,14 @@ import {
   motion,
   useTransform,
   useMotionValue,
-  useMotionTemplate,
 } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
 import {
   ArrowRight,
   ShieldCheck,
-  Lock,
   Upload,
-  Search,
   Fingerprint,
-  Zap,
-  Activity,
   Scale,
   Building2,
 } from "lucide-react";
@@ -165,7 +160,7 @@ export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const scrollY = useMotionValue(0);
   const isInitialMount = useRef(true);
-  const { isConnected, address } = useAccount();
+  const { isConnected } = useAccount();
   const { open } = useAppKit();
   const heroGap = useTransform(scrollY, [0, 300], [8, 64]); // 8px (very tight) to 64px (gap-16)
   const heroPaddingTop = useTransform(scrollY, [0, 300], [120, 128]); // 120px (below navbar) to 128px (py-32)
