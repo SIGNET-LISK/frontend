@@ -9,7 +9,7 @@ export const BLOCKCHAIN_CONFIG = {
     RPC_URL: import.meta.env.VITE_RPC_URL || 'https://rpc.sepolia-api.lisk.com',
 
     // Backend API
-    API_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    API_URL: import.meta.env.VITE_API_URL
 };
 
 // Debug logging in development
