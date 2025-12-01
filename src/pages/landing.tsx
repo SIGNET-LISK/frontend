@@ -27,7 +27,7 @@ import { FAQSection } from "@/components/landing/FAQSection";
 import { PhoneVerification } from "@/components/illustrations/phone-verification";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
-
+import { WhitelistSection } from "@/components/landing/WhitelistSection";
 const handleAnimationComplete = () => {
   console.log("Animation completed!");
 };
@@ -689,6 +689,9 @@ export default function LandingPage() {
 
         {/* Pricing */}
         <PricingSection onConnect={handleConnectWallet} />
+
+        {/* Whitelist */}
+        <WhitelistSection />
 
         {/* FAQ Section */}
         <FAQSection />

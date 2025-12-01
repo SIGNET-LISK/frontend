@@ -54,16 +54,43 @@ interface LiquidEtherWebGL {
 
 const defaultColors = ["#5227FF", "#FF9FFC", "#B19EEF"];
 
+// Device detection for adaptive quality
+const isMobileDevice = (): boolean => {
+  if (typeof window === 'undefined') return false;
+
+  // Check user agent
+  const ua = navigator.userAgent.toLowerCase();
+  const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+
+  // Check touch capability and screen size
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const isSmallScreen = window.innerWidth < 768;
+
+  return isMobileUA || (isTouchDevice && isSmallScreen);
+};
+
+// Adaptive defaults based on device
+const getAdaptiveDefaults = () => {
+  const isMobile = isMobileDevice();
+  return {
+    resolution: isMobile ? 0.2 : 0.25,
+    iterations: isMobile ? 10 : 12,
+    targetFPS: isMobile ? 20 : 30,
+  };
+};
+
+const adaptiveDefaults = getAdaptiveDefaults();
+
 export default function LiquidEther({
-  mouseForce = 20,
+  mouseForce = 15,
   cursorSize = 100,
   isViscous = false,
   viscous = 30,
-  iterationsViscous = 32,
-  iterationsPoisson = 32,
+  iterationsViscous = adaptiveDefaults.iterations,
+  iterationsPoisson = adaptiveDefaults.iterations,
   dt = 0.014,
-  BFECC = true,
-  resolution = 0.5,
+  BFECC = false,
+  resolution = adaptiveDefaults.resolution,
   isBounce = false,
   colors = defaultColors,
   style = {},
@@ -1083,6 +1110,9 @@ export default function LiquidEther({
       private _loop = this.loop.bind(this);
       private _resize = this.resize.bind(this);
       private _onVisibility?: () => void;
+      private _lastFrameTime = 0;
+      private _targetFPS = adaptiveDefaults.targetFPS;
+      private _frameInterval = 1000 / adaptiveDefaults.targetFPS;
       constructor(props: any) {
         this.props = props;
         Common.init(props.$wrapper);
@@ -1128,12 +1158,23 @@ export default function LiquidEther({
       }
       loop() {
         if (!this.running) return;
-        this.render();
+
+        // FPS throttling: only render if enough time has passed
+        const now = performance.now();
+        const elapsed = now - this._lastFrameTime;
+
+        if (elapsed >= this._frameInterval) {
+          // Update last frame time, accounting for any drift
+          this._lastFrameTime = now - (elapsed % this._frameInterval);
+          this.render();
+        }
+
         rafRef.current = requestAnimationFrame(this._loop);
       }
       start() {
         if (this.running) return;
         this.running = true;
+        this._lastFrameTime = performance.now();
         this._loop();
       }
       pause() {
@@ -1321,9 +1362,8 @@ export default function LiquidEther({
   return (
     <div
       ref={mountRef}
-      className={`w-full h-full relative overflow-hidden pointer-events-none touch-none ${
-        className || ""
-      }`}
+      className={`w-full h-full relative overflow-hidden pointer-events-none touch-none ${className || ""
+        }`}
       style={style}
     />
   );
