@@ -158,12 +158,10 @@ export default function LandingPage() {
   const isInitialMount = useRef(true);
   const { isConnected } = useAccount();
   const { open } = useAppKit();
-  const heroPaddingTop = 120; // Static padding
-  const heroPaddingBottom = 40; // Static padding
   
-  // Use transform for gap simulation (performance optimization)
-  // Instead of animating gap (layout), we translate the bottom element down
-  const logoTranslateY = useTransform(scrollY, [0, 300], [0, 56]); 
+  // Static values for padding
+  const heroPaddingTop = 120;
+  const heroPaddingBottom = 40; 
 
   const [showDescription, setShowDescription] = useState(false);
   const [logoPosition, setLogoPosition] = useState<"top" | "bottom">("top");
@@ -339,8 +337,7 @@ export default function LandingPage() {
 
               {/* Container for overlapping logo and description with connected cards */}
               <motion.div 
-                className="relative w-full flex items-center justify-center min-h-[600px] overflow-visible"
-                style={{ y: logoTranslateY, willChange: "transform" }}
+                className="relative w-full flex items-center justify-center min-h-[300px] md:min-h-[400px] lg:min-h-[600px] overflow-visible"
               >
                 {/* Description - behind logo (lower z-index), positioned closer to title */}
                 <motion.div
@@ -377,9 +374,10 @@ export default function LandingPage() {
                         }}
                       >
                         <Link href="/verify">
-                          <GlowButton className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group">
-                            Verify Content Now
-                            <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                          <GlowButton className="h-12 md:h-14 px-4 md:px-6 lg:px-8 text-sm md:text-base lg:text-lg group">
+                            <span className="hidden sm:inline">Verify Content Now</span>
+                            <span className="sm:hidden">Verify Now</span>
+                            <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                           </GlowButton>
                         </Link>
                       </motion.div>
@@ -608,8 +606,7 @@ export default function LandingPage() {
 
                     {/* Logo container - smaller size, no background card, centered */}
                     <div
-                      className="relative w-full max-w-xs mx-auto flex items-center justify-center z-20"
-                      style={{ transform: "translateY(-130px)" }}
+                      className="relative w-full max-w-xs mx-auto flex items-center justify-center z-20 translate-y-8 md:translate-y-0 lg:-translate-y-[130px]"
                     >
                       <motion.div
                         className="relative w-full h-[200px] sm:h-[220px] lg:h-[240px] opacity-100 pointer-events-none"
