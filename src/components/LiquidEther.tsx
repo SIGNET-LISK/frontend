@@ -1111,7 +1111,7 @@ export default function LiquidEther({
       private _resize = this.resize.bind(this);
       private _onVisibility?: () => void;
       private _lastFrameTime = 0;
-      private _targetFPS = adaptiveDefaults.targetFPS;
+      // private _targetFPS = adaptiveDefaults.targetFPS;
       private _frameInterval = 1000 / adaptiveDefaults.targetFPS;
       constructor(props: any) {
         this.props = props;

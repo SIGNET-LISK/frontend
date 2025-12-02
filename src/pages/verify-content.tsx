@@ -277,7 +277,7 @@ export default function VerifyContent() {
                 </AlertTitle>
                 <AlertDescription className="text-red-300 text-sm mt-1">
                   {(result as any).error ||
-                    "Unable to connect to the backend server. Please make sure the backend is running at http://localhost:8000"}
+                    "Unable to connect to the backend server. Please make sure the backend is running"}
                 </AlertDescription>
               </Alert>
             </motion.div>

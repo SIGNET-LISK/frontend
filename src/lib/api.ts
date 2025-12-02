@@ -22,7 +22,7 @@ const handleApiError = (error: unknown): string => {
       axiosError.code === "ECONNREFUSED" ||
       axiosError.code === "ERR_NETWORK"
     ) {
-      return "Backend server is not running. Please start the backend server at http://localhost:8000";
+      return "Backend server is not running. Please start the backend server";
     }
 
     // Timeout

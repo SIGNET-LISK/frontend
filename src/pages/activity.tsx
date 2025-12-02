@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllContents } from "@/lib/api";
 import { GlassCard } from "@/components/ui/glass-card";
-import { motion } from "framer-motion";
 import {
   Pagination,
   PaginationContent,
@@ -23,6 +22,8 @@ import {
   Search,
   X,
   ArrowLeft,
+  Copy,
+  Check,
 } from "lucide-react";
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { GlowButton } from "@/components/ui/glow-button";
@@ -71,9 +72,10 @@ const formatDate = (timestamp: number) => {
 export default function Activity() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [copiedHash, setCopiedHash] = useState<string | null>(null);
   const itemsPerPage = 10;
 
-  // Fetch all contents with auto-refresh every 10 seconds
+  // Fetch all contents with auto-refresh every 30 seconds (optimized)
   const {
     data: apiResponse,
     isLoading,
@@ -81,40 +83,59 @@ export default function Activity() {
   } = useQuery({
     queryKey: ["allContents"],
     queryFn: getAllContents,
-    refetchInterval: 10000, // Refresh every 10 seconds for real-time updates
+    refetchInterval: 30000, // Refresh every 30 seconds (optimized from 10s)
   });
 
   const allContents = apiResponse?.contents || [];
 
-  // Sort by timestamp (newest first)
-  const sortedContents = allContents
-    ? [...allContents].sort((a: any, b: any) => b.timestamp - a.timestamp)
-    : [];
+  // Sort by timestamp (newest first) - memoized for performance
+  const sortedContents = useMemo(
+    () =>
+      allContents
+        ? [...allContents].sort((a: any, b: any) => b.timestamp - a.timestamp)
+        : [],
+    [allContents]
+  );
 
-  // Filter contents based on search query
-  const filteredContents = searchQuery
-    ? sortedContents.filter((item: any) => {
-      const query = searchQuery.toLowerCase();
-      const title = (item.title || "").toLowerCase();
-      const description = (item.description || "").toLowerCase();
-      const publisher = (item.publisher || "").toLowerCase();
-      const txhash = (item.txhash || "").toLowerCase();
-      const phash = (item.phash || "").toLowerCase();
+  // Filter contents based on search query - memoized for performance
+  const filteredContents = useMemo(
+    () =>
+      searchQuery
+        ? sortedContents.filter((item: any) => {
+          const query = searchQuery.toLowerCase();
+          const title = (item.title || "").toLowerCase();
+          const description = (item.description || "").toLowerCase();
+          const publisher = (item.publisher || "").toLowerCase();
+          const txhash = (item.txhash || "").toLowerCase();
+          const phash = (item.phash || "").toLowerCase();
 
-      return (
-        title.includes(query) ||
-        description.includes(query) ||
-        publisher.includes(query) ||
-        txhash.includes(query) ||
-        phash.includes(query)
-      );
-    })
-    : sortedContents;
+          return (
+            title.includes(query) ||
+            description.includes(query) ||
+            publisher.includes(query) ||
+            txhash.includes(query) ||
+            phash.includes(query)
+          );
+        })
+        : sortedContents,
+    [searchQuery, sortedContents]
+  );
 
   // Reset to page 1 when search query changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
+  // Copy to clipboard function
+  const copyToClipboard = async (text: string, id: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedHash(id);
+      setTimeout(() => setCopiedHash(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
 
   const totalPages = Math.ceil(filteredContents.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -187,13 +208,8 @@ export default function Activity() {
 
       {/* Content wrapper */}
       <div className="relative z-10">
-        {/* Navbar */}
-        <motion.nav
-          className="fixed top-4 left-4 right-4 z-50 rounded-full border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        {/* Navbar - Simplified for performance */}
+        <nav className="fixed top-4 left-4 right-4 z-50 rounded-full border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
           <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             <Link
               href="/"
@@ -218,7 +234,7 @@ export default function Activity() {
               </Link>
             </div>
           </div>
-        </motion.nav>
+        </nav>
 
         {/* Main Content */}
         <main className="pt-32 pb-20 px-4 md:px-6 lg:px-8">
@@ -234,7 +250,7 @@ export default function Activity() {
                 </h1>
               </div>
               <p className="text-muted-foreground text-lg">
-                Real-time blockchain transaction logs • Updates every 10 seconds
+                Real-time blockchain transaction logs • Updates every 30 seconds
               </p>
               {allContents && (
                 <p className="text-sm text-muted-foreground mt-2">
@@ -350,16 +366,25 @@ export default function Activity() {
                             <td className="p-6">
                               <div className="flex items-center gap-2">
                                 <Hash className="w-4 h-4 text-blue-400" />
-                                <div className="font-mono text-xs text-slate-900 dark:text-white bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded">
-                                  {item.phash
-                                    ? `${item.phash.substring(0, 12)}...`
-                                    : "N/A"}
-                                </div>
+                                <button
+                                  onClick={() => copyToClipboard(item.phash, item.id || index)}
+                                  className="group/copy font-mono text-xs text-slate-900 dark:text-white bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded hover:bg-blue-500/20 transition-colors cursor-pointer flex items-center gap-2"
+                                  title="Click to copy full pHash"
+                                >
+                                  <span className="truncate max-w-[120px]">
+                                    {item.phash || "N/A"}
+                                  </span>
+                                  {copiedHash === (item.id || index) ? (
+                                    <Check className="w-3 h-3 text-green-400 flex-shrink-0" />
+                                  ) : (
+                                    <Copy className="w-3 h-3 opacity-0 group-hover/copy:opacity-100 transition-opacity flex-shrink-0" />
+                                  )}
+                                </button>
                               </div>
                             </td>
                             <td className="p-6">
                               <a
-                                href={`https://sepolia-blockscout.lisk.com/tx/${item.txhash}`}
+                                href={`https://sepolia-blockscout.lisk.com/tx/${item.txhash?.startsWith("0x") ? item.txhash : `0x${item.txhash}`}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 text-slate-900 dark:text-white hover:text-blue-500 transition-colors cursor-pointer group/tx font-mono"
