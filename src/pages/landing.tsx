@@ -48,7 +48,7 @@ const BENEFITS = [
 
 // Floating particles component
 const FloatingParticles = () => {
-  const particles = Array.from({ length: 20 }, (_, i) => ({
+  const particles = Array.from({ length: 8 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
@@ -158,9 +158,13 @@ export default function LandingPage() {
   const isInitialMount = useRef(true);
   const { isConnected } = useAccount();
   const { open } = useAppKit();
-  const heroGap = useTransform(scrollY, [0, 300], [8, 64]); // 8px (very tight) to 64px (gap-16)
-  const heroPaddingTop = useTransform(scrollY, [0, 300], [120, 128]); // 120px (below navbar) to 128px (py-32)
-  const heroPaddingBottom = useTransform(scrollY, [0, 300], [20, 40]); // 20px (tight) to 40px (closer to next section)
+  const heroPaddingTop = 120; // Static padding
+  const heroPaddingBottom = 40; // Static padding
+  
+  // Use transform for gap simulation (performance optimization)
+  // Instead of animating gap (layout), we translate the bottom element down
+  const logoTranslateY = useTransform(scrollY, [0, 300], [0, 56]); 
+
   const [showDescription, setShowDescription] = useState(false);
   const [logoPosition, setLogoPosition] = useState<"top" | "bottom">("top");
 
@@ -224,12 +228,12 @@ export default function LandingPage() {
         <LiquidEther
           colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
           mouseForce={20}
-          cursorSize={100}
+          cursorSize={50}
           isViscous={false}
           viscous={30}
-          iterationsViscous={32}
-          iterationsPoisson={32}
-          resolution={0.5}
+          iterationsViscous={4}
+          iterationsPoisson={4}
+          resolution={0.1}
           isBounce={false}
           autoDemo={true}
           autoSpeed={0.5}
@@ -237,6 +241,7 @@ export default function LandingPage() {
           takeoverDuration={0.25}
           autoResumeDelay={3000}
           autoRampDuration={0.6}
+          className="opacity-60"
         />
       </div>
 
@@ -299,7 +304,7 @@ export default function LandingPage() {
             <motion.div
               className="flex flex-col items-center"
               style={{
-                gap: heroGap,
+                gap: 8, // Static gap
               }}
             >
               {/* Title content - centered */}
@@ -333,7 +338,10 @@ export default function LandingPage() {
               </motion.div>
 
               {/* Container for overlapping logo and description with connected cards */}
-              <div className="relative w-full flex items-center justify-center min-h-[600px] overflow-visible">
+              <motion.div 
+                className="relative w-full flex items-center justify-center min-h-[600px] overflow-visible"
+                style={{ y: logoTranslateY, willChange: "transform" }}
+              >
                 {/* Description - behind logo (lower z-index), positioned closer to title */}
                 <motion.div
                   className="absolute inset-0 flex flex-col items-center justify-start pt-4 gap-6 w-full z-10"
@@ -623,7 +631,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </motion.div>
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </motion.section>

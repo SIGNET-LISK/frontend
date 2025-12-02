@@ -10,6 +10,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import abstractShapes from "@/assets/img/logos.png";
 import { usePublisher } from "@/hooks/usePublisher";
+import { NotPublisherModal } from "@/components/modals/NotPublisherModal";
 
 type LandingNavbarProps = {
   scrolled: boolean;
@@ -30,7 +31,18 @@ export function LandingNavbar({
   const { open } = useAppKit();
   const { disconnect } = useDisconnect();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isOwner, isLoading } = usePublisher();
+  const { isOwner, isPublisher, isLoading } = usePublisher();
+  const [isNotPublisherModalOpen, setIsNotPublisherModalOpen] = useState(false);
+
+  const handleDashboardClick = (e: React.MouseEvent) => {
+    if (!isPublisher) {
+      e.preventDefault();
+      setIsNotPublisherModalOpen(true);
+      if (isMobileMenuOpen) {
+        handleMobileMenuToggle(false);
+      }
+    }
+  };
 
   // Debug logging
   if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
@@ -117,7 +129,10 @@ export function LandingNavbar({
             {isConnected && (
               <>
                 <Link href="/dashboard" className="hidden lg:block">
-                  <span className="text-sm font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
+                  <span 
+                    onClick={handleDashboardClick}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                  >
                     Dashboard
                   </span>
                 </Link>
@@ -282,7 +297,10 @@ export function LandingNavbar({
                     <>
                       <Link
                         href="/dashboard"
-                        onClick={() => handleMobileMenuToggle(false)}
+                        onClick={(e) => {
+                          handleDashboardClick(e);
+                          if (isPublisher) handleMobileMenuToggle(false);
+                        }}
                       >
                         <span className="block px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.05] dark:hover:bg-white/[0.05] transition-colors font-medium cursor-pointer">
                           Dashboard
@@ -363,6 +381,10 @@ export function LandingNavbar({
           </>
         )}
       </AnimatePresence>
+      <NotPublisherModal 
+        isOpen={isNotPublisherModalOpen} 
+        onClose={() => setIsNotPublisherModalOpen(false)} 
+      />
     </>
   );
 }
