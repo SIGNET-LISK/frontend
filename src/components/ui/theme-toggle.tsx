@@ -32,7 +32,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className={cn(
-        "h-9 w-9 relative transition-colors hover:bg-accent",
+        "h-9 w-9 relative transition-colors hover:bg-accent cursor-pointer hover:cursor-pointer",
         className
       )}
       aria-label="Toggle theme"

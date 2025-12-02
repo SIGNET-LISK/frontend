@@ -42,7 +42,6 @@ const formatTimeAgo = (timestamp: number) => {
 export default function DashboardHome() {
   const { address, isConnected } = useAccount();
 
-
   // Fetch all contents for stats
   const {
     data: apiResponse,

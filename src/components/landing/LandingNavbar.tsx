@@ -59,16 +59,17 @@ export function LandingNavbar({
   return (
     <>
       <motion.nav
-        className={`fixed top-4 left-4 right-4 z-40 rounded-full transition-all duration-300 ${scrolled
-          ? "border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-          : "border border-white/[0.1] dark:border-white/[0.08] bg-background/20 dark:bg-black/20 backdrop-blur-[12px] shadow-[0_4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
-          }`}
+        className={`fixed top-4 left-4 right-4 z-40 rounded-full transition-all duration-300 ${
+          scrolled
+            ? "border border-white/[0.1] dark:border-white/[0.08] bg-background/30 dark:bg-black/30 backdrop-blur-[12px] shadow-[0_8px_32px_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+            : "border border-white/[0.1] dark:border-white/[0.08] bg-background/20 dark:bg-black/20 backdrop-blur-[12px] shadow-[0_4px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]"
+        }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
       >
         <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
               <img
                 src={abstractShapes}
@@ -77,9 +78,11 @@ export function LandingNavbar({
               />
             </div>
             <span className="font-bold text-xl tracking-tight">SIGNET</span>
+            {/* Theme Toggle on Desktop - Next to SIGNET */}
+            <ThemeToggle className="hidden lg:flex ml-2" />
           </div>
 
-          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 text-sm font-medium text-muted-foreground">
+          <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 text-sm font-medium text-muted-foreground">
             <a
               href="#features"
               className="hover:text-foreground transition-colors"
@@ -110,17 +113,16 @@ export function LandingNavbar({
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Desktop: Theme Toggle, Wallet, Connect Button */}
-            <ThemeToggle className="hidden md:flex" />
+            {/* Desktop: Wallet, Connect Button */}
             {isConnected && (
               <>
-                <Link href="/dashboard" className="hidden md:block">
+                <Link href="/dashboard" className="hidden lg:block">
                   <span className="text-sm font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
                     Dashboard
                   </span>
                 </Link>
                 {isOwner && (
-                  <Link href="/admin/publishers" className="hidden md:block">
+                  <Link href="/admin/publishers" className="hidden lg:block">
                     <span className="text-sm font-medium text-red-400 hover:text-red-300 cursor-pointer transition-colors flex items-center gap-1">
                       <Settings className="w-4 h-4" />
                       Admin
@@ -128,7 +130,7 @@ export function LandingNavbar({
                   </Link>
                 )}
                 {/* Wallet Address Display */}
-                <GlassCard className="hidden md:flex px-4 py-2 border-white/[0.1] dark:border-white/[0.08]">
+                <GlassCard className="hidden lg:flex px-4 py-2 border-white/[0.1] dark:border-white/[0.08]">
                   <div className="flex items-center gap-3">
                     <div className="flex flex-col">
                       <span className="text-xs text-muted-foreground">
@@ -160,7 +162,7 @@ export function LandingNavbar({
             )}
             {!isConnected && (
               <GlowButton
-                className="hidden md:flex"
+                className="hidden lg:flex"
                 onClick={handleConnectWallet}
               >
                 Connect Wallet
@@ -170,7 +172,7 @@ export function LandingNavbar({
             {/* Mobile: Burger Button */}
             <button
               onClick={() => handleMobileMenuToggle(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-full bg-white/[0.05] dark:bg-white/[0.05] backdrop-blur-[8px] border border-white/[0.1] dark:border-white/[0.08] hover:bg-white/[0.08] dark:hover:bg-white/[0.08] transition-colors"
+              className="lg:hidden p-2 rounded-full bg-white/[0.05] dark:bg-white/[0.05] backdrop-blur-[8px] border border-white/[0.1] dark:border-white/[0.08] hover:bg-white/[0.08] dark:hover:bg-white/[0.08] transition-colors"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -193,7 +195,7 @@ export function LandingNavbar({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-background/40 dark:bg-black/60 backdrop-blur-sm z-[60] md:hidden"
+              className="fixed inset-0 bg-background/40 dark:bg-black/60 backdrop-blur-sm z-[60] lg:hidden"
               onClick={() => handleMobileMenuToggle(false)}
             />
 
@@ -204,7 +206,7 @@ export function LandingNavbar({
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className={cn(
-                "fixed top-0 right-0 h-full w-[320px] max-w-[85vw] z-[70] md:hidden",
+                "fixed top-0 right-0 h-full w-[320px] max-w-[85vw] z-[70] lg:hidden",
                 "bg-white/[0.05] dark:bg-black/90 backdrop-blur-[12px]",
                 "border-l border-white/[0.1] dark:border-white/[0.08]",
                 "shadow-[0_8px_32px_rgba(0,0,0,0.3)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
