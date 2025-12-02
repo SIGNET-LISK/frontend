@@ -74,7 +74,7 @@ export default function DashboardHome() {
         transition={{ duration: 0.6 }}
       >
         <div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-foreground via-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 dark:from-blue-400 via-blue-400 dark:via-purple-400 to-purple-400 dark:to-purple-300 bg-clip-text text-transparent">
             Dashboard Overview
           </h2>
           <p className="text-muted-foreground mt-1">

@@ -1,9 +1,5 @@
 import { Link } from "wouter";
-import {
-  motion,
-  useTransform,
-  useMotionValue,
-} from "framer-motion";
+import { motion, useTransform, useMotionValue } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
 import { GlassCard } from "@/components/ui/glass-card";
 import {
@@ -330,7 +326,7 @@ export default function LandingPage() {
 
                   <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight mt-4 text-center">
                     <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-                      Verify Digital Content.
+                      Verify Digital Content
                     </span>
                   </h1>
                 </motion.div>
@@ -391,15 +387,15 @@ export default function LandingPage() {
                   transition={
                     logoPosition === "top"
                       ? {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 20,
-                        bounce: 0.4,
-                      }
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 20,
+                          bounce: 0.4,
+                        }
                       : {
-                        duration: 0.6,
-                        ease: "easeInOut",
-                      }
+                          duration: 0.6,
+                          ease: "easeInOut",
+                        }
                   }
                 >
                   {/* Container for logo and connected cards */}
@@ -551,31 +547,32 @@ export default function LandingPage() {
                     {[
                       {
                         title: "Upload & Hash",
-                        desc: "Content is processed using perceptual hashing (pHash).",
+                        desc: "Content is processed using perceptual hashing (pHash)",
                         icon: Upload,
                         position: "top-left",
                       },
                       {
-                        title: "Fingerprint on Chain",
-                        desc: "The hash is stored immutably on Lisk L2.",
-                        icon: Fingerprint,
+                        title: "Instant Verification",
+                        desc: "Compare any content against on-chain fingerprints",
+                        icon: ShieldCheck,
                         position: "top-right",
                       },
                       {
-                        title: "Instant Verification",
-                        desc: "Compare any content against on-chain fingerprints.",
-                        icon: ShieldCheck,
+                        title: "Fingerprint on Chain",
+                        desc: "The hash is stored immutably on Lisk L2",
+                        icon: Fingerprint,
                         position: "bottom-left",
                       },
                     ].map((step, i) => (
                       <motion.div
                         key={i}
-                        className={`absolute ${step.position === "top-left"
-                          ? "top-0 left-0 lg:top-[-50px] lg:left-[-50px]"
-                          : step.position === "top-right"
+                        className={`absolute ${
+                          step.position === "top-left"
+                            ? "top-0 left-0 lg:top-[-50px] lg:left-[-50px]"
+                            : step.position === "top-right"
                             ? "top-0 right-0 lg:top-[-50px] lg:right-[-50px]"
                             : "bottom-0 left-1/2 -translate-x-1/2 lg:bottom-5"
-                          } z-10 w-[200px] sm:w-[220px] lg:w-[400px] hidden lg:block`}
+                        } z-10 w-[200px] sm:w-[220px] lg:w-[400px] hidden lg:block`}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.6, delay: 0.3 + i * 0.2 }}
