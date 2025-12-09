@@ -5,11 +5,18 @@ import {
   BookOpen,
   Key,
   Code,
-
   Gauge,
   Terminal,
   AlertCircle,
+  Hash,
 } from "lucide-react";
+import {
+  Files,
+  FileItem,
+  FolderItem,
+  FolderTrigger,
+  FolderPanel,
+} from "@/components/animate-ui/components/base/files";
 
 type Section = {
   id: string;
@@ -39,8 +46,15 @@ type DocsSidebarProps = {
   onMobileClose?: () => void;
 };
 
-export function DocsSidebar({ activeSection, onSectionChange, isMobileOpen, onMobileClose }: DocsSidebarProps) {
+export function DocsSidebar({
+  activeSection,
+  onSectionChange,
+  isMobileOpen,
+  onMobileClose,
+}: DocsSidebarProps) {
   const [isSticky, setIsSticky] = useState(false);
+  // State to manage open folders in the accordion
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,6 +63,8 @@ export function DocsSidebar({ activeSection, onSectionChange, isMobileOpen, onMo
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+
 
   const scrollToSection = (sectionId: string) => {
     onSectionChange(sectionId);
@@ -79,58 +95,75 @@ export function DocsSidebar({ activeSection, onSectionChange, isMobileOpen, onMo
         !isMobileOpen && "hidden lg:flex"
       )}
     >
-      <div className="p-6 space-y-1">
-        <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-6 px-3">
+      <div className="p-4 flex-1">
+        <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-4 px-2">
           Documentation
         </h3>
-        {SECTIONS.map((section) => (
-          <div key={section.id} className="space-y-1">
-            <button
-              onClick={() => scrollToSection(section.id)}
-              className={cn(
-                "w-full text-left px-3 py-2.5 text-sm rounded-lg transition-all duration-300 flex items-center gap-3 group relative",
-                activeSection === section.id
-                  ? "text-white bg-blue-500/10 border-l-2 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
-              )}
-            >
-              {activeSection === section.id && (
-                <motion.div
-                  layoutId="activeSection"
-                  className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-500 rounded-r"
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
-              )}
-              <section.icon
-                className={cn(
-                  "w-4 h-4 transition-colors",
-                  activeSection === section.id ? "text-blue-400" : "text-gray-500 group-hover:text-blue-400"
-                )}
-              />
-              <span className="font-medium">{section.label}</span>
-            </button>
-            {section.subsections && activeSection.startsWith("endpoints") && (
-              <div className="ml-7 space-y-1 mt-1">
-                {section.subsections.map((sub) => (
-                  <button
-                    key={sub}
-                    onClick={() => scrollToSection(`endpoint-${sub}`)}
+
+        {/* @ts-ignore - Files component props might not be fully typed for accordion primitives in this specific setup */}
+        <Files
+          className="p-0"
+        >
+          {SECTIONS.map((section) => {
+            const isFolder = !!section.subsections;
+            const isActive = activeSection === section.id;
+            const hasActiveChild = section.subsections?.some(
+              (sub) => activeSection === `endpoint-${sub}`
+            );
+
+            if (isFolder) {
+              return (
+                <FolderItem key={section.id} value={section.id}>
+                  <FolderTrigger
                     className={cn(
-                      "w-full text-left px-3 py-1.5 text-xs rounded transition-all duration-300",
-                      activeSection === `endpoint-${sub}`
-                        ? "text-blue-400 bg-blue-500/5"
-                        : "text-gray-500 hover:text-gray-300 hover:bg-white/3"
+                      "cursor-pointer transition-colors duration-200 rounded-md",
+                      (isActive || hasActiveChild) ? "text-blue-400" : "text-muted-foreground hover:text-foreground"
                     )}
+                    onClick={() => {
+                      scrollToSection(section.id);
+                    }}
                   >
-                    {sub.charAt(0).toUpperCase() + sub.slice(1)}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+                    <span className="font-medium">{section.label}</span>
+                  </FolderTrigger>
+                  <FolderPanel>
+                    {section.subsections?.map((sub) => {
+                      const subId = `endpoint-${sub}`;
+                      const isSubActive = activeSection === subId;
+                      return (
+                        <FileItem
+                          key={sub}
+                          icon={Hash}
+                          className={cn(
+                            "cursor-pointer transition-colors duration-200",
+                            isSubActive ? "text-blue-400 font-medium" : "text-muted-foreground hover:text-foreground"
+                          )}
+                          onClick={() => scrollToSection(subId)}
+                        >
+                          {sub.charAt(0).toUpperCase() + sub.slice(1)}
+                        </FileItem>
+                      );
+                    })}
+                  </FolderPanel>
+                </FolderItem>
+              );
+            }
+
+            return (
+              <FileItem
+                key={section.id}
+                icon={section.icon}
+                className={cn(
+                  "cursor-pointer transition-colors duration-200 mb-1",
+                  isActive ? "text-blue-400 font-medium bg-blue-500/10 rounded-md" : "text-muted-foreground hover:text-foreground"
+                )}
+                onClick={() => scrollToSection(section.id)}
+              >
+                {section.label}
+              </FileItem>
+            );
+          })}
+        </Files>
       </div>
     </motion.aside>
   );
 }
-

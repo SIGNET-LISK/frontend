@@ -12,7 +12,6 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import {
-  Activity as ActivityIcon,
   ExternalLink,
   Hash,
   User,
@@ -243,9 +242,6 @@ export default function Activity() {
             {/* Header */}
             <header className="mb-8 text-center">
               <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-500/30">
-                  <ActivityIcon className="w-8 h-8 text-blue-400" />
-                </div>
                 <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                   Activity Feed
                 </h1>
@@ -340,9 +336,6 @@ export default function Activity() {
                           >
                             <td className="p-6">
                               <div className="flex items-start gap-3 max-w-md">
-                                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-blue-500/30 flex-shrink-0">
-                                  <ActivityIcon className="w-5 h-5 text-blue-400" />
-                                </div>
                                 <div className="min-w-0">
                                   <p className="font-medium text-slate-900 dark:text-white truncate">
                                     {item.title || "Untitled"}

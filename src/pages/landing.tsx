@@ -1,19 +1,17 @@
 import { Link } from "wouter";
-import { motion, useTransform, useMotionValue } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { GlowButton } from "@/components/ui/glow-button";
-import { GlassCard } from "@/components/ui/glass-card";
 import {
   ArrowRight,
   ShieldCheck,
-  Upload,
-  Fingerprint,
   Scale,
   Building2,
 } from "lucide-react";
+import { CardSpotlight } from "@/components/ui/card-spotlight";
 import { useEffect, useState, useRef } from "react";
 import { useAccount } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
-import abstractShapes from "@/assets/img/finger.png";
+
 import LiquidEther from "@/components/LiquidEther";
 import BlurText from "@/components/BlurText";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
@@ -24,6 +22,7 @@ import { PhoneVerification } from "@/components/illustrations/phone-verification
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
 import { WhitelistSection } from "@/components/landing/WhitelistSection";
+
 const handleAnimationComplete = () => {
   console.log("Animation completed!");
 };
@@ -89,84 +88,22 @@ const FloatingParticles = () => {
   );
 };
 
-// 3D Tilt Card Component
-function TiltCard({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseX = useTransform(x, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const mouseY = useTransform(y, [-0.5, 0.5], ["-15deg", "15deg"]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-
-    const width = rect.width;
-    const height = rect.height;
-
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-
-    x.set(xPct);
-    y.set(yPct);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateY: mouseX,
-        rotateX: mouseY,
-        transformStyle: "preserve-3d",
-      }}
-      className={`relative h-full transition-all duration-200 ease-linear ${className}`}
-    >
-      <div
-        style={{
-          transform: "translateZ(75px)",
-          transformStyle: "preserve-3d",
-        }}
-        className="absolute inset-4 grid place-content-center rounded-xl bg-white/[0.02] shadow-lg"
-      >
-        {/* Shadow/Glow effect behind the card */}
-        <div className="absolute inset-0 blur-xl bg-blue-500/10 -z-10" />
-      </div>
-      <GlassCard className="h-full relative preserve-3d group overflow-visible">
-        {children}
-      </GlassCard>
-    </motion.div>
-  );
-}
-
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const scrollY = useMotionValue(0);
   const isInitialMount = useRef(true);
   const { isConnected } = useAccount();
   const { open } = useAppKit();
-  
+
   // Static values for padding
   const heroPaddingTop = 120;
-  const heroPaddingBottom = 40; 
+  const heroPaddingBottom = 40;
 
   const [showDescription, setShowDescription] = useState(false);
-  const [logoPosition, setLogoPosition] = useState<"top" | "bottom">("top");
+
 
   const handleConnectWallet = () => {
+    // ...
     if (isConnected) {
       // If connected, navigate to dashboard
       window.location.href = "/dashboard";
@@ -194,10 +131,8 @@ export default function LandingPage() {
       // Animate on scroll: logo pulled down, description fades in
       if (currentScrollY > 0 && !showDescription) {
         setShowDescription(true);
-        setLogoPosition("bottom");
       } else if (currentScrollY === 0 && showDescription) {
         setShowDescription(false);
-        setLogoPosition("top");
       }
 
       scrollY.set(currentScrollY);
@@ -299,337 +234,69 @@ export default function LandingPage() {
           }}
         >
           <div className="max-w-7xl mx-auto w-full">
-            <motion.div
-              className="flex flex-col items-center"
-              style={{
-                gap: 8, // Static gap
-              }}
-            >
-              {/* Title content - centered */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+              {/* Left Column: Text Content */}
               <motion.div
-                className="text-center w-full"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-start text-left -mt-12 lg:-mt-24"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="flex flex-col items-center w-full"
-                >
+                <div className="mb-6">
                   <BlurText
                     text="Protect the Truth"
                     delay={150}
                     animateBy="words"
                     direction="top"
                     onAnimationComplete={handleAnimationComplete}
-                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight justify-center"
+                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight"
                   />
 
-                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight mt-4 text-center">
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-tight mt-2">
                     <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                       Verify Digital Content
                     </span>
                   </h1>
-                </motion.div>
+                </div>
+
+                <div className="space-y-6 max-w-xl">
+                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                    Upload & Hash: Content is processed using perceptual hashing (pHash) for instant verification.
+                    Compare any content against on-chain fingerprints stored immutably on Lisk L2.
+                  </p>
+
+                  <Link href="/verify">
+                    <GlowButton className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg group">
+                      <span>Verify Content Now</span>
+                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </GlowButton>
+                  </Link>
+                </div>
               </motion.div>
 
-              {/* Container for overlapping logo and description with connected cards */}
-              <motion.div 
-                className="relative w-full flex items-center justify-center min-h-[300px] md:min-h-[400px] lg:min-h-[600px] overflow-visible"
+              {/* Right Column: Phone Mockup */}
+              <motion.div
+                className="relative flex justify-center lg:justify-end"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
               >
-                {/* Description - behind logo (lower z-index), positioned closer to title */}
+                {/* Glow effect behind phone */}
+                <div className="absolute inset-0 bg-blue-500/20 blur-[100px] rounded-full transform scale-75" />
+
                 <motion.div
-                  className="absolute inset-0 flex flex-col items-center justify-start pt-4 gap-6 w-full z-10"
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: showDescription ? 1 : 0,
-                  }}
+                  className="relative z-10 w-full max-w-xs transform hover:scale-[1.02] transition-transform duration-500"
+                  animate={{ y: [0, -10, 0] }}
                   transition={{
-                    duration: 0.5,
+                    duration: 6,
+                    repeat: Infinity,
                     ease: "easeInOut",
                   }}
                 >
-                  {/* Horizontal container for PhoneVerification and text */}
-                  <div className="flex flex-row items-center justify-center gap-6 md:gap-8 lg:gap-12 w-full max-w-6xl px-4">
-                    <div className="w-48 md:w-56 lg:w-64 h-auto flex-shrink-0">
-                      <PhoneVerification />
-                    </div>
-                    <div className="flex flex-col gap-4">
-                      <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed text-left">
-                        A perceptual hashing and blockchain-backed platform to
-                        authenticate images, videos, and documents — stopping
-                        deepfakes and misinformation at the source.
-                      </p>
-                      <motion.div
-                        className="flex items-center justify-start gap-4"
-                        initial={{ opacity: 0 }}
-                        animate={{
-                          opacity: showDescription ? 1 : 0,
-                        }}
-                        transition={{
-                          duration: 0.5,
-                          ease: "easeInOut",
-                        }}
-                      >
-                        <Link href="/verify">
-                          <GlowButton className="h-12 md:h-14 px-4 md:px-6 lg:px-8 text-sm md:text-base lg:text-lg group">
-                            <span className="hidden sm:inline">Verify Content Now</span>
-                            <span className="sm:hidden">Verify Now</span>
-                            <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
-                          </GlowButton>
-                        </Link>
-                      </motion.div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Logo with connected cards - on top (higher z-index) */}
-                <motion.div
-                  className="relative flex items-center justify-center w-full z-20"
-                  initial={false}
-                  animate={logoPosition === "top" ? { y: 0 } : { y: 800 }}
-                  transition={
-                    logoPosition === "top"
-                      ? {
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 20,
-                          bounce: 0.4,
-                        }
-                      : {
-                          duration: 0.6,
-                          ease: "easeInOut",
-                        }
-                  }
-                >
-                  {/* Container for logo and connected cards */}
-                  <div className="relative w-full max-w-5xl py-8 lg:py-12">
-                    {/* SVG Lines for connections - behind cards */}
-                    <svg
-                      className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden lg:block"
-                      style={{ overflow: "visible" }}
-                      viewBox="0 0 1200 800"
-                      preserveAspectRatio="xMidYMid meet"
-                    >
-                      {/* Line from logo center (middle-top) to top-left card */}
-                      <motion.path
-                        d="M 600 71 L 50 70"
-                        stroke="url(#gradient1)"
-                        strokeWidth="2.5"
-                        strokeDasharray="6,4"
-                        strokeLinecap="round"
-                        fill="none"
-                        filter="url(#glow)"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{
-                          duration: 1.2,
-                          delay: 0.5,
-                          ease: "easeInOut",
-                        }}
-                      />
-                      {/* Line from logo center (middle-top) to top-right card */}
-                      <motion.path
-                        d="M 700 60 L 1000 61"
-                        stroke="url(#gradient2)"
-                        strokeWidth="2.5"
-                        strokeDasharray="6,4"
-                        strokeLinecap="round"
-                        fill="none"
-                        filter="url(#glow)"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{
-                          duration: 1.2,
-                          delay: 0.7,
-                          ease: "easeInOut",
-                        }}
-                      />
-                      {/* Line from logo center (middle-top) to bottom card */}
-                      <motion.path
-                        d="M 605 500 L 600 10"
-                        stroke="url(#gradient3)"
-                        strokeWidth="2.5"
-                        strokeDasharray="6,4"
-                        strokeLinecap="round"
-                        fill="none"
-                        filter="url(#glow)"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{
-                          duration: 1.2,
-                          delay: 0.9,
-                          ease: "easeInOut",
-                        }}
-                      />
-                      {/* Gradient definitions with glow effect */}
-                      <defs>
-                        <linearGradient
-                          id="gradient1"
-                          x1="0%"
-                          y1="0%"
-                          x2="100%"
-                          y2="0%"
-                        >
-                          <stop
-                            offset="0%"
-                            stopColor="#5227FF"
-                            stopOpacity="0.8"
-                          />
-                          <stop
-                            offset="50%"
-                            stopColor="#7C3AED"
-                            stopOpacity="0.7"
-                          />
-                          <stop
-                            offset="100%"
-                            stopColor="#FF9FFC"
-                            stopOpacity="0.8"
-                          />
-                        </linearGradient>
-                        <linearGradient
-                          id="gradient2"
-                          x1="0%"
-                          y1="0%"
-                          x2="100%"
-                          y2="0%"
-                        >
-                          <stop
-                            offset="0%"
-                            stopColor="#5227FF"
-                            stopOpacity="0.8"
-                          />
-                          <stop
-                            offset="50%"
-                            stopColor="#8B5CF6"
-                            stopOpacity="0.7"
-                          />
-                          <stop
-                            offset="100%"
-                            stopColor="#B19EEF"
-                            stopOpacity="0.8"
-                          />
-                        </linearGradient>
-                        <linearGradient
-                          id="gradient3"
-                          x1="0%"
-                          y1="0%"
-                          x2="0%"
-                          y2="100%"
-                        >
-                          <stop
-                            offset="0%"
-                            stopColor="#5227FF"
-                            stopOpacity="0.8"
-                          />
-                          <stop
-                            offset="50%"
-                            stopColor="#A855F7"
-                            stopOpacity="0.7"
-                          />
-                          <stop
-                            offset="100%"
-                            stopColor="#FF9FFC"
-                            stopOpacity="0.8"
-                          />
-                        </linearGradient>
-                        {/* Glow filter */}
-                        <filter id="glow">
-                          <feGaussianBlur
-                            stdDeviation="3"
-                            result="coloredBlur"
-                          />
-                          <feMerge>
-                            <feMergeNode in="coloredBlur" />
-                            <feMergeNode in="SourceGraphic" />
-                          </feMerge>
-                        </filter>
-                      </defs>
-                    </svg>
-
-                    {/* Connected Cards - arranged around logo */}
-                    {[
-                      {
-                        title: "Upload & Hash",
-                        desc: "Content is processed using perceptual hashing (pHash)",
-                        icon: Upload,
-                        position: "top-left",
-                      },
-                      {
-                        title: "Instant Verification",
-                        desc: "Compare any content against on-chain fingerprints",
-                        icon: ShieldCheck,
-                        position: "top-right",
-                      },
-                      {
-                        title: "Fingerprint on Chain",
-                        desc: "The hash is stored immutably on Lisk L2",
-                        icon: Fingerprint,
-                        position: "bottom-left",
-                      },
-                    ].map((step, i) => (
-                      <motion.div
-                        key={i}
-                        className={`absolute ${
-                          step.position === "top-left"
-                            ? "top-0 left-0 lg:top-[-50px] lg:left-[-50px]"
-                            : step.position === "top-right"
-                            ? "top-0 right-0 lg:top-[-50px] lg:right-[-50px]"
-                            : "bottom-0 left-1/2 -translate-x-1/2 lg:bottom-5"
-                        } z-10 w-[200px] sm:w-[220px] lg:w-[400px] hidden lg:block`}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6, delay: 0.3 + i * 0.2 }}
-                      >
-                        <GlassCard className="group h-full">
-                          <div className="flex items-start gap-4">
-                            {/* Icon on the left */}
-                            <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-blue-500/[0.15] to-purple-500/[0.15] rounded-xl flex items-center justify-center border border-white/[0.1] dark:border-white/[0.08] shadow-[0_0_20px_rgba(100,130,255,0.1)] dark:shadow-[0_0_20px_rgba(100,130,255,0.1)] group-hover:scale-110 group-hover:border-white/[0.15] dark:group-hover:border-white/[0.12] transition-all duration-500">
-                              <step.icon className="w-6 h-6 text-foreground group-hover:text-blue-300 transition-colors" />
-                            </div>
-
-                            {/* Content on the right */}
-                            <div className="flex-1 min-w-0">
-                              <h3 className="text-base lg:text-lg font-semibold mb-1 text-left text-foreground">
-                                {step.title}
-                              </h3>
-                              <p className="text-muted-foreground text-xs lg:text-sm leading-relaxed text-left">
-                                {step.desc}
-                              </p>
-                            </div>
-                          </div>
-                        </GlassCard>
-                      </motion.div>
-                    ))}
-
-                    {/* Logo container - smaller size, no background card, centered */}
-                    <div
-                      className="relative w-full max-w-xs mx-auto flex items-center justify-center z-20 translate-y-8 md:translate-y-0 lg:-translate-y-[130px]"
-                    >
-                      <motion.div
-                        className="relative w-full h-[200px] sm:h-[220px] lg:h-[240px] opacity-100 pointer-events-none"
-                        style={{
-                          backgroundImage: `url(${abstractShapes})`,
-                          backgroundSize: "85%",
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center",
-                        }}
-                        animate={{
-                          y: [0, -10, 0],
-                        }}
-                        transition={{
-                          duration: 6,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <PhoneVerification />
                 </motion.div>
               </motion.div>
-            </motion.div>
+            </div>
           </div>
         </motion.section>
 
@@ -667,22 +334,20 @@ export default function LandingPage() {
                   transition={{ duration: 0.5, delay: i * 0.2 }}
                   className="h-full"
                 >
-                  <TiltCard className="h-full">
-                    <div className="relative overflow-hidden p-8 h-full">
-                      <div
-                        className="relative z-10"
-                        style={{ transform: "translateZ(50px)" }}
-                      >
-                        <div className="p-3 w-fit rounded-xl bg-gradient-to-br from-white/[0.05] dark:from-white/[0.05] to-white/[0.02] dark:to-white/[0.02] border border-white/[0.1] dark:border-white/[0.08] mb-6 group-hover:border-white/[0.15] dark:group-hover:border-white/[0.12] transition-all duration-500 shadow-lg backdrop-blur-[8px]">
-                          <benefit.icon className="w-8 h-8 text-foreground" />
-                        </div>
-                        <h3 className="text-2xl font-bold mb-3 text-foreground">
-                          {benefit.title}
-                        </h3>
-                        <p className="text-muted-foreground">{benefit.desc}</p>
+                  <CardSpotlight
+                    className="h-full bg-white/5 dark:bg-white/5 border-white/10 backdrop-blur-md p-8 rounded-3xl cursor-pointer"
+                    color="#3b82f6"
+                  >
+                    <div className="relative z-10 h-full flex flex-col">
+                      <div className="p-3 w-fit rounded-xl bg-gradient-to-br from-white/[0.05] dark:from-white/[0.05] to-white/[0.02] dark:to-white/[0.02] border border-white/[0.1] dark:border-white/[0.08] mb-6 group-hover:border-white/[0.15] dark:group-hover:border-white/[0.12] transition-all duration-500 shadow-lg backdrop-blur-[8px]">
+                        <benefit.icon className="w-8 h-8 text-foreground" />
                       </div>
+                      <h3 className="text-2xl font-bold mb-3 text-foreground">
+                        {benefit.title}
+                      </h3>
+                      <p className="text-muted-foreground">{benefit.desc}</p>
                     </div>
-                  </TiltCard>
+                  </CardSpotlight>
                 </motion.div>
               ))}
             </div>
@@ -700,7 +365,7 @@ export default function LandingPage() {
 
         {/* Footer */}
         <LandingFooter />
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }

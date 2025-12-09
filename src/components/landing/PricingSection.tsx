@@ -30,7 +30,7 @@ interface FlipCardProps {
         description: string;
         price: string;
         period: string;
-        icon: React.ElementType;
+        icon: any;
         features: string[];
         details: string[];
         cta: string;
