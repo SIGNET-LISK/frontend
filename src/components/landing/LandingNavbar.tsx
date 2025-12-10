@@ -6,9 +6,11 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAccount, useDisconnect } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
 import { Copy, LogOut, Menu, X, Settings } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import abstractShapes from "@/assets/img/logos.png";
+import { useTheme } from "next-themes";
+import signetLogoPurple from "@/assets/img/signet-logo-purple.svg";
+import signetLogoWhite from "@/assets/img/signet-logo-white.svg";
 import { usePublisher } from "@/hooks/usePublisher";
 import { NotPublisherModal } from "@/components/modals/NotPublisherModal";
 
@@ -33,6 +35,17 @@ export function LandingNavbar({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isOwner, isPublisher, isLoading } = usePublisher();
   const [isNotPublisherModalOpen, setIsNotPublisherModalOpen] = useState(false);
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Get logo based on theme (default to white/dark mode before mount)
+  const logo =
+    mounted && theme === "light" ? signetLogoPurple : signetLogoWhite;
 
   const handleDashboardClick = (e: React.MouseEvent) => {
     if (!isPublisher) {
@@ -82,9 +95,9 @@ export function LandingNavbar({
       >
         <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center relative">
           <div className="flex items-center gap-4">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center">
               <img
-                src={abstractShapes}
+                src={logo}
                 alt="SIGNET"
                 className="w-full h-full object-cover rounded-[10px]"
               />
@@ -129,7 +142,7 @@ export function LandingNavbar({
             {isConnected && (
               <>
                 <Link href="/dashboard" className="hidden lg:block">
-                  <span 
+                  <span
                     onClick={handleDashboardClick}
                     className="text-sm font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                   >
@@ -235,7 +248,7 @@ export function LandingNavbar({
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
                       <img
-                        src={abstractShapes}
+                        src={logo}
                         alt="SIGNET"
                         className="w-full h-full object-cover"
                       />
@@ -381,9 +394,9 @@ export function LandingNavbar({
           </>
         )}
       </AnimatePresence>
-      <NotPublisherModal 
-        isOpen={isNotPublisherModalOpen} 
-        onClose={() => setIsNotPublisherModalOpen(false)} 
+      <NotPublisherModal
+        isOpen={isNotPublisherModalOpen}
+        onClose={() => setIsNotPublisherModalOpen(false)}
       />
     </>
   );
